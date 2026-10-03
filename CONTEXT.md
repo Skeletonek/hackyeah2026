@@ -15,8 +15,24 @@ _Avoid_: Tag, topic
 ## Requests
 
 **Submission**:
-Something a resident, NGO or municipality sends to ROPS: either a problem or an idea. Identified by a case number like `SPL-2026-0142`.
+Something a resident, NGO or municipality sends to ROPS: a problem, an idea or a grant application. Identified by a case number like `SPL-2026-0142`.
 _Avoid_: Ticket, request, need, zgłoszenie (in code)
+
+**Idea card**:
+An author's structured description of their own idea (what it is, the problem, who benefits, its stage), kept and edited by the author as a draft; sending it to ROPS for advice creates a submission of kind idea. UI label: „Fiszka”.
+_Avoid_: Idea (for the record), draft, fiszka (in code)
+
+**Grant call**:
+A time-limited funding round run by ROPS, with its own application sections and eligibility criteria. UI label: „Nabór”.
+_Avoid_: Competition, grant (for the round), nabór (in code)
+
+**Grant application**:
+An idea card turned into an application for one grant call; sending it creates a submission of kind application. UI label: „Wniosek”.
+_Avoid_: Proposal, form, wniosek (in code)
+
+**Social Innovation Canvas**:
+The ROPS one-page frame for planning an innovation (problem, solution, resources, change, partners, outreach, audience, costs, success indicators, funding); in Splot it is filled from an idea card. UI label: „Kanwa Innowacji Społecznych”.
+_Avoid_: Business model canvas, Canva, board
 
 **Matchmaking**:
 Finding innovations that fit a described problem and explaining why each one fits.
