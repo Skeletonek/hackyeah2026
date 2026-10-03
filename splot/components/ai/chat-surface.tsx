@@ -90,8 +90,26 @@ function ChatSurface({
   const busy = waiting || status === "streaming"
   const visible = messages.filter((message) => message.role !== "system" && !isAutoMessage(message))
   const last = visible.at(-1)
-  const streamingMessage = status === "streaming" && last?.role === "assistant" ? last : undefined
-  const settled = streamingMessage ? visible.slice(0, -1) : visible
+
+  // The reply in progress stays out of the log until the turn ends. A reply
+  // can continue an earlier assistant message (after a QuickReplies click),
+  // so only parts added during this turn leave the log; the rest stay put
+  // and are not read out again.
+  const [turnStart, setTurnStart] = React.useState<{ id?: string; parts: number } | null>(null)
+  if (busy && !turnStart) {
+    setTurnStart(last?.role === "assistant" ? { id: last.id, parts: last.parts.length } : { parts: 0 })
+  } else if (!busy && turnStart) {
+    setTurnStart(null)
+  }
+  const live = busy && last?.role === "assistant" ? last : undefined
+  const keptParts = live && turnStart?.id === live.id ? turnStart.parts : 0
+  // One array with stable keys, so a message never remounts when its turn starts or ends.
+  const logged: { message: UIMessage; to?: number }[] = live
+    ? [
+        ...visible.slice(0, -1).map((message) => ({ message })),
+        ...(keptParts > 0 ? [{ message: live, to: keptParts }] : []),
+      ]
+    : visible.map((message) => ({ message }))
 
   // Follow the conversation when a message is added, not on every token.
   React.useEffect(() => {
@@ -120,10 +138,12 @@ function ChatSurface({
     }
   }
 
-  const renderMessage = (message: UIMessage, streaming: boolean) => (
+  const renderMessage = (message: UIMessage, { streaming = false, from = 0, to = message.parts.length } = {}) => (
     <MessageView
-      key={message.id}
+      key={streaming ? `${message.id}-live` : message.id}
       message={message}
+      from={from}
+      to={to}
       streaming={streaming}
       busy={busy}
       addToolOutput={addToolOutput}
@@ -138,9 +158,9 @@ function ChatSurface({
       <div className="flex flex-col gap-4">
         {visible.length === 0 && !busy && emptyState}
         <div role="log" aria-live="polite" aria-relevant="additions" className="flex flex-col gap-4 empty:hidden">
-          {settled.map((message) => renderMessage(message, false))}
+          {logged.map(({ message, to }) => renderMessage(message, { to }))}
         </div>
-        {streamingMessage && renderMessage(streamingMessage, true)}
+        {live && renderMessage(live, { streaming: true, from: keptParts })}
         {waiting && <AiThinking />}
         <div ref={endRef} />
       </div>
@@ -190,8 +210,11 @@ function ChatSurface({
   )
 }
 
+/** Renders `message.parts[from..to)`; indices stay the message's own, so keys and feedback ids are stable. */
 function MessageView({
   message,
+  from,
+  to,
   streaming,
   busy,
   addToolOutput,
@@ -200,6 +223,8 @@ function MessageView({
   feedbackTargetType,
 }: {
   message: UIMessage
+  from: number
+  to: number
   streaming: boolean
   busy: boolean
   addToolOutput?: AddToolOutput
@@ -222,8 +247,9 @@ function MessageView({
   const lastIndex = message.parts.length - 1
 
   return (
-    <div data-message-id={message.id} className="flex flex-col gap-4">
+    <div data-message-id={message.id} className="flex flex-col gap-4 empty:hidden">
       {message.parts.map((part, index) => {
+        if (index < from || index >= to) return null
         const key = `${message.id}-${index}`
 
         if (part.type === "text") {

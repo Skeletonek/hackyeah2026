@@ -156,7 +156,7 @@ export function ChatDemo() {
     later(2200 + words.length * 120 + 100, finish);
   };
 
-  const addToolOutput: AddToolOutput = ({ toolCallId, output }) =>
+  const addToolOutput: AddToolOutput = ({ toolCallId, output }) => {
     setMessages((current) =>
       current.map((message) => ({
         ...message,
@@ -167,6 +167,25 @@ export function ChatDemo() {
         ),
       })),
     );
+
+    // Like `useSkillChat`: an answer continues the turn, and the reply is
+    // appended to the same assistant message.
+    const words = `Zapisuję Twoją odpowiedź: ${output ?? "pominięto"}.`.split(" ");
+    setStatus("submitted");
+    later(600, () => setStatus("streaming"));
+    words.forEach((_, index) =>
+      later(800 + index * 120, () =>
+        updateLast((message) => ({
+          ...message,
+          parts: [
+            ...message.parts.filter((part) => part.type !== "text" || part.state !== "streaming"),
+            { type: "text", state: "streaming", text: words.slice(0, index + 1).join(" ") },
+          ],
+        })),
+      ),
+    );
+    later(800 + words.length * 120 + 100, finish);
+  };
 
   return (
     <div className="flex flex-col gap-4">
