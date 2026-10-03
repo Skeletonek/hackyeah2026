@@ -13,11 +13,13 @@
     "db:new": "supabase migration new",
     "db:types": "supabase gen types typescript --linked --schema public > lib/supabase/database.types.ts",
     "auth:push": "supabase config push",
-    "data:scrape": "tsx scripts/scrape-library.ts"
+    "data:scrape": "tsx scripts/scrape-library.ts",
+    "data:enrich": "tsx --conditions=react-server --env-file=.env.local scripts/enrich-library.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.117.2",
+    "ai": "^7.0.127",
     "class-variance-authority": "^0.7.1",
     "cn": "^0.4.0",
     "lucide-react": "^1.51.0",
@@ -28,7 +30,8 @@
     "server-only": "^0.0.1",
     "shadcn": "^4.21.1",
     "sonner": "^2.0.8",
-    "tw-animate-css": "^1.4.0"
+    "tw-animate-css": "^1.4.0",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
