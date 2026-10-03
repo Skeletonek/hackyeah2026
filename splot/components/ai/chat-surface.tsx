@@ -12,6 +12,8 @@ import {
 import { RotateCcw, SendHorizontal, Square } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { ASK_QUESTION } from "@/lib/ai/client-tools"
+import type { AskQuestionInput } from "@/lib/ai/tools/ask-question"
 import { AiHint } from "@/components/ai/ai-hint"
 import { AiThinking } from "@/components/ai/ai-thinking"
 import { ChatBubble } from "@/components/ai/chat-bubble"
@@ -25,11 +27,6 @@ type ToolPart = ToolUIPart | DynamicToolUIPart
 
 /** Same call shape as `addToolOutput` from `useChat`, so it can be passed straight through. */
 type AddToolOutput = (args: { tool: string; toolCallId: string; output: unknown }) => unknown
-
-/** Shared client tool (`lib/ai/tools/`): rendered as `QuickReplies`. */
-const ASK_QUESTION = "askQuestion"
-
-type AskQuestionInput = { question?: string; options?: string[]; allowSkip?: boolean }
 
 /** Messages sent by code, not typed by the reader (e.g. the first prompt), carry `metadata.auto`. */
 function isAutoMessage(message: UIMessage) {
@@ -272,7 +269,8 @@ function MessageView({
 }
 
 function AskQuestionPart({ part, addToolOutput }: { part: ToolPart; addToolOutput?: AddToolOutput }) {
-  const input = (part.input ?? {}) as AskQuestionInput
+  // Partial while the input streams in.
+  const input = (part.input ?? {}) as Partial<AskQuestionInput>
 
   if (part.state === "input-streaming" || !input.question || !input.options?.length) {
     return part.state === "output-error" ? null : <AiThinking label="Przygotowuję pytanie…" />
