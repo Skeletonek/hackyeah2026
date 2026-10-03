@@ -44,6 +44,9 @@ jobs:
           file: ./splot/Dockerfile
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          build-args: |
+            NEXT_PUBLIC_SUPABASE_URL=${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+            NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -60,4 +63,10 @@ jobs:
 
       - name: Pull and restart on server
         run: |
-          ssh -p "${{ secrets.DEPLOY_PORT }}" deploy@${{ secrets.DEPLOY_HOST }} 'cd $HOME/deploy && docker compose pull && docker compose up -d'
+          ssh \
+            -i ~/.ssh/id_rsa \
+            -o IdentitiesOnly=yes \
+            -o StrictHostKeyChecking=yes \
+            -p "${{ secrets.DEPLOY_PORT }}" \
+            hackyeah@${{ secrets.DEPLOY_HOST }} \
+            'cd $HOME/deploy && docker compose pull && docker compose up -d'

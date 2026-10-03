@@ -1,15 +1,12 @@
-FROM node:26-trixie-slim AS base
+FROM ghcr.io/pnpm/pnpm:12 AS builder
 
 ENV NEXT_TELEMETRY_DISABLED=1
 WORKDIR /app
-RUN npm install --global pnpm@10.34.3
+RUN pnpm runtime set node 26 -g
 
-FROM base AS deps
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN pnpm install --frozen-lockfile
 
-FROM base AS builder
-COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 ARG NEXT_PUBLIC_SUPABASE_URL
