@@ -16,7 +16,7 @@ import {
 
 export type BrokerInnovationOption = { slug: string; title: string };
 
-/** ≤5 pól kontekstu + wybór innowacji. Wynik czyta `useObject`. */
+/** At most 5 context fields plus the innovation choice. `useObject` reads the result. */
 export function BrokerForm({
   innovations,
   initialSlug,
@@ -44,6 +44,7 @@ export function BrokerForm({
   });
 
   const card = object as Partial<ServiceCard> | undefined;
+  const done = !isLoading && !error && !streamFailed && Boolean(card?.title);
 
   function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
@@ -145,20 +146,22 @@ export function BrokerForm({
         </Field>
 
         <div className="flex flex-wrap gap-3">
-          {isLoading ? (
-            <Button type="button" variant="secondary" onClick={() => stop()}>
-              Zatrzymaj
-            </Button>
-          ) : (
-            <Button type="submit">Ułóż plan usługi</Button>
-          )}
+          {/* Both stay mounted so keyboard focus is not dropped when loading starts. */}
+          <Button type="submit" disabled={isLoading}>
+            Ułóż plan usługi
+          </Button>
+          <Button type="button" variant="secondary" onClick={() => stop()} disabled={!isLoading}>
+            Zatrzymaj
+          </Button>
         </div>
       </form>
 
-      <section aria-label="Plan usługi" aria-live="polite" className="flex flex-col gap-4">
-        {isLoading && !card?.title ? (
-          <p role="status">Układam plan na podstawie opisu innowacji…</p>
-        ) : null}
+      <section aria-label="Plan usługi" aria-busy={isLoading} className="flex flex-col gap-4">
+        {/* Always mounted, so screen readers announce its changes; the streamed card itself is not live. */}
+        <p role="status" className={done ? "sr-only" : undefined}>
+          {isLoading && !card?.title ? "Układam plan na podstawie opisu innowacji…" : null}
+          {done ? "Plan usługi jest gotowy." : null}
+        </p>
 
         {error || streamFailed ? (
           <p role="alert" className="text-sm font-bold text-destructive">

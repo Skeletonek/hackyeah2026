@@ -1,11 +1,10 @@
 import { streamObject } from "ai";
+import { TEXT_MODEL } from "@/lib/ai/models";
 import { getInnovation } from "@/lib/ai/tools/get-innovation";
 import { buildBrokerPrompt } from "@/lib/broker/prompt";
 import { brokerRequestSchema, serviceCardSchema } from "@/lib/broker/schema";
 import { createClient } from "@/lib/supabase/server";
 import libraryFallback from "@/data/rops-library.json";
-
-const MODEL = "anthropic/claude-sonnet-5.5";
 
 type FallbackItem = {
   slug: string;
@@ -34,14 +33,14 @@ async function loadInnovation(slug: string) {
     console.warn("broker innovation lookup failed", slug, error);
   }
 
-  const found = (libraryFallback as FallbackItem[]).find((item) => item.slug === slug);
-  if (!found) return null;
-  return { ...found, lead: found.lead ?? null };
+  return (libraryFallback as FallbackItem[]).find((item) => item.slug === slug) ?? null;
 }
 
 /**
  * One-shot broker: form → service card. No Skill, no conversation row,
  * no writes. Anonymous allowed.
+ *
+ * TODO: rate-limit per IP before launch; every anonymous call is a paid model call.
  */
 export async function POST(request: Request) {
   // On Vercel the gateway authenticates through OIDC; locally it needs the key.
@@ -64,20 +63,13 @@ export async function POST(request: Request) {
 
   const { system, prompt } = buildBrokerPrompt(innovation, parsed.data.context);
 
-  try {
-    const result = streamObject({
-      model: MODEL,
-      schema: serviceCardSchema,
-      system,
-      prompt,
-      onError: ({ error }) => console.error("broker stream failed", parsed.data.slug, error),
-    });
-    return result.toTextStreamResponse();
-  } catch (error) {
-    console.error("broker stream failed", parsed.data.slug, error);
-    return Response.json(
-      { error: "Usługa jest chwilowo niedostępna. Spróbuj ponownie." },
-      { status: 503 },
-    );
-  }
+  // streamObject does not throw here: model errors arrive through onError and end the stream.
+  const result = streamObject({
+    model: TEXT_MODEL,
+    schema: serviceCardSchema,
+    system,
+    prompt,
+    onError: ({ error }) => console.error("broker stream failed", parsed.data.slug, error),
+  });
+  return result.toTextStreamResponse();
 }

@@ -71,7 +71,9 @@ export function buildBrokerPrompt(innovation: BrokerInnovation, context: BrokerC
     `INNOWACJA (używaj tylko tych faktów, niczego nie dopowiadaj):\n${facts}\n\n` +
     `GMINA:\n${place}\n\n` +
     `Zasady:\n` +
+    `- Tytuł do 120 znaków, opis 2–4 zdania.\n` +
     `- Kroki dopasuj do kadry i budżetu gminy.\n` +
+    `- Podaj 3–7 kroków, 2–8 zasobów, 1–4 ryzyka i 2–6 wskaźników.\n` +
     `- Koszt to szacunek: w polu note napisz, że to orientacyjna ocena.\n` +
     `- Ryzyka dotyczą tej gminy, a sposoby ich ograniczenia są konkretne.\n` +
     `- Wskaźniki można policzyć w 6 miesięcy.`;
