@@ -25,8 +25,15 @@ import { Textarea } from "@/components/ui/textarea"
 
 type ToolPart = ToolUIPart | DynamicToolUIPart
 
+/** `streaming`: the part belongs to the reply in progress, not to an earlier turn. */
+type RenderToolPart = (part: ToolPart, options: { streaming: boolean }) => React.ReactNode
+
 /** Same call shape as `addToolOutput` from `useChat`, so it can be passed straight through. */
 type AddToolOutput = (args: { tool: string; toolCallId: string; output: unknown }) => unknown
+
+function isRunning(part: ToolPart) {
+  return part.state === "input-streaming" || part.state === "input-available"
+}
 
 /** Messages sent by code, not typed by the reader (e.g. the first prompt), carry `metadata.auto`. */
 function isAutoMessage(message: UIMessage) {
@@ -37,7 +44,7 @@ function isAutoMessage(message: UIMessage) {
 /**
  * Presentational chat: renders `UIMessage[]` from `useChat` / `useSkillChat`
  * and owns no transport. Streams render their own tool UI through
- * `renderToolPart`; any other tool shows `AiThinking` while it runs.
+ * `renderToolPart`; while other tools run, the reply shows one `AiThinking`.
  *
  * Screen readers hear each message once, when it is finished: the message
  * that is still streaming sits outside the `role="log"` region.
@@ -68,7 +75,7 @@ function ChatSurface({
   /** Answers client tools such as `askQuestion`; pass `addToolOutput` from `useChat`. */
   addToolOutput?: AddToolOutput
   /** Custom UI per tool name, e.g. `{ showMatches: (part) => <Results … /> }`. */
-  renderToolPart?: Partial<Record<string, (part: ToolPart) => React.ReactNode>>
+  renderToolPart?: Partial<Record<string, RenderToolPart>>
   /** What `AiThinking` says while a tool without a renderer runs, e.g. `{ searchInnovations: "Przeglądam 100 innowacji…" }`. */
   toolLabels?: Partial<Record<string, string>>
   inputLabel?: string
@@ -145,7 +152,6 @@ function ChatSurface({
       from={from}
       to={to}
       streaming={streaming}
-      busy={busy}
       addToolOutput={addToolOutput}
       renderToolPart={renderToolPart}
       toolLabels={toolLabels}
@@ -216,7 +222,6 @@ function MessageView({
   from,
   to,
   streaming,
-  busy,
   addToolOutput,
   renderToolPart,
   toolLabels,
@@ -226,9 +231,8 @@ function MessageView({
   from: number
   to: number
   streaming: boolean
-  busy: boolean
   addToolOutput?: AddToolOutput
-  renderToolPart: Partial<Record<string, (part: ToolPart) => React.ReactNode>>
+  renderToolPart: Partial<Record<string, RenderToolPart>>
   toolLabels: Partial<Record<string, string>>
   feedbackTargetType: string
 }) {
@@ -245,6 +249,19 @@ function MessageView({
   }
 
   const lastIndex = message.parts.length - 1
+  // Parallel calls (two searches, five getInnovation) share one progress line,
+  // the last one's. Only the reply in progress shows it: a call left open by
+  // „Zatrzymaj” stays quiet in later turns.
+  const progressIndex = streaming
+    ? message.parts.findLastIndex(
+        (part, index) =>
+          index >= from &&
+          isToolUIPart(part) &&
+          isRunning(part) &&
+          !renderToolPart[getToolName(part)] &&
+          getToolName(part) !== ASK_QUESTION
+      )
+    : -1
 
   return (
     <div data-message-id={message.id} className="flex flex-col gap-4 empty:hidden">
@@ -280,26 +297,33 @@ function MessageView({
 
         const name = getToolName(part)
         const render = renderToolPart[name]
-        if (render) return <React.Fragment key={key}>{render(part)}</React.Fragment>
+        if (render) return <React.Fragment key={key}>{render(part, { streaming })}</React.Fragment>
 
         if (name === ASK_QUESTION) {
-          return <AskQuestionPart key={key} part={part} addToolOutput={addToolOutput} />
+          return <AskQuestionPart key={key} part={part} streaming={streaming} addToolOutput={addToolOutput} />
         }
 
-        const running = part.state === "input-streaming" || part.state === "input-available"
-        if (!running || !busy) return null
+        if (index !== progressIndex) return null
         return <AiThinking key={key} label={toolLabels[name] ?? part.title ?? "Pracuję nad odpowiedzią…"} />
       })}
     </div>
   )
 }
 
-function AskQuestionPart({ part, addToolOutput }: { part: ToolPart; addToolOutput?: AddToolOutput }) {
+function AskQuestionPart({
+  part,
+  streaming,
+  addToolOutput,
+}: {
+  part: ToolPart
+  streaming: boolean
+  addToolOutput?: AddToolOutput
+}) {
   // Partial while the input streams in.
   const input = (part.input ?? {}) as Partial<AskQuestionInput>
 
   if (part.state === "input-streaming" || !input.question || !input.options?.length) {
-    return part.state === "output-error" ? null : <AiThinking label="Przygotowuję pytanie…" />
+    return part.state === "output-error" || !streaming ? null : <AiThinking label="Przygotowuję pytanie…" />
   }
   if (part.state === "output-error") return null
 
@@ -323,4 +347,4 @@ function AskQuestionPart({ part, addToolOutput }: { part: ToolPart; addToolOutpu
   )
 }
 
-export { ChatSurface, type ToolPart, type AddToolOutput }
+export { ChatSurface, type ToolPart, type RenderToolPart, type AddToolOutput }
