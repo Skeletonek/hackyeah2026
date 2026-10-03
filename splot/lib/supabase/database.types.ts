@@ -673,6 +673,14 @@ export type Database = {
           updated_at: string
         }[]
       }
+      track_submission_messages: {
+        Args: { p_case_number: string; p_token: string }
+        Returns: {
+          body: string
+          created_at: string
+          is_staff: boolean
+        }[]
+      }
     }
     Enums: {
       challenge_category:
