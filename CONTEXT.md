@@ -40,6 +40,10 @@ _Avoid_: Chat, ticket conversation
 The assistant that adapts an existing innovation to the service form and needs of a specific institution.
 _Avoid_: Middleman, Pośrednik (in code)
 
+**Tracking link**:
+A link with a submission's case number and secret token that lets its author see the status and read the thread without an account.
+_Avoid_: Status link, magic link
+
 ## AI
 
 **AI hint**:
