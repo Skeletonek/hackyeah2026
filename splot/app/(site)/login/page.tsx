@@ -19,7 +19,7 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
           Problem albo pomysł możesz zgłosić bez logowania. Dostaniesz numer zgłoszenia, po którym
           sprawdzisz, co się z nim dzieje.
         </p>
-        <Link href="/" className="mt-4 inline-flex min-h-11 items-center font-bold underline underline-offset-4">
+        <Link href="/match" className="mt-4 inline-flex min-h-11 items-center font-bold underline underline-offset-4">
           Opisz problem bez logowania
         </Link>
       </aside>

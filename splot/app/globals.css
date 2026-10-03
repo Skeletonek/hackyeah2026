@@ -7,6 +7,9 @@
 /* shadcn components use `dark:`; in Splot the dark theme is Kontrast (high contrast). */
 @custom-variant dark (&:where([data-theme="kontrast"], [data-theme="kontrast"] *));
 
+/* Simple mode („Prościej”): data-mode="simple" on <html>, set from a cookie in app/layout.tsx. */
+@custom-variant simple (&:where([data-mode="simple"], [data-mode="simple"] *));
+
 /* Fonts are loaded by next/font in app/layout.tsx (--font-bricolage, --font-atkinson, --font-atkinson-mono). */
 
 :root {
@@ -247,6 +250,14 @@
   --text-lead: 1.375rem;    --text-lead--line-height: 2.125rem;
   --text-base: 1.125rem;    --text-base--line-height: 1.75rem;
   --text-sm: 1rem;          --text-sm--line-height: 1.5rem;
+  /* Simple mode scale; use as `simple:text-simple-*`. */
+  --text-simple-h1: 3rem;        --text-simple-h1--line-height: 3.5rem;
+  --text-simple-h2: 2.5rem;      --text-simple-h2--line-height: 3rem;
+  --text-simple-h3: 2rem;        --text-simple-h3--line-height: 2.5rem;
+  --text-simple-h4: 1.625rem;    --text-simple-h4--line-height: 2.25rem;
+  --text-simple-lead: 1.625rem;  --text-simple-lead--line-height: 2.5rem;
+  --text-simple-base: 1.375rem;  --text-simple-base--line-height: 2.125rem;
+  --text-simple-sm: 1.125rem;    --text-simple-sm--line-height: 1.75rem;
 }
 
 /* Theme-independent values; the Kontrast theme above turns shadows off */
@@ -262,6 +273,7 @@
   html.a-plus { font-size: 112.5%; }
   html.a-plusplus { font-size: 125%; }
   body { @apply bg-background text-foreground font-sans text-base; }
+  html[data-mode="simple"] body { @apply text-simple-base; }
   h1, h2, h3, h4 { @apply font-display; text-wrap: balance; }
   :focus-visible {
     outline: 2px solid transparent;
