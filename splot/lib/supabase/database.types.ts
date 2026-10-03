@@ -606,6 +606,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      county_submission_counts: {
+        Args: never
+        Returns: {
+          category: Database["public"]["Enums"]["challenge_category"]
+          count: number
+          county: string
+        }[]
+      }
       current_user_role: {
         Args: never
         Returns: Database["public"]["Enums"]["user_role"]
@@ -613,6 +621,7 @@ export type Database = {
       immutable_unaccent: { Args: { "": string }; Returns: string }
       is_admin: { Args: never; Returns: boolean }
       is_thread_participant: { Args: { p_thread_id: string }; Returns: boolean }
+      keyword_prefixes: { Args: { query_text: string }; Returns: string[] }
       match_innovations: {
         Args: {
           filter_categories?: Database["public"]["Enums"]["challenge_category"][]

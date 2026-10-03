@@ -15,7 +15,8 @@
     "auth:push": "supabase config push",
     "data:scrape": "tsx scripts/scrape-library.ts",
     "data:enrich": "tsx --conditions=react-server --env-file=.env.local scripts/enrich-library.ts",
-    "data:import": "tsx --conditions=react-server --env-file=.env.local scripts/import-library.ts"
+    "data:import": "tsx --conditions=react-server --env-file=.env.local scripts/import-library.ts",
+    "data:indicators": "tsx scripts/scrape-indicators.ts"
   },
   "dependencies": {
     "@ai-sdk/react": "^4.0.130",
