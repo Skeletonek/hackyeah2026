@@ -12,14 +12,13 @@ import {
 import { RetryTriageButton } from "./retry-triage-button";
 
 /** Current filters plus the row to preview, as a query string. */
-function rowHref(filters: SubmissionFilters, selected: string | null, id: string) {
+function rowHref(filters: SubmissionFilters, id: string) {
   const params = new URLSearchParams();
   for (const [key, value] of Object.entries(filters)) {
     if (value) params.set(key, value);
   }
-  if (selected === id) params.set("selected", id);
-  const query = params.toString();
-  return query ? `/admin/submissions?${query}` : "/admin/submissions";
+  params.set("selected", id);
+  return `/admin/submissions?${params}`;
 }
 
 /**
@@ -50,7 +49,7 @@ export function InboxList({
           >
             <div className="flex flex-wrap items-start gap-3">
               <Link
-                href={rowHref(filters, selectedId, row.id)}
+                href={rowHref(filters, row.id)}
                 aria-current={isSelected ? "true" : undefined}
                 className="flex min-w-0 flex-1 flex-wrap items-center gap-x-3 gap-y-2 rounded-md"
               >
