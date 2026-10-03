@@ -17,6 +17,7 @@
     "data:enrich": "tsx --conditions=react-server --env-file=.env.local scripts/enrich-library.ts"
   },
   "dependencies": {
+    "@ai-sdk/react": "^4.0.130",
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.117.2",
     "ai": "^7.0.127",
