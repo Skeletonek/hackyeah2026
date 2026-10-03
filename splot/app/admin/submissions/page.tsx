@@ -1,31 +1,65 @@
 import type { Metadata } from "next";
-import { createClient } from "@/lib/supabase/server";
+import { EmptyState } from "@/components/empty-state";
+import { hasFilters, getSubmission, listSubmissions, parseFilters } from "@/lib/admin/queries";
+import { SubmissionFiltersForm } from "./_components/filters";
+import { InboxList } from "./_components/inbox-list";
+import { NewSubmissionToast } from "./_components/new-submission-toast";
+import { SubmissionPreview } from "./_components/preview";
 
 export const metadata: Metadata = { title: "Zgłoszenia" };
 
-export default async function AdminInboxPage() {
-  const supabase = await createClient();
-  // Admins see everything via the "submissions: admin reads all" RLS policy.
-  const { data: submissions, error } = await supabase
-    .from("submissions")
-    .select("id, case_number, body, municipality, status, category, priority, created_at")
-    .order("created_at", { ascending: false })
-    .limit(50);
+export default async function AdminInboxPage({
+  searchParams,
+}: PageProps<"/admin/submissions">) {
+  const params = await searchParams;
+  const filters = parseFilters(params);
+  const selected = Array.isArray(params.selected) ? params.selected[0] : params.selected;
+
+  const [rows, selectedRow] = await Promise.all([
+    listSubmissions(filters),
+    selected ? getSubmission(selected) : Promise.resolve(null),
+  ]);
 
   return (
     <main id="main-content" className="flex flex-col gap-6 p-4 sm:p-8">
+      <NewSubmissionToast />
+
       <h1 className="text-h1">Zgłoszenia</h1>
-      {error && <p role="alert">Nie udało się wczytać zgłoszeń.</p>}
-      <ul className="flex flex-col gap-3">
-        {submissions?.map((submission) => (
-          <li key={submission.id} className="rounded-lg border bg-card p-4">
-            <p className="font-mono text-sm text-muted-foreground">
-              {submission.case_number} · {submission.municipality ?? "gmina nieznana"} · {submission.status}
-            </p>
-            <p className="font-bold">{submission.body}</p>
-          </li>
-        ))}
-      </ul>
+
+      <SubmissionFiltersForm filters={filters} />
+
+      <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
+        <section aria-labelledby="inbox-heading" className="flex flex-col gap-3">
+          <h2 id="inbox-heading" className="text-h3">
+            {hasFilters(filters) ? "Wyniki" : "Ostatnie zgłoszenia"}
+            <span className="font-normal text-muted-foreground"> ({rows.length})</span>
+          </h2>
+
+          {rows.length === 0 ? (
+            <EmptyState title="Brak zgłoszeń">
+              {hasFilters(filters)
+                ? "Żadne zgłoszenie nie pasuje do tych filtrów. Wyczyść je, aby zobaczyć wszystkie."
+                : "Zgłoszenia pojawią się tutaj, gdy mieszkaniec, gmina albo organizacja opisze problem."}
+            </EmptyState>
+          ) : (
+            <InboxList rows={rows} filters={filters} selectedId={selected ?? null} />
+          )}
+        </section>
+
+        <section aria-labelledby="preview-pane-heading" className="flex flex-col gap-3">
+          <h2 id="preview-pane-heading" className="sr-only">
+            Podgląd zgłoszenia
+          </h2>
+          {selectedRow ? (
+            <SubmissionPreview row={selectedRow} />
+          ) : (
+            <EmptyState headingLevel="h2" title="Wybierz zgłoszenie">
+              Kliknij numer zgłoszenia, aby zobaczyć jego opis i podpowiedź AI. Pełny widok ze
+              wątkiem znajdziesz po otwarciu zgłoszenia.
+            </EmptyState>
+          )}
+        </section>
+      </div>
     </main>
   );
 }
