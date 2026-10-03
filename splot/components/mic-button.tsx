@@ -120,13 +120,14 @@ export function MicButton({
       <Button
         variant={listening ? "destructive" : "secondary"}
         size={withLabel ? "default" : "icon"}
-        aria-pressed={listening}
+        // With a visible label the text itself changes to „Zakończ”.
+        aria-pressed={withLabel ? undefined : listening}
         aria-label={withLabel ? undefined : "Powiedz zamiast pisać"}
         onClick={() => (listening ? recognitionRef.current?.stop() : start())}
-        className={cn(listening && "bg-recording")}
+        className={cn(withLabel && "max-w-full whitespace-normal", listening && "bg-recording")}
       >
         {listening ? <Square aria-hidden fill="currentColor" /> : <Mic aria-hidden />}
-        {withLabel && "Powiedz zamiast pisać"}
+        {withLabel && (listening ? "Zakończ" : "Powiedz zamiast pisać")}
       </Button>
       <span role="status" className="text-sm font-bold simple:text-simple-sm">
         {message}
