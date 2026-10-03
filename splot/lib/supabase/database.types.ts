@@ -14,6 +14,93 @@ export type Database = {
   }
   public: {
     Tables: {
+      call_alerts: {
+        Row: {
+          call_id: string | null
+          created_at: string
+          email: string
+          id: string
+          idea_id: string | null
+          user_id: string
+        }
+        Insert: {
+          call_id?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          idea_id?: string | null
+          user_id?: string
+        }
+        Update: {
+          call_id?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          idea_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "call_alerts_call_id_fkey"
+            columns: ["call_id"]
+            isOneToOne: false
+            referencedRelation: "grant_calls"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      connection_requests: {
+        Row: {
+          created_at: string
+          from_submission_id: string
+          id: string
+          requested_by: string
+          status: string
+          thread_id: string | null
+          to_submission_id: string
+        }
+        Insert: {
+          created_at?: string
+          from_submission_id: string
+          id?: string
+          requested_by?: string
+          status?: string
+          thread_id?: string | null
+          to_submission_id: string
+        }
+        Update: {
+          created_at?: string
+          from_submission_id?: string
+          id?: string
+          requested_by?: string
+          status?: string
+          thread_id?: string | null
+          to_submission_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "connection_requests_from_submission_id_fkey"
+            columns: ["from_submission_id"]
+            isOneToOne: false
+            referencedRelation: "submissions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "connection_requests_thread_id_fkey"
+            columns: ["thread_id"]
+            isOneToOne: false
+            referencedRelation: "threads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "connection_requests_to_submission_id_fkey"
+            columns: ["to_submission_id"]
+            isOneToOne: false
+            referencedRelation: "submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       conversations: {
         Row: {
           created_at: string
@@ -52,51 +139,126 @@ export type Database = {
           },
         ]
       }
-      innovations: {
+      grant_calls: {
         Row: {
-          author_id: string | null
-          categories: Database["public"]["Enums"]["challenge_category"][]
+          category: Database["public"]["Enums"]["challenge_category"] | null
+          closes_at: string
           created_at: string
+          criteria: Json
           description: string | null
-          easy_read_description: string | null
           id: string
-          lead: string | null
-          pilot_slots: number
-          published: boolean
-          slug: string
-          stage: Database["public"]["Enums"]["innovation_stage"]
+          opens_at: string
+          sections: Json
           title: string
           updated_at: string
         }
         Insert: {
-          author_id?: string | null
-          categories?: Database["public"]["Enums"]["challenge_category"][]
+          category?: Database["public"]["Enums"]["challenge_category"] | null
+          closes_at: string
           created_at?: string
+          criteria?: Json
           description?: string | null
-          easy_read_description?: string | null
           id?: string
-          lead?: string | null
-          pilot_slots?: number
-          published?: boolean
-          slug: string
-          stage?: Database["public"]["Enums"]["innovation_stage"]
+          opens_at: string
+          sections?: Json
           title: string
           updated_at?: string
         }
         Update: {
+          category?: Database["public"]["Enums"]["challenge_category"] | null
+          closes_at?: string
+          created_at?: string
+          criteria?: Json
+          description?: string | null
+          id?: string
+          opens_at?: string
+          sections?: Json
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      innovations: {
+        Row: {
+          adopters: string | null
+          audience: string | null
+          author_id: string | null
+          categories: Database["public"]["Enums"]["challenge_category"][]
+          created_at: string
+          easy_read_description: string | null
+          embedding: string | null
+          evidence: string | null
+          folder_pdf_url: string | null
+          fts: unknown
+          id: string
+          lead: string | null
+          materials_url: string | null
+          pilot_slots: number
+          problem: string | null
+          published: boolean
+          slug: string
+          solution: string | null
+          source_project: string | null
+          source_url: string | null
+          stage: Database["public"]["Enums"]["innovation_stage"]
+          target_groups: Database["public"]["Enums"]["target_group"][]
+          title: string
+          updated_at: string
+          video_url: string | null
+        }
+        Insert: {
+          adopters?: string | null
+          audience?: string | null
           author_id?: string | null
           categories?: Database["public"]["Enums"]["challenge_category"][]
           created_at?: string
-          description?: string | null
           easy_read_description?: string | null
+          embedding?: string | null
+          evidence?: string | null
+          folder_pdf_url?: string | null
+          fts?: unknown
           id?: string
           lead?: string | null
+          materials_url?: string | null
           pilot_slots?: number
+          problem?: string | null
+          published?: boolean
+          slug: string
+          solution?: string | null
+          source_project?: string | null
+          source_url?: string | null
+          stage?: Database["public"]["Enums"]["innovation_stage"]
+          target_groups?: Database["public"]["Enums"]["target_group"][]
+          title: string
+          updated_at?: string
+          video_url?: string | null
+        }
+        Update: {
+          adopters?: string | null
+          audience?: string | null
+          author_id?: string | null
+          categories?: Database["public"]["Enums"]["challenge_category"][]
+          created_at?: string
+          easy_read_description?: string | null
+          embedding?: string | null
+          evidence?: string | null
+          folder_pdf_url?: string | null
+          fts?: unknown
+          id?: string
+          lead?: string | null
+          materials_url?: string | null
+          pilot_slots?: number
+          problem?: string | null
           published?: boolean
           slug?: string
+          solution?: string | null
+          source_project?: string | null
+          source_url?: string | null
           stage?: Database["public"]["Enums"]["innovation_stage"]
+          target_groups?: Database["public"]["Enums"]["target_group"][]
           title?: string
           updated_at?: string
+          video_url?: string | null
         }
         Relationships: [
           {
@@ -266,6 +428,11 @@ export type Database = {
       }
       submissions: {
         Row: {
+          ai_model: string | null
+          ai_needs_expert: boolean | null
+          ai_suggested_slugs: string[] | null
+          ai_summary: string | null
+          ai_triaged_at: string | null
           author_id: string
           body: string
           case_number: string
@@ -273,6 +440,7 @@ export type Database = {
           contact_email: string | null
           county: string | null
           created_at: string
+          embedding: string | null
           expert_id: string | null
           id: string
           kind: Database["public"]["Enums"]["submission_kind"]
@@ -284,6 +452,11 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          ai_model?: string | null
+          ai_needs_expert?: boolean | null
+          ai_suggested_slugs?: string[] | null
+          ai_summary?: string | null
+          ai_triaged_at?: string | null
           author_id?: string
           body: string
           case_number?: string
@@ -291,6 +464,7 @@ export type Database = {
           contact_email?: string | null
           county?: string | null
           created_at?: string
+          embedding?: string | null
           expert_id?: string | null
           id?: string
           kind?: Database["public"]["Enums"]["submission_kind"]
@@ -302,6 +476,11 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          ai_model?: string | null
+          ai_needs_expert?: boolean | null
+          ai_suggested_slugs?: string[] | null
+          ai_summary?: string | null
+          ai_triaged_at?: string | null
           author_id?: string
           body?: string
           case_number?: string
@@ -309,6 +488,7 @@ export type Database = {
           contact_email?: string | null
           county?: string | null
           created_at?: string
+          embedding?: string | null
           expert_id?: string | null
           id?: string
           kind?: Database["public"]["Enums"]["submission_kind"]
@@ -400,8 +580,26 @@ export type Database = {
         Args: never
         Returns: Database["public"]["Enums"]["user_role"]
       }
+      immutable_unaccent: { Args: { "": string }; Returns: string }
       is_admin: { Args: never; Returns: boolean }
       is_thread_participant: { Args: { p_thread_id: string }; Returns: boolean }
+      match_innovations: {
+        Args: {
+          filter_categories?: Database["public"]["Enums"]["challenge_category"][]
+          match_count?: number
+          query_embedding: string
+          query_text: string
+        }
+        Returns: {
+          categories: Database["public"]["Enums"]["challenge_category"][]
+          id: string
+          lead: string
+          score: number
+          slug: string
+          stage: Database["public"]["Enums"]["innovation_stage"]
+          title: string
+        }[]
+      }
       owns_active_pilot: { Args: { p_pilot_id: string }; Returns: boolean }
       set_user_role: {
         Args: {
@@ -411,6 +609,21 @@ export type Database = {
         Returns: undefined
       }
       shares_thread_with: { Args: { p_user_id: string }; Returns: boolean }
+      similar_submissions: {
+        Args: {
+          exclude_id?: string
+          match_count?: number
+          query_embedding: string
+        }
+        Returns: {
+          ai_summary: string
+          category: Database["public"]["Enums"]["challenge_category"]
+          county: string
+          id: string
+          municipality: string
+          similarity: number
+        }[]
+      }
       track_submission: {
         Args: { p_case_number: string; p_token: string }
         Returns: {
@@ -440,13 +653,23 @@ export type Database = {
         | "completed"
         | "rejected"
       priority: "low" | "medium" | "high"
-      submission_kind: "problem" | "idea"
+      submission_kind: "problem" | "idea" | "application"
       submission_status:
         | "received"
         | "in_review"
         | "with_expert"
         | "answered"
         | "closed"
+      target_group:
+        | "seniors"
+        | "children_family"
+        | "limited_mobility"
+        | "sensory_disability"
+        | "intellectual_disability"
+        | "health"
+        | "foreigners"
+        | "labour_market"
+        | "homelessness"
       user_role: "user" | "expert" | "admin"
     }
     CompositeTypes: {
@@ -594,13 +817,24 @@ export const Constants = {
         "rejected",
       ],
       priority: ["low", "medium", "high"],
-      submission_kind: ["problem", "idea"],
+      submission_kind: ["problem", "idea", "application"],
       submission_status: [
         "received",
         "in_review",
         "with_expert",
         "answered",
         "closed",
+      ],
+      target_group: [
+        "seniors",
+        "children_family",
+        "limited_mobility",
+        "sensory_disability",
+        "intellectual_disability",
+        "health",
+        "foreigners",
+        "labour_market",
+        "homelessness",
       ],
       user_role: ["user", "expert", "admin"],
     },

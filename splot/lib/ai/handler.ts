@@ -12,9 +12,9 @@ import { z } from "zod";
 import { ensureSession } from "@/lib/auth";
 import type { Json } from "@/lib/supabase/database.types";
 import { dismissPendingToolCalls } from "./client-tools";
+import { TEXT_MODEL } from "./models";
 import type { Skill } from "./skill";
 
-const DEFAULT_MODEL = "anthropic/claude-sonnet-5.5";
 const MAX_STEPS = 6;
 /** Only the tail goes to the model; the full history stays in the database. */
 const MODEL_WINDOW = 30;
@@ -141,11 +141,11 @@ export function createSkillHandler<CONTEXT>(skill: Skill<CONTEXT>) {
 
     const tools =
       typeof skill.tools === "function"
-        ? skill.tools({ supabase, conversationId: id, context })
+        ? skill.tools({ supabase, conversationId: id, messages, context })
         : skill.tools;
 
     const result = streamText({
-      model: skill.model ?? DEFAULT_MODEL,
+      model: skill.model ?? TEXT_MODEL,
       instructions: typeof skill.system === "function" ? skill.system(context) : skill.system,
       messages: await convertToModelMessages(modelWindow(messages), {
         tools,

@@ -1,6 +1,6 @@
 import "server-only";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { LanguageModel, ToolSet } from "ai";
+import type { LanguageModel, ToolSet, UIMessage } from "ai";
 import type { z } from "zod";
 import type { Database } from "@/lib/supabase/database.types";
 
@@ -8,6 +8,8 @@ import type { Database } from "@/lib/supabase/database.types";
 export type SkillToolDeps<CONTEXT = undefined> = {
   supabase: SupabaseClient<Database>;
   conversationId: string;
+  /** The stored history including the incoming message, e.g. to offer a tool only once. */
+  messages: UIMessage[];
   /** Validated `context` of this request (e.g. the live form state). */
   context: CONTEXT;
 };
