@@ -267,6 +267,12 @@
   --shadow-lg: 0 16px 40px rgba(19,32,30,0.18);
 }
 
+/* The shared focus ring, for controls whose focus shows on a sibling (e.g. radio cards): `peer-focus-visible:focus-ring`. */
+@utility focus-ring {
+  outline: 2px solid transparent;
+  box-shadow: 0 0 0 2px var(--background), 0 0 0 5px var(--ring), 0 0 0 9px var(--focus-halo);
+}
+
 @layer base {
   * { @apply border-border; }
   html { font-size: 100%; }

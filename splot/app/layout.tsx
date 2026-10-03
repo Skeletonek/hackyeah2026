@@ -4,6 +4,7 @@ import {
   Atkinson_Hyperlegible_Next,
   Bricolage_Grotesque,
 } from "next/font/google";
+import { Toaster } from "@/components/ui/toast";
 import { getA11yPrefs } from "@/lib/a11y-prefs";
 import { cn } from "@/lib/utils";
 import "./globals.css";
@@ -58,6 +59,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
           Przejdź do treści
         </a>
         {children}
+        <Toaster />
       </body>
     </html>
   );
