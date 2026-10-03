@@ -20,6 +20,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { CHALLENGE_CATEGORY_LABELS, SUBMISSION_STATUS_LABELS } from "@/lib/labels";
 import { Constants } from "@/lib/supabase/database.types";
+import { AiStaticDemos, ChatDemo, QuickRepliesDemo } from "./_components/ai-demos";
 import { DialogDemo, SheetDemo, TagDemo, ToastDemo } from "./_components/demos";
 
 export const metadata: Metadata = {
@@ -331,6 +332,18 @@ export default function DevUiPage() {
         <div>
           <ReadAloudButton targetId="dev-read-aloud" />
         </div>
+      </Section>
+
+      <Section title="AI: AiBadge, AiThinking, ChatBubble, AiHint">
+        <AiStaticDemos />
+      </Section>
+
+      <Section title="AI: QuickReplies">
+        <QuickRepliesDemo />
+      </Section>
+
+      <Section title="AI: ChatSurface (fixture, bez backendu)">
+        <ChatDemo />
       </Section>
     </main>
   );
