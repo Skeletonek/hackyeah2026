@@ -4,6 +4,7 @@ import type { UIMessage } from "ai";
 import { z } from "zod";
 import { ensureSession } from "@/lib/auth";
 import { countyName } from "@/lib/labels";
+import { similarSubmissions, type SimilarSubmission } from "@/lib/matchmaking/similar";
 import { matchSubmissionBody } from "@/lib/matchmaking/submission-body";
 import { notify } from "@/lib/notifications/notify";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -181,4 +182,81 @@ async function existingSubmission(
     email: contactEmail,
   });
   return saved(updated);
+}
+
+/**
+ * „Podobne zgłoszenia z innych gmin” for the results screen. Never fails the
+ * screen: on any error the section stays hidden.
+ */
+export async function findSimilarSubmissions(conversationId: string): Promise<SimilarSubmission[]> {
+  if (!z.uuid().safeParse(conversationId).success) return [];
+
+  try {
+    const supabase = await ensureSession();
+    const { data: conversation } = await supabase
+      .from("conversations")
+      .select("submission_id, messages")
+      .eq("id", conversationId)
+      .eq("skill", "matchmaking")
+      .maybeSingle();
+    if (!conversation) return [];
+
+    const description = matchSubmissionBody(conversation.messages as unknown as UIMessage[]);
+    if (description.length < 3) return [];
+
+    return await similarSubmissions(supabase, description, conversation.submission_id);
+  } catch (error) {
+    console.error("findSimilarSubmissions failed", error);
+    return [];
+  }
+}
+
+const requestConnectionInput = z.object({
+  conversationId: z.uuid(),
+  toSubmissionId: z.uuid(),
+});
+
+export type RequestConnectionResult = ({ ok: true } & SavedSubmission) | { ok: false; error: string };
+
+const CONNECTION_RETRY = "Nie udało się przekazać prośby. Spróbuj jeszcze raz za chwilę.";
+
+/**
+ * „Połącz się”: asks ROPS to put the person in touch with the author of a
+ * similar submission. The conversation is saved as a submission first, because
+ * a connection request links two submissions. Asking twice keeps one request.
+ */
+export async function requestConnection(
+  input: z.input<typeof requestConnectionInput>,
+): Promise<RequestConnectionResult> {
+  const parsed = requestConnectionInput.safeParse(input);
+  if (!parsed.success) return { ok: false, error: CONNECTION_RETRY };
+  const { conversationId, toSubmissionId } = parsed.data;
+
+  const own = await saveMatchSubmission({ conversationId });
+  if (!own.ok) return { ok: false, error: own.error };
+  if (own.id === toSubmissionId) return { ok: false, error: CONNECTION_RETRY };
+
+  const supabase = await ensureSession();
+  const { data: existing, error: loadError } = await supabase
+    .from("connection_requests")
+    .select("id")
+    .eq("from_submission_id", own.id)
+    .eq("to_submission_id", toSubmissionId)
+    .limit(1);
+  if (loadError) {
+    console.error("requestConnection lookup failed", loadError.message);
+    return { ok: false, error: CONNECTION_RETRY };
+  }
+
+  if (existing.length === 0) {
+    const { error: insertError } = await supabase
+      .from("connection_requests")
+      .insert({ from_submission_id: own.id, to_submission_id: toSubmissionId });
+    if (insertError) {
+      console.error("requestConnection insert failed", insertError.message);
+      return { ok: false, error: CONNECTION_RETRY };
+    }
+  }
+
+  return own;
 }

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { z } from "zod";
 import library from "@/data/rops-library.json";
 import { loadConversationMessages } from "@/lib/ai/conversations";
+import { getCurrentUser } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { MatchFlow } from "./_components/match-flow";
 
@@ -28,9 +29,10 @@ export default async function Page({ searchParams }: PageProps<"/match">) {
 
   // `?c=` appears after the first message; until then every visit gets a fresh id.
   const id = z.uuid().safeParse(c);
-  const [initialMessages, innovationCount] = await Promise.all([
+  const [initialMessages, innovationCount, user] = await Promise.all([
     id.success ? loadConversationMessages("matchmaking", id.data) : [],
     countInnovations(),
+    getCurrentUser(),
   ]);
 
   return (
@@ -47,6 +49,7 @@ export default async function Page({ searchParams }: PageProps<"/match">) {
           initialMessages={initialMessages}
           role={role === "municipality" ? "municipality" : "resident"}
           innovationCount={innovationCount}
+          hasAccount={user !== null && !user.isAnonymous}
         />
       </div>
     </main>
