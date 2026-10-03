@@ -1,6 +1,6 @@
 services:
   splot:
-    image: ghcr.io/Skeletonek/hackyeah2026/splot:latest
+    image: ghcr.io/skeletonek/hackyeah2026/splot:latest
     container_name: splot
     restart: unless-stopped
     env_file:
