@@ -23,6 +23,7 @@ export function InnovationCard({
   stage,
   why,
   feedback,
+  actions,
   headingLevel: Heading = "h3",
   className,
 }: {
@@ -36,6 +37,8 @@ export function InnovationCard({
   why?: React.ReactNode;
   /** 👍/👎 controls, shown next to the link. */
   feedback?: React.ReactNode;
+  /** Extra controls under the link, e.g. `ReadAloudButton` in simple mode. */
+  actions?: React.ReactNode;
   headingLevel?: "h2" | "h3" | "h4";
   className?: string;
 }) {
@@ -85,6 +88,7 @@ export function InnovationCard({
           </Link>
         </Button>
         {feedback && <div className="flex items-center gap-2 simple:hidden">{feedback}</div>}
+        {actions}
       </div>
     </article>
   );

@@ -1,34 +1,38 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import type { UIMessage } from "ai";
+import { getToolName, isToolUIPart, type UIMessage } from "ai";
 import { AiThinking } from "@/components/ai/ai-thinking";
 import { ChatSurface, type ToolPart } from "@/components/ai/chat-surface";
 import { useSkillChat } from "@/lib/ai/use-skill-chat";
 import { MATCH_EXAMPLES } from "@/lib/matchmaking/examples";
-import type { ShowMatchesInput, ShowMatchesOutput } from "@/lib/matchmaking/show-matches";
+import { SHOW_MATCHES, type ShowMatchesInput, type ShowMatchesOutput } from "@/lib/matchmaking/show-matches";
 import type { MatchmakingContext } from "@/lib/matchmaking/skill";
 import { problemDescription } from "@/lib/matchmaking/submission-body";
 import type { SavedSubmission } from "../actions";
 import { Confirmation } from "./confirmation";
 import { MatchEntry } from "./match-entry";
 import { NoMatch } from "./no-match";
+import { Results, matchedInnovations } from "./results";
 
 /**
- * The first half of `/match`: the entry screen until the first message, then
- * the conversation (the single follow-up and progress in words).
+ * `/match`: the entry screen until the first message, then the conversation
+ * (the single follow-up and progress in words) with the results in it.
  */
 export function MatchFlow({
   conversationId,
   initialMessages,
   role,
   innovationCount,
+  hasAccount,
 }: {
   conversationId: string;
   initialMessages: UIMessage[];
   role: MatchmakingContext["role"];
   /** Published innovations, for „Przeglądam 100 innowacji…”. */
   innovationCount: number;
+  /** Signed in with a real account, so `/account` is open to this person. */
+  hasAccount: boolean;
 }) {
   const { messages, status, sendMessage, addToolOutput, regenerate, stop } = useSkillChat<MatchmakingContext>(
     "matchmaking",
@@ -58,17 +62,50 @@ export function MatchFlow({
   const showMatchesLabel = "Wybieram najlepsze rozwiązania…";
   const busy = status === "submitted" || status === "streaming";
 
+  // Results that arrive during this visit take focus; a reloaded conversation does not.
+  const [hadTurn, setHadTurn] = useState(false);
+  if (busy && !hadTurn) setHadTurn(true);
+
+  const innovations = matchedInnovations(messages);
+  const latestShown = messages
+    .flatMap((message) => message.parts)
+    .filter(isToolUIPart)
+    .findLast(
+      (part) =>
+        getToolName(part) === SHOW_MATCHES &&
+        part.state === "output-available" &&
+        (part.output as ShowMatchesOutput).shown,
+    )?.toolCallId;
+
   const renderShowMatches = (part: ToolPart) => {
     if (part.state === "input-streaming" || part.state === "input-available") {
       return busy ? <AiThinking label={showMatchesLabel} /> : null;
     }
     if (part.state !== "output-available" || !(part.output as ShowMatchesOutput).shown) return null;
-    // The results list (MM5) comes with M3.
-    if (!(part.input as ShowMatchesInput).noMatch) return null;
+    // ChatSurface remounts a message when its turn ends, so the results wait
+    // for that: mounted once, they keep their focus and state.
+    if (busy && messages.at(-1)?.parts.some((candidate) => candidate === part)) {
+      return <AiThinking label={showMatchesLabel} />;
+    }
+
+    const input = part.input as ShowMatchesInput;
+    if (input.noMatch) {
+      return (
+        <NoMatch
+          conversationId={conversationId}
+          description={problemDescription(messages)}
+          onSaved={setSaved}
+        />
+      );
+    }
     return (
-      <NoMatch
+      <Results
         conversationId={conversationId}
-        description={problemDescription(messages)}
+        items={input.items}
+        innovations={innovations}
+        latest={part.toolCallId === latestShown}
+        focusOnMount={hadTurn}
+        hasAccount={hasAccount}
         onSaved={setSaved}
       />
     );
