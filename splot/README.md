@@ -30,7 +30,7 @@ Nie masz dostępu do Dashboardu? Poproś o zaproszenie do organizacji w Supabase
 pnpm dev
 ```
 
-Wejdź na http://localhost:3000. Strona główna pokazuje 3 innowacje z bazy — jeśli je widzisz, połączenie działa.
+Wejdź na http://localhost:3000. Jeśli strona główna pokazuje innowacje z bazy, połączenie działa.
 
 ## Uruchomienie w Dockerze
 
@@ -72,7 +72,22 @@ pnpm db:link --project-ref lxuhkjmjfgvfutegwxjz        # pyta o hasło do bazy (
 Zasady:
 - Migracji już wypchniętych **nie edytujemy** — poprawki to nowa migracja.
 - Pushuje jedna osoba naraz; przed pushem `git pull`, żeby mieć wszystkie migracje.
-- Seed (`supabase/seed.sql`) jest już w bazie; nie uruchamiaj go drugi raz (`slug` jest unikalny).
+- `supabase/seed.sql` nie zawiera już danych demo. Dane ładuje `pnpm data:import` (niżej).
+
+## Dane: biblioteka innowacji i demo
+
+Bibliotekę ROPS i dane demo trzymamy w repo jako JSON (`data/`), a do bazy ładuje je jeden skrypt. Kolejność:
+
+```bash
+pnpm data:scrape    # opcjonalnie: ponowny scraping ROPS → data/rops-library.json
+pnpm data:enrich    # opcjonalnie: kategorie wyzwań + easy-read (AI) dla nowych pozycji
+pnpm data:import    # innowacje + embeddingi, konta demo, pilotaże, recenzje, zgłoszenia
+```
+
+- Na czystej bazie: `pnpm exec supabase db reset --linked` (kasuje **wszystkie** dane we wspólnym projekcie — tylko po uzgodnieniu z zespołem), potem `pnpm data:import`.
+- `data:import` można uruchamiać wielokrotnie: innowacje są aktualizowane po `slug`, zgłoszenia po numerze sprawy (`SPL-2026-9xxx`), a embeddingi liczone tylko dla zmienionych tekstów. Daty zgłoszeń liczą się od dziś, więc demo zawsze obejmuje ostatnie 12 tygodni.
+- Potrzebuje `SUPABASE_SECRET_KEY` i `AI_GATEWAY_API_KEY` w `.env.local`.
+- `data/demo.json` jest fikcyjny: konta `demo+…@splot.example`, organizacje bez nazwisk, adresy w domenie `.example`. Nie wpisuj tam prawdziwych danych osobowych.
 
 ## Ustawienia auth (jednorazowo, w Dashboard)
 
