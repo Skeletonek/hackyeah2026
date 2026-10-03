@@ -11,6 +11,7 @@ import { RadioGroup } from "@/components/ui/radio-group";
 import { Select } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
+import { AiStaticDemos, ChatDemo, QuickRepliesDemo } from "./_components/ai-demos";
 import { DialogDemo, SheetDemo, TagDemo, ToastDemo } from "./_components/demos";
 
 export const metadata: Metadata = {
@@ -228,6 +229,18 @@ export default function DevUiPage() {
           <TabsContent value="materials">Filmy, instrukcje i wzory dokumentów.</TabsContent>
           <TabsContent value="reviews">Opinie organizacji, które testowały rozwiązanie.</TabsContent>
         </Tabs>
+      </Section>
+
+      <Section title="AI: AiBadge, AiThinking, ChatBubble, AiHint">
+        <AiStaticDemos />
+      </Section>
+
+      <Section title="AI: QuickReplies">
+        <QuickRepliesDemo />
+      </Section>
+
+      <Section title="AI: ChatSurface (fixture, bez backendu)">
+        <ChatDemo />
       </Section>
     </main>
   );
