@@ -13,6 +13,18 @@ Tokeny mają nazwy zgodne z konwencją shadcn/ui (`--background`, `--foreground`
 5. Zmień domyślne rozmiary shadcn: przycisk `h-13 px-6 text-base font-bold` (52 px), `size="lg"` → `h-16`, CTA → `h-20 text-[1.375rem] rounded-xl`; `Input` → `h-13 border-2 text-base`; `Checkbox` → `size-7 border-2`.
 6. Fokus: zostaw globalny `:focus-visible` z `globals.css` i usuń z komponentów shadcn klasy `focus-visible:ring-[3px] focus-visible:ring-ring/50` (zastępuje je wspólny pierścień).
 
+## Przełączniki: Prościej / Kontrast / A+
+
+Stan trzyma się w cookies (`lib/a11y-prefs.ts`), a layout główny nakłada go na `<html>` już po stronie serwera, więc nic nie miga przy ładowaniu.
+
+| Przełącznik | Na `<html>` | W Tailwindzie |
+| --- | --- | --- |
+| Prościej | `data-mode="simple"` | wariant `simple:` (np. `simple:hidden`, `simple:h-16`) |
+| Kontrast | `data-theme="kontrast"` | wariant `kontrast:` |
+| A+ | klasa `a-plus` (112,5%) / `a-plusplus` (125%) | nic; wystarczy używać `rem` |
+
+Skala tekstu w trybie Prościej: `text-simple-h1` (3 rem), `text-simple-h2` (2,5 rem), `text-simple-h3` (2 rem), `text-simple-h4` i `text-simple-lead` (1,625 rem), `text-simple-base` (1,375 rem), `text-simple-sm` (1,125 rem). Używaj z wariantem: `text-h1 simple:text-simple-h1`. Tekst `body` rośnie do `text-simple-base` sam.
+
 ## Mapowanie komponentów na shadcn/ui
 
 | Komponent Splot | shadcn/ui | Zmiany względem domyślnego |

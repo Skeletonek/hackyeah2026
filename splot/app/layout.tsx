@@ -4,6 +4,8 @@ import {
   Atkinson_Hyperlegible_Next,
   Bricolage_Grotesque,
 } from "next/font/google";
+import { getA11yPrefs } from "@/lib/a11y-prefs";
+import { cn } from "@/lib/utils";
 import "./globals.css";
 
 const bricolage = Bricolage_Grotesque({
@@ -31,11 +33,22 @@ export const metadata: Metadata = {
     "Opisz problem, znajdź gotowe rozwiązanie albo zgłoś pomysł. Platforma ROPS w Krakowie.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  // Applied on the server from cookies, so nothing flashes on load.
+  const prefs = await getA11yPrefs();
+
   return (
     <html
       lang="pl"
-      className={`${bricolage.variable} ${atkinson.variable} ${atkinsonMono.variable} h-full antialiased`}
+      data-theme={prefs.kontrast ? "kontrast" : undefined}
+      data-mode={prefs.simple ? "simple" : undefined}
+      className={cn(
+        bricolage.variable,
+        atkinson.variable,
+        atkinsonMono.variable,
+        "h-full antialiased",
+        prefs.textSize !== "normal" && prefs.textSize,
+      )}
     >
       <body className="flex min-h-full flex-col">
         <a
