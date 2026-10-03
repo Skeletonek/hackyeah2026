@@ -1,8 +1,15 @@
 "use client";
 
-import { useId, useRef } from "react";
+import { useId, useState, useTransition } from "react";
 import { setA11yPref } from "@/lib/a11y-actions";
 import type { TextSize } from "@/lib/a11y-prefs";
+import {
+  SelectMenu,
+  SelectMenuContent,
+  SelectMenuItem,
+  SelectMenuTrigger,
+  SelectMenuValue,
+} from "@/components/ui/select-menu";
 import { cn } from "@/lib/utils";
 
 const OPTIONS: { value: TextSize; label: string }[] = [
@@ -17,15 +24,15 @@ const TONES = {
     "border-sidebar-border bg-sidebar text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
 };
 
-const BUTTON_CLASSES =
-  "min-h-11 rounded-md border-2 px-3 py-2 text-sm font-bold";
+/** Same size as the Prościej / Kontrast switches next to it. */
+const CONTROL_CLASSES = "min-h-11 rounded-md border-2 px-3 py-2 text-sm font-bold";
 
 /**
- * Native text-size select for the a11y toolbar.
- *
- * With JS the form submits on change through the server action (no page
- * reload, focus stays on the select). Without JS a visible „Zastosuj” button
- * inside `<noscript>` is shown and the form posts normally.
+ * Text size select for the a11y toolbar. A pick saves the cookie through the
+ * server action right away; the value is held in state, not in a `<form>`,
+ * because React resets a form after its action and the select would jump
+ * back to the old size. Without JS a native select with „Zastosuj” posts
+ * the same action.
  */
 export function TextSizeSelect({
   defaultValue,
@@ -35,50 +42,57 @@ export function TextSizeSelect({
   tone: "site" | "sidebar";
 }) {
   const id = useId();
-  const formRef = useRef<HTMLFormElement>(null);
+  const [value, setValue] = useState(defaultValue);
+  const [, startTransition] = useTransition();
+
+  const change = (next: string) => {
+    const option = OPTIONS.find((candidate) => candidate.value === next);
+    if (!option) return;
+    setValue(option.value);
+    const formData = new FormData();
+    formData.set("pref", "textSize");
+    formData.set("value", option.value);
+    startTransition(() => setA11yPref(formData));
+  };
 
   return (
-    <form
-      ref={formRef}
-      action={setA11yPref}
-      className="flex flex-wrap items-center gap-2"
-      onChange={() => {
-        formRef.current?.requestSubmit();
-      }}
-    >
-      <input type="hidden" name="pref" value="textSize" />
-      <label htmlFor={id} className="text-sm font-bold">
-        Rozmiar tekstu
-      </label>
-      <select
-        id={id}
-        name="value"
-        defaultValue={defaultValue}
-        className={cn(
-          "min-h-11 cursor-pointer rounded-md border-2 px-3 py-2 text-sm font-bold",
-          TONES[tone],
-        )}
-      >
-        {OPTIONS.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
-      {/* Hidden for JS users; <noscript> renders the visible fallback. */}
-      <button
-        type="submit"
-        aria-hidden="true"
-        tabIndex={-1}
-        className={cn(BUTTON_CLASSES, TONES[tone], "hidden")}
-      >
-        Zastosuj
-      </button>
+    <>
+      <div data-js-only className="flex flex-wrap items-center gap-2">
+        <label htmlFor={id} className="text-sm font-bold">
+          Rozmiar tekstu
+        </label>
+        <SelectMenu value={value} onValueChange={change}>
+          <SelectMenuTrigger id={id} className={cn(CONTROL_CLASSES, "min-w-36 gap-3", TONES[tone])}>
+            <SelectMenuValue />
+          </SelectMenuTrigger>
+          <SelectMenuContent align="end">
+            {OPTIONS.map((option) => (
+              <SelectMenuItem key={option.value} value={option.value}>
+                {option.label}
+              </SelectMenuItem>
+            ))}
+          </SelectMenuContent>
+        </SelectMenu>
+      </div>
       <noscript>
-        <button type="submit" className={cn(BUTTON_CLASSES, TONES[tone])}>
-          Zastosuj
-        </button>
+        <style>{"[data-js-only]{display:none}"}</style>
+        <form action={setA11yPref} className="flex flex-wrap items-center gap-2">
+          <input type="hidden" name="pref" value="textSize" />
+          <label className="flex items-center gap-2 text-sm font-bold">
+            Rozmiar tekstu
+            <select name="value" defaultValue={defaultValue} className={cn(CONTROL_CLASSES, TONES[tone])}>
+              {OPTIONS.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <button type="submit" className={cn(CONTROL_CLASSES, TONES[tone])}>
+            Zastosuj
+          </button>
+        </form>
       </noscript>
-    </form>
+    </>
   );
 }

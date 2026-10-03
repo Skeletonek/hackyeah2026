@@ -23,7 +23,7 @@ Stan trzyma się w cookies (`lib/a11y-prefs.ts`), a layout główny nakłada go 
 | Kontrast | `data-theme="kontrast"` | wariant `kontrast:` |
 | Rozmiar tekstu | klasa `a-plus` (112,5%) / `a-plusplus` (125%) | nic; wystarczy używać `rem` |
 
-Rozmiar tekstu to natywny `<select>` z opcjami „Zwykły” / „Większy” / „Największy”; wysyła wartość do tej samej akcji serwerowej co pozostałe przełączniki.
+Rozmiar tekstu to `SelectMenu` (shadcn `select` na Radix) z opcjami „Zwykły” / „Większy” / „Największy”. Wybór od razu wysyła wartość do tej samej akcji serwerowej co pozostałe przełączniki. Bez JS widać natywny `<select>` z przyciskiem „Zastosuj”.
 
 Skala tekstu w trybie Prościej: `text-simple-h1` (3 rem), `text-simple-h2` (2,5 rem), `text-simple-h3` (2 rem), `text-simple-h4` i `text-simple-lead` (1,625 rem), `text-simple-base` (1,375 rem), `text-simple-sm` (1,125 rem). Używaj z wariantem: `text-h1 simple:text-simple-h1`. Tekst `body` rośnie do `text-simple-base` sam.
 
@@ -35,7 +35,8 @@ Skala tekstu w trybie Prościej: `text-simple-h1` (3 rem), `text-simple-h2` (2,5
 | Input | `input` + `label` | obramowanie 2 px `input`, etykieta nad polem, błąd pod polem |
 | MicButton | `button` (`size="icon"` w polu) / `toggle` | `aria-pressed`, stan `recording`, komunikat „Słucham…” |
 | Textarea | `textarea` | jak Input, min. 128 px |
-| Select | `native-select` | natywny `<select>`, 52 px |
+| Select | `native-select` | natywny `<select>`, 52 px; w formularzach |
+| SelectMenu | `select` (Radix) | lista w tokenach `popover`, wiersze 44 px, zaznaczony ✓; dla kontrolek działających od razu po wyborze |
 | Checkbox | `checkbox` | 28 px, obramowanie 2 px |
 | RadioGroup | `radio-group` | wariant `cards` (64 px) dla dopytania AI |
 | CategoryBadge | `badge` | ikona + nazwa + tokeny `cat-*` |
@@ -49,7 +50,7 @@ Skala tekstu w trybie Prościej: `text-simple-h1` (3 rem), `text-simple-h2` (2,5
 | ChatBubble | — (własny) | `me` / `them` / `ai` |
 | AiThinking | — (własny) + `skeleton` | postęp słowami, `aria-live` |
 | EmptyState | — (własny) | ornament parzenicy |
-| A11yToolbar | `toggle-group` + `native-select` | Prościej / Kontrast toggles + Rozmiar tekstu select |
+| A11yToolbar | `toggle-group` + `select` | Prościej / Kontrast toggles + Rozmiar tekstu select |
 | Layout admina | `sidebar` | tokeny `sidebar-*`, licznik nowych zgłoszeń `sidebar-primary` |
 | Okna | `dialog`, `sheet` | `rounded-lg`, `shadow-lg`, przycisk zamknięcia 44 px |
 | Zakładki | `tabs` | wysokość 44 px |
