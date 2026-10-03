@@ -1,19 +1,8 @@
 import { Check } from "lucide-react";
 import { setA11yPref } from "@/lib/a11y-actions";
-import { getA11yPrefs, type TextSize } from "@/lib/a11y-prefs";
+import { getA11yPrefs } from "@/lib/a11y-prefs";
+import { TextSizeSelect } from "@/components/a11y-text-size-select";
 import { cn } from "@/lib/utils";
-
-const NEXT_TEXT_SIZE: Record<TextSize, TextSize> = {
-  normal: "a-plus",
-  "a-plus": "a-plusplus",
-  "a-plusplus": "normal",
-};
-
-const TEXT_SIZE_LABEL: Record<TextSize, { visible: string; state: string }> = {
-  normal: { visible: "A+", state: "Rozmiar tekstu: zwykły" },
-  "a-plus": { visible: "A+", state: "Rozmiar tekstu: większy" },
-  "a-plusplus": { visible: "A++", state: "Rozmiar tekstu: największy" },
-};
 
 const TONES = {
   site: {
@@ -27,8 +16,9 @@ const TONES = {
 };
 
 /**
- * Prościej / Kontrast / A+ switches. Plain forms posting to a server action,
- * so they work without JS; the state lives in cookies (lib/a11y-prefs.ts).
+ * Prościej / Kontrast toggles + Rozmiar tekstu select. Plain forms posting to
+ * a server action, so they work without JS; the state lives in cookies
+ * (lib/a11y-prefs.ts).
  */
 export async function A11yToolbar({
   tone = "site",
@@ -41,7 +31,6 @@ export async function A11yToolbar({
   className?: string;
 }) {
   const prefs = await getA11yPrefs();
-  const textSize = TEXT_SIZE_LABEL[prefs.textSize];
 
   return (
     <div role="group" aria-label="Ułatwienia dostępu" className={cn("flex flex-wrap gap-2", className)}>
@@ -53,15 +42,7 @@ export async function A11yToolbar({
       <Switch pref="kontrast" value={prefs.kontrast ? "0" : "1"} pressed={prefs.kontrast} tone={tone}>
         Kontrast
       </Switch>
-      <Switch
-        pref="textSize"
-        value={NEXT_TEXT_SIZE[prefs.textSize]}
-        active={prefs.textSize !== "normal"}
-        tone={tone}
-      >
-        {textSize.visible}
-        <span className="sr-only">. {textSize.state}. Zmień</span>
-      </Switch>
+      <TextSizeSelect defaultValue={prefs.textSize} tone={tone} />
     </div>
   );
 }
@@ -74,9 +55,8 @@ function Switch({
   tone,
   children,
 }: {
-  pref: "simple" | "kontrast" | "textSize";
+  pref: "simple" | "kontrast";
   value: string;
-  /** Set for two-state switches; omit for the three-step text size. */
   pressed?: boolean;
   active?: boolean;
   tone: keyof typeof TONES;

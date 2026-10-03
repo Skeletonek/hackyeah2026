@@ -21,7 +21,9 @@ Stan trzyma się w cookies (`lib/a11y-prefs.ts`), a layout główny nakłada go 
 | --- | --- | --- |
 | Prościej | `data-mode="simple"` | wariant `simple:` (np. `simple:hidden`, `simple:h-16`) |
 | Kontrast | `data-theme="kontrast"` | wariant `kontrast:` |
-| A+ | klasa `a-plus` (112,5%) / `a-plusplus` (125%) | nic; wystarczy używać `rem` |
+| Rozmiar tekstu | klasa `a-plus` (112,5%) / `a-plusplus` (125%) | nic; wystarczy używać `rem` |
+
+Rozmiar tekstu to natywny `<select>` z opcjami „Zwykły” / „Większy” / „Największy”; wysyła wartość do tej samej akcji serwerowej co pozostałe przełączniki.
 
 Skala tekstu w trybie Prościej: `text-simple-h1` (3 rem), `text-simple-h2` (2,5 rem), `text-simple-h3` (2 rem), `text-simple-h4` i `text-simple-lead` (1,625 rem), `text-simple-base` (1,375 rem), `text-simple-sm` (1,125 rem). Używaj z wariantem: `text-h1 simple:text-simple-h1`. Tekst `body` rośnie do `text-simple-base` sam.
 
@@ -47,7 +49,7 @@ Skala tekstu w trybie Prościej: `text-simple-h1` (3 rem), `text-simple-h2` (2,5
 | ChatBubble | — (własny) | `me` / `them` / `ai` |
 | AiThinking | — (własny) + `skeleton` | postęp słowami, `aria-live` |
 | EmptyState | — (własny) | ornament parzenicy |
-| A11yToolbar | `toggle-group` | Prościej / Kontrast / A+ |
+| A11yToolbar | `toggle-group` + `native-select` | Prościej / Kontrast toggles + Rozmiar tekstu select |
 | Layout admina | `sidebar` | tokeny `sidebar-*`, licznik nowych zgłoszeń `sidebar-primary` |
 | Okna | `dialog`, `sheet` | `rounded-lg`, `shadow-lg`, przycisk zamknięcia 44 px |
 | Zakładki | `tabs` | wysokość 44 px |
