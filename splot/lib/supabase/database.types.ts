@@ -14,6 +14,93 @@ export type Database = {
   }
   public: {
     Tables: {
+      call_alerts: {
+        Row: {
+          call_id: string | null
+          created_at: string
+          email: string
+          id: string
+          idea_id: string | null
+          user_id: string
+        }
+        Insert: {
+          call_id?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          idea_id?: string | null
+          user_id?: string
+        }
+        Update: {
+          call_id?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          idea_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "call_alerts_call_id_fkey"
+            columns: ["call_id"]
+            isOneToOne: false
+            referencedRelation: "grant_calls"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      connection_requests: {
+        Row: {
+          created_at: string
+          from_submission_id: string
+          id: string
+          requested_by: string
+          status: string
+          thread_id: string | null
+          to_submission_id: string
+        }
+        Insert: {
+          created_at?: string
+          from_submission_id: string
+          id?: string
+          requested_by?: string
+          status?: string
+          thread_id?: string | null
+          to_submission_id: string
+        }
+        Update: {
+          created_at?: string
+          from_submission_id?: string
+          id?: string
+          requested_by?: string
+          status?: string
+          thread_id?: string | null
+          to_submission_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "connection_requests_from_submission_id_fkey"
+            columns: ["from_submission_id"]
+            isOneToOne: false
+            referencedRelation: "submissions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "connection_requests_thread_id_fkey"
+            columns: ["thread_id"]
+            isOneToOne: false
+            referencedRelation: "threads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "connection_requests_to_submission_id_fkey"
+            columns: ["to_submission_id"]
+            isOneToOne: false
+            referencedRelation: "submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       conversations: {
         Row: {
           created_at: string
@@ -52,6 +139,45 @@ export type Database = {
           },
         ]
       }
+      grant_calls: {
+        Row: {
+          category: Database["public"]["Enums"]["challenge_category"] | null
+          closes_at: string
+          created_at: string
+          criteria: Json
+          description: string | null
+          id: string
+          opens_at: string
+          sections: Json
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category?: Database["public"]["Enums"]["challenge_category"] | null
+          closes_at: string
+          created_at?: string
+          criteria?: Json
+          description?: string | null
+          id?: string
+          opens_at: string
+          sections?: Json
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: Database["public"]["Enums"]["challenge_category"] | null
+          closes_at?: string
+          created_at?: string
+          criteria?: Json
+          description?: string | null
+          id?: string
+          opens_at?: string
+          sections?: Json
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       innovations: {
         Row: {
           adopters: string | null
@@ -63,7 +189,7 @@ export type Database = {
           embedding: string | null
           evidence: string | null
           folder_pdf_url: string | null
-          fts: unknown | null
+          fts: unknown
           id: string
           lead: string | null
           materials_url: string | null
@@ -90,7 +216,7 @@ export type Database = {
           embedding?: string | null
           evidence?: string | null
           folder_pdf_url?: string | null
-          fts?: unknown | null
+          fts?: unknown
           id?: string
           lead?: string | null
           materials_url?: string | null
@@ -117,7 +243,7 @@ export type Database = {
           embedding?: string | null
           evidence?: string | null
           folder_pdf_url?: string | null
-          fts?: unknown | null
+          fts?: unknown
           id?: string
           lead?: string | null
           materials_url?: string | null
@@ -304,8 +430,8 @@ export type Database = {
         Row: {
           ai_model: string | null
           ai_needs_expert: boolean | null
-          ai_summary: string | null
           ai_suggested_slugs: string[] | null
+          ai_summary: string | null
           ai_triaged_at: string | null
           author_id: string
           body: string
@@ -328,8 +454,8 @@ export type Database = {
         Insert: {
           ai_model?: string | null
           ai_needs_expert?: boolean | null
-          ai_summary?: string | null
           ai_suggested_slugs?: string[] | null
+          ai_summary?: string | null
           ai_triaged_at?: string | null
           author_id?: string
           body: string
@@ -352,8 +478,8 @@ export type Database = {
         Update: {
           ai_model?: string | null
           ai_needs_expert?: boolean | null
-          ai_summary?: string | null
           ai_suggested_slugs?: string[] | null
+          ai_summary?: string | null
           ai_triaged_at?: string | null
           author_id?: string
           body?: string
@@ -445,132 +571,6 @@ export type Database = {
           },
         ]
       }
-      call_alerts: {
-        Row: {
-          call_id: string | null
-          created_at: string
-          email: string
-          idea_id: string | null
-          id: string
-          user_id: string
-        }
-        Insert: {
-          call_id?: string | null
-          created_at?: string
-          email: string
-          idea_id?: string | null
-          id?: string
-          user_id?: string
-        }
-        Update: {
-          call_id?: string | null
-          created_at?: string
-          email?: string
-          idea_id?: string | null
-          id?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "call_alerts_call_id_fkey"
-            columns: ["call_id"]
-            isOneToOne: false
-            referencedRelation: "grant_calls"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      connection_requests: {
-        Row: {
-          created_at: string
-          from_submission_id: string
-          id: string
-          requested_by: string
-          status: string
-          thread_id: string | null
-          to_submission_id: string
-        }
-        Insert: {
-          created_at?: string
-          from_submission_id: string
-          id?: string
-          requested_by?: string
-          status?: string
-          thread_id?: string | null
-          to_submission_id: string
-        }
-        Update: {
-          created_at?: string
-          from_submission_id?: string
-          id?: string
-          requested_by?: string
-          status?: string
-          thread_id?: string | null
-          to_submission_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "connection_requests_from_submission_id_fkey"
-            columns: ["from_submission_id"]
-            isOneToOne: false
-            referencedRelation: "submissions"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "connection_requests_thread_id_fkey"
-            columns: ["thread_id"]
-            isOneToOne: false
-            referencedRelation: "threads"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "connection_requests_to_submission_id_fkey"
-            columns: ["to_submission_id"]
-            isOneToOne: false
-            referencedRelation: "submissions"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      grant_calls: {
-        Row: {
-          category: Database["public"]["Enums"]["challenge_category"] | null
-          closes_at: string
-          created_at: string
-          criteria: Json
-          description: string | null
-          id: string
-          opens_at: string
-          sections: Json
-          title: string
-          updated_at: string
-        }
-        Insert: {
-          category?: Database["public"]["Enums"]["challenge_category"] | null
-          closes_at: string
-          created_at?: string
-          criteria?: Json
-          description?: string | null
-          id?: string
-          opens_at: string
-          sections?: Json
-          title: string
-          updated_at?: string
-        }
-        Update: {
-          category?: Database["public"]["Enums"]["challenge_category"] | null
-          closes_at?: string
-          created_at?: string
-          criteria?: Json
-          description?: string | null
-          id?: string
-          opens_at?: string
-          sections?: Json
-          title?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
     }
     Views: {
       [_ in never]: never
@@ -580,6 +580,7 @@ export type Database = {
         Args: never
         Returns: Database["public"]["Enums"]["user_role"]
       }
+      immutable_unaccent: { Args: { "": string }; Returns: string }
       is_admin: { Args: never; Returns: boolean }
       is_thread_participant: { Args: { p_thread_id: string }; Returns: boolean }
       match_innovations: {
@@ -652,7 +653,7 @@ export type Database = {
         | "completed"
         | "rejected"
       priority: "low" | "medium" | "high"
-      submission_kind: "application" | "idea" | "problem"
+      submission_kind: "problem" | "idea" | "application"
       submission_status:
         | "received"
         | "in_review"
@@ -816,7 +817,7 @@ export const Constants = {
         "rejected",
       ],
       priority: ["low", "medium", "high"],
-      submission_kind: ["application", "idea", "problem"],
+      submission_kind: ["problem", "idea", "application"],
       submission_status: [
         "received",
         "in_review",

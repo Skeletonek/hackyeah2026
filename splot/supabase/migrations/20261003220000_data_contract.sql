@@ -4,7 +4,17 @@
 
 -- ── Extensions ──────────────────────────────────────────────────────────
 create extension if not exists vector with schema extensions;
-create extension if not exists unaccent;
+create extension if not exists unaccent with schema extensions;
+
+-- unaccent() is only stable (it reads the dictionary through search_path), so
+-- generated columns and indexes cannot call it. This wrapper pins the
+-- dictionary and is safe to mark immutable.
+create function public.immutable_unaccent(text)
+returns text
+language sql immutable parallel safe strict set search_path = ''
+as $$
+  select extensions.unaccent('extensions.unaccent'::regdictionary, $1)
+$$;
 
 -- ── New enums ───────────────────────────────────────────────────────────
 create type public.target_group as enum (
@@ -35,13 +45,13 @@ alter table public.innovations
   add column if not exists source_project text,
   add column if not exists embedding extensions.vector(1536),
   add column if not exists fts tsvector generated always as (
-    setweight(to_tsvector('simple', unaccent(coalesce(title, ''))), 'A') ||
-    setweight(to_tsvector('simple', unaccent(coalesce(lead, ''))), 'B') ||
-    setweight(to_tsvector('simple', unaccent(coalesce(solution, ''))), 'B') ||
-    setweight(to_tsvector('simple', unaccent(coalesce(problem, ''))), 'B') ||
-    setweight(to_tsvector('simple', unaccent(coalesce(audience, ''))), 'C') ||
-    setweight(to_tsvector('simple', unaccent(coalesce(adopters, ''))), 'C') ||
-    setweight(to_tsvector('simple', unaccent(coalesce(evidence, ''))), 'C')
+    setweight(to_tsvector('simple', public.immutable_unaccent(coalesce(title, ''))), 'A') ||
+    setweight(to_tsvector('simple', public.immutable_unaccent(coalesce(lead, ''))), 'B') ||
+    setweight(to_tsvector('simple', public.immutable_unaccent(coalesce(solution, ''))), 'B') ||
+    setweight(to_tsvector('simple', public.immutable_unaccent(coalesce(problem, ''))), 'B') ||
+    setweight(to_tsvector('simple', public.immutable_unaccent(coalesce(audience, ''))), 'C') ||
+    setweight(to_tsvector('simple', public.immutable_unaccent(coalesce(adopters, ''))), 'C') ||
+    setweight(to_tsvector('simple', public.immutable_unaccent(coalesce(evidence, ''))), 'C')
   ) stored;
 
 create index if not exists innovations_embedding_idx on public.innovations using hnsw (embedding extensions.vector_cosine_ops);
@@ -134,10 +144,10 @@ as $$
   with text_ranks as (
     select
       i.id,
-      row_number() over (order by ts_rank_cd(i.fts, plainto_tsquery('simple', unaccent(query_text))) desc) as rank
+      row_number() over (order by ts_rank_cd(i.fts, plainto_tsquery('simple', public.immutable_unaccent(query_text))) desc) as rank
     from public.innovations i
     where query_text is not null and query_text <> ''
-      and i.fts @@ plainto_tsquery('simple', unaccent(query_text))
+      and i.fts @@ plainto_tsquery('simple', public.immutable_unaccent(query_text))
       and i.published
       and (filter_categories is null or i.categories && filter_categories)
   ),
