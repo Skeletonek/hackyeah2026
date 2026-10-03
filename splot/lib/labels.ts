@@ -96,35 +96,35 @@ export const IDEA_ASSET_LABELS: Record<IdeaAsset, string> = {
 };
 
 export type County = {
-  /** TERYT code of the county. */
+  /** ASCII slug, the same value as `submissions.county` and data/county-indicators.json. */
   code: string;
   name: string;
 };
 
 /** The 22 counties of Małopolska: 19 land counties and 3 cities with county rights. */
 export const COUNTIES: readonly County[] = [
-  { code: "1201", name: "bocheński" },
-  { code: "1202", name: "brzeski" },
-  { code: "1203", name: "chrzanowski" },
-  { code: "1204", name: "dąbrowski" },
-  { code: "1205", name: "gorlicki" },
-  { code: "1206", name: "krakowski" },
-  { code: "1207", name: "limanowski" },
-  { code: "1208", name: "miechowski" },
-  { code: "1209", name: "myślenicki" },
-  { code: "1210", name: "nowosądecki" },
-  { code: "1211", name: "nowotarski" },
-  { code: "1212", name: "olkuski" },
-  { code: "1213", name: "oświęcimski" },
-  { code: "1214", name: "proszowicki" },
-  { code: "1215", name: "suski" },
-  { code: "1216", name: "tarnowski" },
-  { code: "1217", name: "tatrzański" },
-  { code: "1218", name: "wadowicki" },
-  { code: "1219", name: "wielicki" },
-  { code: "1261", name: "Kraków" },
-  { code: "1262", name: "Nowy Sącz" },
-  { code: "1263", name: "Tarnów" },
+  { code: "bochenski", name: "powiat bocheński" },
+  { code: "brzeski", name: "powiat brzeski" },
+  { code: "chrzanowski", name: "powiat chrzanowski" },
+  { code: "dabrowski", name: "powiat dąbrowski" },
+  { code: "gorlicki", name: "powiat gorlicki" },
+  { code: "krakowski", name: "powiat krakowski" },
+  { code: "limanowski", name: "powiat limanowski" },
+  { code: "krakow", name: "powiat m. Kraków" },
+  { code: "nowy-sacz", name: "powiat m. Nowy Sącz" },
+  { code: "tarnow", name: "powiat m. Tarnów" },
+  { code: "miechowski", name: "powiat miechowski" },
+  { code: "myslenicki", name: "powiat myślenicki" },
+  { code: "nowosadecki", name: "powiat nowosądecki" },
+  { code: "nowotarski", name: "powiat nowotarski" },
+  { code: "olkuski", name: "powiat olkuski" },
+  { code: "oswiecimski", name: "powiat oświęcimski" },
+  { code: "proszowicki", name: "powiat proszowicki" },
+  { code: "suski", name: "powiat suski" },
+  { code: "tarnowski", name: "powiat tarnowski" },
+  { code: "tatrzanski", name: "powiat tatrzański" },
+  { code: "wadowicki", name: "powiat wadowicki" },
+  { code: "wielicki", name: "powiat wielicki" },
 ];
 
 export function countyName(code: string): string | undefined {
