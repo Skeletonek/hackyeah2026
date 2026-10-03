@@ -1,0 +1,9 @@
+services:
+  splot:
+    image: ghcr.io/skeletonek/hackyeah2026/splot:latest
+    container_name: splot
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "3000:3000"

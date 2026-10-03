@@ -32,6 +32,25 @@ pnpm dev
 
 Wejdź na http://localhost:3000. Strona główna pokazuje 3 innowacje z bazy — jeśli je widzisz, połączenie działa.
 
+## Uruchomienie w Dockerze
+
+Z katalogu `splot/` zbuduj obraz, podając publiczne dane Supabase (są osadzane w klienckim bundle podczas builda):
+
+```bash
+docker build \
+  --build-arg NEXT_PUBLIC_SUPABASE_URL="https://<project-ref>.supabase.co" \
+  --build-arg NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY="sb_publishable_..." \
+  -t splot .
+```
+
+`SUPABASE_SECRET_KEY` nie jest potrzebny podczas budowania. Uruchom kontener z `.env.local`, aby przekazać go wyłącznie w runtime:
+
+```bash
+docker run --rm --env-file .env.local -p 3000:3000 splot
+```
+
+Otwórz http://localhost:3000. Plik `.env.local` nie jest kopiowany do obrazu.
+
 ### 3. CLI (tylko jeśli zmieniasz bazę)
 
 Do samego pisania frontu wystarczą kroki 1–2. CLI jest potrzebne, gdy dodajesz migracje albo generujesz typy:
