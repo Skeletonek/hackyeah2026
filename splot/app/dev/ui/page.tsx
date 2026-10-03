@@ -1,7 +1,14 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { ArrowRight, Search, ThumbsUp } from "lucide-react";
+import { ArrowRight, Search, ThumbsDown, ThumbsUp } from "lucide-react";
 import { A11yToolbar } from "@/components/a11y-toolbar";
+import { CategoryBadge } from "@/components/category-badge";
+import { EmptyState } from "@/components/empty-state";
+import { InnovationCard } from "@/components/innovation-card";
+import { MicButton } from "@/components/mic-button";
+import { ReadAloudButton } from "@/components/read-aloud-button";
+import { StatusTimeline } from "@/components/status-timeline";
+import { Stepper } from "@/components/stepper";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -11,10 +18,12 @@ import { RadioGroup } from "@/components/ui/radio-group";
 import { Select } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
+import { CHALLENGE_CATEGORY_LABELS, SUBMISSION_STATUS_LABELS } from "@/lib/labels";
+import { Constants } from "@/lib/supabase/database.types";
 import { DialogDemo, SheetDemo, TagDemo, ToastDemo } from "./_components/demos";
 
 export const metadata: Metadata = {
-  title: "Kontrolki bazowe",
+  title: "Kontrolki i komponenty",
   robots: { index: false },
 };
 
@@ -42,6 +51,13 @@ const AUDIENCE = [
   { value: "other", label: "Inna grupa", disabled: true },
 ];
 
+const WIZARD_STEPS = [
+  { label: "Na czym polega", href: "#stepper" },
+  { label: "Dla kogo" },
+  { label: "Na jakim etapie" },
+  { label: "Podsumowanie" },
+];
+
 /** Dev-only sheet of every base control; not linked from the nav. */
 export default function DevUiPage() {
   if (process.env.NODE_ENV === "production") notFound();
@@ -49,7 +65,7 @@ export default function DevUiPage() {
   return (
     <main id="main-content" className="mx-auto flex w-full max-w-[1200px] flex-col gap-12 px-4 py-10 sm:px-8">
       <header className="flex flex-col gap-4">
-        <h1 className="text-h1 simple:text-simple-h1">Kontrolki bazowe</h1>
+        <h1 className="text-h1 simple:text-simple-h1">Kontrolki i komponenty</h1>
         <p className="text-lead text-muted-foreground simple:text-simple-lead">
           Sprawdź każdą kontrolkę w trybach Prościej, Kontrast i A+.
         </p>
@@ -228,6 +244,93 @@ export default function DevUiPage() {
           <TabsContent value="materials">Filmy, instrukcje i wzory dokumentów.</TabsContent>
           <TabsContent value="reviews">Opinie organizacji, które testowały rozwiązanie.</TabsContent>
         </Tabs>
+      </Section>
+
+      <Section title="CategoryBadge">
+        <div className="flex flex-wrap gap-2">
+          {Constants.public.Enums.challenge_category.map((category) => (
+            <CategoryBadge key={category} category={category} />
+          ))}
+        </div>
+      </Section>
+
+      <Section title="InnovationCard">
+        <div className="grid gap-6 md:grid-cols-2">
+          <InnovationCard
+            slug="przykladowa-innowacja"
+            title="Sąsiedzki transport do lekarza"
+            lead="Wolontariusze z gminy wożą seniorów na wizyty. Dyżury układa koordynator w ośrodku pomocy."
+            categories={["aging", "service_access"]}
+            stage="deployed"
+          />
+          <InnovationCard
+            slug="przykladowa-innowacja"
+            title="Klub rozmów przy herbacie"
+            lead="Cotygodniowe spotkania dla osób, które mieszkają same."
+            categories={["loneliness"]}
+            stage="pilot"
+            why={<p>Opisujesz seniorów, którzy rzadko wychodzą z domu. Ten klub działa właśnie w małych wsiach.</p>}
+            feedback={
+              <>
+                <Button variant="ghost" size="icon" aria-label="Tak, pasuje">
+                  <ThumbsUp aria-hidden />
+                </Button>
+                <Button variant="ghost" size="icon" aria-label="Nie pasuje">
+                  <ThumbsDown aria-hidden />
+                </Button>
+              </>
+            }
+          />
+        </div>
+      </Section>
+
+      <Section title="StatusTimeline">
+        {Constants.public.Enums.submission_status.map((status) => (
+          <div key={status} className="flex flex-col gap-2">
+            <p className="text-sm text-muted-foreground">
+              {SUBMISSION_STATUS_LABELS[status]} (<span className="font-mono">{status}</span>)
+            </p>
+            <StatusTimeline status={status} />
+          </div>
+        ))}
+      </Section>
+
+      <Section title="Stepper">
+        <div id="stepper" className="flex flex-col gap-8">
+          <Stepper steps={WIZARD_STEPS} current={2} />
+          <Stepper steps={WIZARD_STEPS} current={4} />
+        </div>
+      </Section>
+
+      <Section title="EmptyState">
+        <EmptyState
+          title="Nie masz jeszcze zgłoszeń"
+          action={
+            <Button asChild>
+              <a href="#main-content">Opisz problem</a>
+            </Button>
+          }
+        >
+          <p>Gdy opiszesz problem albo pomysł, zobaczysz go tutaj.</p>
+        </EmptyState>
+      </Section>
+
+      <Section title="MicButton i ReadAloudButton">
+        <p className="text-muted-foreground">Przyciski znikają, gdy przeglądarka nie obsługuje mowy.</p>
+        <Field id="dev-mic-target" label="Opisz problem" hint="Możesz też powiedzieć to na głos.">
+          <Textarea name="spoken-problem" />
+        </Field>
+        <div className="flex flex-wrap items-center gap-3">
+          <MicButton targetId="dev-mic-target" />
+          <MicButton targetId="dev-mic-target" withLabel />
+        </div>
+        <p id="dev-read-aloud">
+          {CHALLENGE_CATEGORY_LABELS.loneliness}. Klub rozmów przy herbacie to cotygodniowe spotkania dla osób, które
+          mieszkają same.
+        </p>
+        <div>
+          <ReadAloudButton targetId="dev-read-aloud" />
+        </div>
       </Section>
     </main>
   );
