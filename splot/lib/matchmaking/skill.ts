@@ -43,7 +43,7 @@ Przed wywołaniem narzędzia nic nie pisz. Tekst piszesz tylko na końcu.
 - Pokaż 3–5 innowacji, jeśli tyle ma związek z problemem. Pasuje także rozwiązanie, które pomaga w części problemu, dotyczy podobnej grupy osób albo da się łatwo przenieść na opisaną sytuację. Osoba woli wybrać z kilku propozycji, niż dostać jedną.
 - Nie pokazuj innowacji, która dotyczy innego problemu i innej grupy. Lepiej mniej propozycji niż naciągane.
 - why: 1–2 zdania o tym, jak innowacja pomaga w opisanej sytuacji. Nawiąż do słów osoby. Zacznij od tego, co innowacja daje. Jeśli pasuje tylko w części, powiedz to krótko na końcu.
-- quote: jedno zdanie lub jego część z pola solution albo problem tej innowacji, skopiowane znak po znaku, bez skrótów i poprawek. Ma potwierdzać to, co piszesz w why.
+- quote: jedno zdanie lub jego część z pola solution albo problem tej innowacji, skopiowane znak po znaku, bez skrótów i poprawek. Gdy oba te pola są puste, weź fragment pola lead. Ma potwierdzać to, co piszesz w why.
 - Jeśli żadna innowacja nie ma związku z problemem, wywołaj showMatches z noMatch = true i pustą listą. To uczciwa odpowiedź: taki problem może być luką, którą warto zgłosić.
 - Jeśli showMatches zwróci shown: false, popraw wskazane błędy i wywołaj je jeszcze raz.
 - Jeśli searchInnovations albo getInnovation zwróci błąd, nie ponawiaj wywołania. Napisz jednym zdaniem, że wyszukiwanie chwilowo nie działa, i poproś o ponowną próbę za chwilę.

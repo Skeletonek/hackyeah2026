@@ -20,7 +20,7 @@ export const showMatchesInput = z.object({
           .min(15)
           .max(300)
           .describe(
-            "Krótki fragment pola solution albo problem tej innowacji, skopiowany znak po znaku, który potwierdza uzasadnienie.",
+            "Krótki fragment pola solution albo problem tej innowacji (a gdy oba są puste, pola lead), skopiowany znak po znaku, który potwierdza uzasadnienie.",
           ),
       }),
     )
@@ -38,7 +38,12 @@ export type ShowMatchesInput = z.infer<typeof showMatchesInput>;
 export type ShowMatchesOutput = { shown: true } | { shown: false; problems: string[] };
 
 /** The text a quote must come from. */
-export type MatchSource = { slug: string; solution: string | null; problem: string | null };
+export type MatchSource = {
+  slug: string;
+  solution: string | null;
+  problem: string | null;
+  lead: string | null;
+};
 
 /** Same text regardless of line breaks, letter case and quote or dash style. */
 function normalize(text: string) {
@@ -53,7 +58,7 @@ function normalize(text: string) {
 
 /**
  * Keeps the model honest: every slug is a real innovation and every quote is
- * in its source text. Returns the problems to hand back to the model, in Polish.
+ * in its source text (`lead` covers innovations without a full description). Returns the problems to hand back to the model, in Polish.
  */
 export function checkMatches(input: ShowMatchesInput, sources: MatchSource[]): string[] {
   const problems: string[] = [];
@@ -80,10 +85,10 @@ export function checkMatches(input: ShowMatchesInput, sources: MatchSource[]): s
     }
 
     const quote = normalize(item.quote);
-    const quoted = [source.solution, source.problem].some((text) => text && normalize(text).includes(quote));
+    const quoted = [source.solution, source.problem, source.lead].some((text) => text && normalize(text).includes(quote));
     if (!quoted) {
       problems.push(
-        `Cytat dla „${item.slug}” nie występuje w polu solution ani problem. Skopiuj fragment dosłownie z getInnovation.`,
+        `Cytat dla „${item.slug}” nie występuje w polu solution, problem ani lead. Skopiuj fragment dosłownie z getInnovation.`,
       );
     }
   }

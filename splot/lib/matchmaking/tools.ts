@@ -27,7 +27,7 @@ async function showMatches(
   if (input.items.length > 0) {
     const { data, error } = await supabase
       .from("innovations")
-      .select("slug, solution, problem")
+      .select("slug, solution, problem, lead")
       .in(
         "slug",
         input.items.map((item) => item.slug),
