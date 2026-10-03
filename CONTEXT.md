@@ -50,6 +50,10 @@ _Avoid_: Recommendation, model output
 One conversational mode of the Splot agent (matchmaking, idea assistant, innovation broker), with its own prompt and tools.
 _Avoid_: Bot, mode, sub-agent
 
+**Conversation**:
+One person's exchange with one Skill; it may lead to a submission, and ROPS then sees it alongside that submission.
+_Avoid_: Chat, session, thread (a thread is between people)
+
 ## Accessibility
 
 **Simple mode**:
