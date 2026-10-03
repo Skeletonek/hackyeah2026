@@ -12,7 +12,8 @@
     "db:push": "supabase db push",
     "db:new": "supabase migration new",
     "db:types": "supabase gen types typescript --linked --schema public > lib/supabase/database.types.ts",
-    "auth:push": "supabase config push"
+    "auth:push": "supabase config push",
+    "data:scrape": "tsx scripts/scrape-library.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
@@ -34,10 +35,12 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "cheerio": "^1.2.0",
     "eslint": "^9",
     "eslint-config-next": "16.3.8",
     "supabase": "^2.119.0",
     "tailwindcss": "^4",
+    "tsx": "^4.23.15",
     "typescript": "^5"
   },
   "packageManager": "pnpm@10.34.3"
