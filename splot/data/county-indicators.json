@@ -1,0 +1,1338 @@
+{
+  "source": {
+    "title": "Internetowy Obserwator Statystyk Społecznych (ROPS Kraków)",
+    "url": "https://obserwator.rops.krakow.pl",
+    "note": "Dane dla 22 powiatów województwa małopolskiego, ostatni dostępny rok każdego wskaźnika. Brak danych powiatowych dla obszarów: integracja cudzoziemców, wykluczenie cyfrowe, koordynacja usług.",
+    "fetched_at": "2026-10-03"
+  },
+  "method": "Wynik obszaru (0–1) to średnia z jego wskaźników: jaką część pozostałych 21 powiatów dany powiat wyprzedza w złą stronę. 1 = najtrudniejsza sytuacja w regionie. Wskaźniki podawane w liczbach bezwzględnych przeliczono na liczbę mieszkańców.",
+  "indicators": [
+    {
+      "key": "share_65_plus",
+      "id": 285,
+      "label": "Ludność w wieku 65+/ Współczynnik starości demograficznej",
+      "description": "Relacja liczby osób w starszym wieku (65 lat i więcej) do ogólnej liczby ludności.",
+      "source": "Główny Urząd Statystyczny (Bank Danych Lokalnych)",
+      "source_url": "https://obserwator.rops.krakow.pl/differenceanalysis/285",
+      "year": 2024,
+      "unit": "% ludności",
+      "direction": "higher_worse",
+      "area": "seniors",
+      "category": "aging"
+    },
+    {
+      "key": "care_potential",
+      "id": 268,
+      "label": "Potencjał pielęgnacyjny",
+      "description": "Liczba kobiet w wieku 45-64 lata (potencjalnych opiekunów rodzinnych) przypadających na 100 osób w wieku 80 i więcej lat",
+      "source": "Główny Urząd Statystyczny (Bank Danych Lokalnych). Do 2021 roku włącznie dane dot. ludności bazują na wynikach Narodowego Spisu Powszechnego Ludności i Mieszkań 2011",
+      "source_url": "https://obserwator.rops.krakow.pl/differenceanalysis/268",
+      "year": 2024,
+      "unit": "kobiet 45–64 lata na 100 osób 80+",
+      "direction": "lower_worse",
+      "area": "seniors",
+      "category": "aging"
+    },
+    {
+      "key": "oldest_old_support",
+      "id": 274,
+      "label": "Wskaźnik wsparcia osób najstarszych",
+      "description": "Liczba osób w wieku 85 lat i więcej\nprzypadająca na 100 osób w wieku 50–64 lata",
+      "source": "Główny Urząd Statystyczny (Bank Danych Lokalnych). Do 2021 roku włącznie dane dot. ludności bazują na wynikach Narodowego Spisu Powszechnego Ludności i Mieszkań 2011",
+      "source_url": "https://obserwator.rops.krakow.pl/differenceanalysis/274",
+      "year": 2024,
+      "unit": "osób 85+ na 100 osób 50–64 lata",
+      "direction": "higher_worse",
+      "area": "seniors",
+      "category": "loneliness",
+      "note": "Przybliżenie: więcej najstarszych osób na potencjalnych opiekunów."
+    },
+    {
+      "key": "natural_increase",
+      "id": 91,
+      "label": "Przyrost naturalny na 1 000 ludności",
+      "description": "Różnica między liczbą urodzeń żywych a liczbą zgonów w danym roku (bez rozróżnienia na płeć).",
+      "source": "Główny Urząd Statystyczny (Bank Danych Lokalnych)",
+      "source_url": "https://obserwator.rops.krakow.pl/differenceanalysis/91",
+      "year": 2024,
+      "unit": "na 1000 ludności",
+      "direction": "lower_worse",
+      "area": null,
+      "category": "depopulation"
+    },
+    {
+      "key": "net_migration",
+      "id": 98,
+      "label": "Saldo migracji stałych",
+      "description": "Wskaźnik migracji stałych - różnica między napływem a odpływem ludności z danego obszaru w danym czasie.\nSaldo migracji stałych uwzględnia zarazem dane ze stałych migracji zewnętrznych jak i wewnętrznych. Migracje stałe to takie, które wiążą się ze zmianą miejsca zamieszkania na pobyt stały. W świetle prawa polskiego, tego typu migracje  związane są z dokonaniem w biurze ewidencji ludności zameldowania lub wymeldowania. \n\nW 2015 roku GUS zrezygnował z opublikowania danych dotyczących migracji zagranicznych z powodu braku ich kompletności. Dlatego niemożliwe było określenie poziomu migracji stałych za rok 2015.",
+      "source": "Główny Urząd Statystyczny (Bank Danych Lokalnych)",
+      "source_url": "https://obserwator.rops.krakow.pl/differenceanalysis/98",
+      "year": 2024,
+      "unit": "na 1000 ludności",
+      "direction": "lower_worse",
+      "area": null,
+      "category": "depopulation",
+      "derived": "wartość / ludność × 1000"
+    },
+    {
+      "key": "external_cause_deaths",
+      "id": 123,
+      "label": "Zgony z przyczyn zewnętrznych",
+      "description": "Wskaźnik umieralności z przyczyn zewnętrznych -  udział zgonów z przyczyn zewnętrznych w liczbie zgonów ogółem. Dane do wskaźnika zliczono na podstawie kart statystycznych do kart zgonów.",
+      "source": "Główny Urząd Statystyczny (Bank Danych Lokalnych)",
+      "source_url": "https://obserwator.rops.krakow.pl/differenceanalysis/123",
+      "year": 2023,
+      "unit": "% zgonów ogółem",
+      "direction": "higher_worse",
+      "area": "mental_health",
+      "category": "mental_health",
+      "note": "Przybliżenie: obejmuje m.in. samobójstwa."
+    },
+    {
+      "key": "care_homes",
+      "id": 242,
+      "label": "Placówki zapewniające całodobową opiekę osobom niepełnosprawnym, przewlekle chorym lub osobom w podeszłym wieku",
+      "description": "Liczba placówek zapewniających całodobową opiekę osobom niepełnosprawnym, przewlekle chorym lub osobom w podeszłym wieku działających na danym terenie (w oparciu zarówno o działalność gospodarczą, jak i o działalność statutową). Stan na 31 XII.",
+      "source": "Rejestr Małopolskiego Urzędu Wojewódzkiego w Krakowie",
+      "source_url": "https://obserwator.rops.krakow.pl/differenceanalysis/242",
+      "year": 2024,
+      "unit": "placówek na 100 tys. ludności",
+      "direction": "lower_worse",
+      "area": null,
+      "category": "service_access",
+      "derived": "wartość / ludność × 100000"
+    },
+    {
+      "key": "welfare_spending",
+      "id": 97,
+      "label": "Wydatki budżetów gmin - pomoc społeczna",
+      "description": "Wskaźnik wydatków gmin na pomoc społeczną - wydatki budżetów gmin i miast na prawach powiatów na pomoc społeczną i pozostałe zadania w zakresie polityki społecznej w przeliczeniu na jednego mieszkańca. Dane stanowią sumę wydatków sklasyfikowanych w działach 852 i 853 rozporządzenia Ministra Finansów z dnia 14 czerwca 2006 r. w sprawie szczegółowej klasyfikacji dochodów, wydatków, przychodów i rozchodów oraz środków pochodzących ze źródeł zagranicznych (Dz. U. 2006 r. Nr 107, poz.726, z późn. zm.). Dane podawane są w złotówkach.",
+      "source": "Główny Urząd Statystyczny (Bank Danych Lokalnych)",
+      "source_url": "https://obserwator.rops.krakow.pl/differenceanalysis/97",
+      "year": 2024,
+      "unit": "zł na mieszkańca",
+      "direction": "lower_worse",
+      "area": null,
+      "category": "service_access"
+    },
+    {
+      "key": "poverty_clients",
+      "id": 31,
+      "label": "Ubóstwo",
+      "description": "Odsetek klientów pomocy społecznej korzystających ze wsparcia  z powodu ubóstwa (na podstawie danych o rzeczywistej liczbie osób w rodzinach objętych pomocą społeczną).",
+      "source": "Dane dla Polski – Sprawozdanie MRiPS-03 (wcześniej MRPiPS-03). Dane dla Małopolski - Sprawozdanie: MRPiPS-03 (do 2014 r. i od 2018 r.), OZPS (2015 - 2017 r.)",
+      "source_url": "https://obserwator.rops.krakow.pl/differenceanalysis/31",
+      "year": 2024,
+      "unit": "% klientów pomocy społecznej",
+      "direction": "higher_worse",
+      "area": "poverty",
+      "category": null
+    },
+    {
+      "key": "meal_support",
+      "id": 175,
+      "label": "Osoby objęte dożywianiem na 1000 mieszkańców",
+      "description": "Wskaźnik pomocy w zakresie dożywiania - liczba osób objętych pomocą państwa w zakresie dożywiania w przeliczeniu na 1000 mieszkańców.",
+      "source": "Sprawozdanie z realizacji programu \"Pomoc Państwa w zakresie dożywiania\"; GUS (BDL). Dane dot. ludności za lata 2010 - 2021 bazują na wynikach Narodowego Spisu Powszechnego Ludności i Mieszkań 2011",
+      "source_url": "https://obserwator.rops.krakow.pl/differenceanalysis/175",
+      "year": 2024,
+      "unit": "osób na 1000 mieszkańców",
+      "direction": "higher_worse",
+      "area": "poverty",
+      "category": null
+    },
+    {
+      "key": "unemployment",
+      "id": 25,
+      "label": "Stopa bezrobocia",
+      "description": "Stopa bezrobocia -  procentowy udział liczby bezrobotnych w liczbie ludności aktywnej zawodowo (tzn. pracującej i bezrobotnej).\nPrzez bezrobotnych ( za Ustawą z dnia 20 kwietnia 2004 r. o promocji zatrudnienia i instytucjach rynku pracy) rozumiemy osoby niezatrudnione i nie wykonujące innej pracy zarobkowej, zdolne i gotowe do podjęcia zatrudnienia w pełnym wymiarze czasu pracy (bądź jeśli są to osoby niepełnosprawne - zdolne i gotowe do podjęcia zatrudnienia co najmniej w połowie tego wymiaru czasu pracy), nieuczące się w szkole z wyjątkiem szkół dla dorosłych lub szkół wyższych w systemie wieczorowym albo zaocznym, zarejestrowane we właściwym dla miejsca zameldowania (stałego lub czasowego) powiatowym urzędzie pracy oraz poszukujące zatrudnienia lub innej pracy zarobkowej, jeżeli spełniają określone w Ustawie warunki.",
+      "source": "Główny Urząd Statystyczny (Bank Danych Lokalnych)",
+      "source_url": "https://obserwator.rops.krakow.pl/differenceanalysis/25",
+      "year": 2024,
+      "unit": "%",
+      "direction": "higher_worse",
+      "area": "poverty",
+      "category": null
+    },
+    {
+      "key": "homelessness_clients",
+      "id": 34,
+      "label": "Bezdomność",
+      "description": "Odsetek klientów pomocy społecznej korzystających ze wsparcia z  powodu bezdomności (na podstawie danych o rzeczywistej liczbie osób w rodzinach objętych pomocą społeczną).",
+      "source": "Dane dla Polski – Sprawozdanie MRiPS-03 (wcześniej MRPiPS-03). Dane dla Małopolski - Sprawozdanie: MRPiPS-03 (do 2014 r. i od 2018 r.), OZPS (2015 - 2017 r.)",
+      "source_url": "https://obserwator.rops.krakow.pl/differenceanalysis/34",
+      "year": 2024,
+      "unit": "% klientów pomocy społecznej",
+      "direction": "higher_worse",
+      "area": "homelessness",
+      "category": null
+    },
+    {
+      "key": "disability_share",
+      "id": 215,
+      "label": "Odsetek osób niepełnosprawnych ogółem",
+      "description": "Udział osób niepełnosprawnych (prawnie lub biologicznie) w ogóle ludności. \nW Narodowym Spisie Powszechnym Ludności i Mieszkań zbiorowość osób niepełnosprawnych została podzielona na dwie podstawowe grupy: osoby niepełnosprawne prawnie (posiadające odpowiednie, aktualne orzeczenie wydane przez organ do tego uprawniony niezależnie od tego czy wydane do celów rentowych, czy pozarentowych. Taka osoba może, ale nie musi, poza odpowiednim orzeczeniem posiadać ograniczenia sprawności w wykonywaniu codziennych czynności) oraz osoby niepełnosprawne tylko biologicznie (posiadające wyłącznie ograniczenia sprawności w wykonywaniu codziennych czynności, a nie posiadające orzeczenia o niepełnosprawności).",
+      "source": "Główny Urząd Statystyczny (Narodowy Spis Powszechny Ludności i Mieszkań 2011 i 2021)",
+      "source_url": "https://obserwator.rops.krakow.pl/differenceanalysis/215",
+      "year": 2021,
+      "unit": "% ludności",
+      "direction": "higher_worse",
+      "area": "disability",
+      "category": null
+    },
+    {
+      "key": "disability_clients",
+      "id": 37,
+      "label": "Niepełnosprawność",
+      "description": "Odsetek klientów pomocy społecznej korzystających ze wsparcia  z  powodu niepełnosprawności (na podstawie danych o rzeczywistej liczbie osób w rodzinach objętych pomocą społeczną).",
+      "source": "Dane dla Polski – Sprawozdanie MRiPS-03 (wcześniej MRPiPS-03). Dane dla Małopolski - Sprawozdanie: MRPiPS-03 (do 2014 r. i od 2018 r.), OZPS (2015 - 2017 r.)",
+      "source_url": "https://obserwator.rops.krakow.pl/differenceanalysis/37",
+      "year": 2024,
+      "unit": "% klientów pomocy społecznej",
+      "direction": "higher_worse",
+      "area": "disability",
+      "category": null
+    },
+    {
+      "key": "foster_care_intensity",
+      "id": 259,
+      "label": "Intensywność pieczy zastępczej",
+      "description": "Liczba dzieci poniżej 18. roku życia przebywających w pieczy zastępczej w stosunku do liczby wszystkich dzieci w wieku poniżej 18 roku życia na danym terenie w przeliczeniu na 1000 dzieci (definicja zaczerpnięta z raportu \"Postępy deinstytucjonalizacji pieczy zastępczej\"; Warszawa 2018 r.).\nDane zbierane przez MRiPS regularnie (co pół roku) w sprawozdaniach resortowych.",
+      "source": "Sprawozdania rzeczowo-finansowe z wykonywania przez powiat zadań … (WRiSPZ-P); Główny Urząd Statystyczny (BDL). Stan na 31 grudnia.\nDo 2021 roku włącznie dane dot. ludności bazują na wynikach Narodowego Spisu Powszechnego Ludności i Mieszkań 2011",
+      "source_url": "https://obserwator.rops.krakow.pl/differenceanalysis/259",
+      "year": 2024,
+      "unit": "dzieci w pieczy na 1000 dzieci",
+      "direction": "higher_worse",
+      "area": "family_foster_care",
+      "category": null
+    },
+    {
+      "key": "deaths",
+      "id": 129,
+      "label": "Zgony na 1000 mieszkańców",
+      "description": "Liczba zgonów w przeliczeniu na 1000 mieszkańców.",
+      "source": "Główny Urząd Statystyczny (Bank Danych Lokalnych)",
+      "source_url": "https://obserwator.rops.krakow.pl/differenceanalysis/129",
+      "year": 2024,
+      "unit": "na 1000 mieszkańców",
+      "direction": "higher_worse",
+      "area": "health",
+      "category": null
+    },
+    {
+      "key": "circulatory_disease",
+      "id": 90,
+      "label": "Zachorowania na choroby układu krążenia",
+      "description": "Wskaźnik zachorowań na choroby układu krążenia - liczba osób powyżej 19 roku życia, u których stwierdzono chorobę układu krążenia, będących pod opieką lekarza podstawowej opieki zdrowotnej w publicznych i niepublicznych zakładach opieki zdrowotnej oraz praktykach lekarskich, w przeliczeniu na 1000 osób w wieku 19 lat i więcej.",
+      "source": "Małopolski Urząd Wojewódzki w Krakowie; GUS (BDL). Dane dot. ludności za lata 2010 - 2021 bazują na wynikach NSP 2011",
+      "source_url": "https://obserwator.rops.krakow.pl/differenceanalysis/90",
+      "year": 2023,
+      "unit": "na 1000 osób 19+",
+      "direction": "higher_worse",
+      "area": "health",
+      "category": null
+    }
+  ],
+  "counties": [
+    {
+      "code": "bochenski",
+      "name": "powiat bocheński",
+      "population": 106985,
+      "values": {
+        "share_65_plus": 17.66,
+        "care_potential": 349,
+        "oldest_old_support": 10,
+        "natural_increase": -0.99,
+        "net_migration": 1.58,
+        "external_cause_deaths": 2.28,
+        "care_homes": 0.93,
+        "welfare_spending": 346.86,
+        "poverty_clients": 38.1,
+        "meal_support": 15,
+        "unemployment": 2.4,
+        "homelessness_clients": 1.67,
+        "disability_share": 13.82,
+        "disability_clients": 41.88,
+        "foster_care_intensity": 6.21,
+        "deaths": 9.47,
+        "circulatory_disease": 170.91
+      },
+      "area_scores": {
+        "seniors": 0.22,
+        "mental_health": 0.05,
+        "poverty": 0.29,
+        "homelessness": 0.52,
+        "disability": 0.67,
+        "family_foster_care": 0.62,
+        "health": 0.33
+      },
+      "category_scores": {
+        "aging": 0.29,
+        "loneliness": 0.1,
+        "depopulation": 0.24,
+        "mental_health": 0.05,
+        "service_access": 0.76
+      },
+      "top_areas": [
+        "disability",
+        "family_foster_care",
+        "homelessness"
+      ],
+      "top_challenges": [
+        "service_access",
+        "aging",
+        "depopulation"
+      ]
+    },
+    {
+      "code": "brzeski",
+      "name": "powiat brzeski",
+      "population": 91340,
+      "values": {
+        "share_65_plus": 17.86,
+        "care_potential": 340,
+        "oldest_old_support": 11,
+        "natural_increase": -2.48,
+        "net_migration": -1.2,
+        "external_cause_deaths": 3.05,
+        "care_homes": 4.38,
+        "welfare_spending": 420.51,
+        "poverty_clients": 34.17,
+        "meal_support": 12,
+        "unemployment": 5,
+        "homelessness_clients": 1.48,
+        "disability_share": 13.94,
+        "disability_clients": 29.95,
+        "foster_care_intensity": 5.15,
+        "deaths": 9.52,
+        "circulatory_disease": 181.74
+      },
+      "area_scores": {
+        "seniors": 0.33,
+        "mental_health": 0.48,
+        "poverty": 0.24,
+        "homelessness": 0.38,
+        "disability": 0.43,
+        "family_foster_care": 0.38,
+        "health": 0.43
+      },
+      "category_scores": {
+        "aging": 0.36,
+        "loneliness": 0.29,
+        "depopulation": 0.52,
+        "mental_health": 0.48,
+        "service_access": 0.31
+      },
+      "top_areas": [
+        "mental_health",
+        "disability",
+        "health"
+      ],
+      "top_challenges": [
+        "depopulation",
+        "mental_health",
+        "aging"
+      ]
+    },
+    {
+      "code": "chrzanowski",
+      "name": "powiat chrzanowski",
+      "population": 117756,
+      "values": {
+        "share_65_plus": 23.09,
+        "care_potential": 286,
+        "oldest_old_support": 13,
+        "natural_increase": -6.96,
+        "net_migration": -1.32,
+        "external_cause_deaths": 2.56,
+        "care_homes": 4.25,
+        "welfare_spending": 560.63,
+        "poverty_clients": 53.44,
+        "meal_support": 21,
+        "unemployment": 6.3,
+        "homelessness_clients": 4.35,
+        "disability_share": 14.55,
+        "disability_clients": 40.39,
+        "foster_care_intensity": 10.7,
+        "deaths": 12.26,
+        "circulatory_disease": 210.58
+      },
+      "area_scores": {
+        "seniors": 0.78,
+        "mental_health": 0.19,
+        "poverty": 0.78,
+        "homelessness": 0.86,
+        "disability": 0.69,
+        "family_foster_care": 0.9,
+        "health": 0.81
+      },
+      "category_scores": {
+        "aging": 0.83,
+        "loneliness": 0.67,
+        "depopulation": 0.81,
+        "mental_health": 0.19,
+        "service_access": 0.19
+      },
+      "top_areas": [
+        "family_foster_care",
+        "homelessness",
+        "health"
+      ],
+      "top_challenges": [
+        "aging",
+        "depopulation",
+        "loneliness"
+      ]
+    },
+    {
+      "code": "dabrowski",
+      "name": "powiat dąbrowski",
+      "population": 57253,
+      "values": {
+        "share_65_plus": 18.17,
+        "care_potential": 314,
+        "oldest_old_support": 11,
+        "natural_increase": -3.26,
+        "net_migration": -2.1,
+        "external_cause_deaths": 2.6,
+        "care_homes": 0,
+        "welfare_spending": 494.08,
+        "poverty_clients": 42.93,
+        "meal_support": 29,
+        "unemployment": 11.4,
+        "homelessness_clients": 0.64,
+        "disability_share": 13.36,
+        "disability_clients": 35.55,
+        "foster_care_intensity": 4.63,
+        "deaths": 9.98,
+        "circulatory_disease": 174.65
+      },
+      "area_scores": {
+        "seniors": 0.43,
+        "mental_health": 0.24,
+        "poverty": 0.81,
+        "homelessness": 0.14,
+        "disability": 0.38,
+        "family_foster_care": 0.29,
+        "health": 0.4
+      },
+      "category_scores": {
+        "aging": 0.5,
+        "loneliness": 0.29,
+        "depopulation": 0.76,
+        "mental_health": 0.24,
+        "service_access": 0.55
+      },
+      "top_areas": [
+        "poverty",
+        "seniors",
+        "health"
+      ],
+      "top_challenges": [
+        "depopulation",
+        "service_access",
+        "aging"
+      ]
+    },
+    {
+      "code": "gorlicki",
+      "name": "powiat gorlicki",
+      "population": 104592,
+      "values": {
+        "share_65_plus": 19.34,
+        "care_potential": 311,
+        "oldest_old_support": 12,
+        "natural_increase": -4.61,
+        "net_migration": -2.97,
+        "external_cause_deaths": 3.63,
+        "care_homes": 0,
+        "welfare_spending": 637.2,
+        "poverty_clients": 41.55,
+        "meal_support": 36,
+        "unemployment": 6.3,
+        "homelessness_clients": 0.49,
+        "disability_share": 18.65,
+        "disability_clients": 39.65,
+        "foster_care_intensity": 6.1,
+        "deaths": 10.61,
+        "circulatory_disease": 257.91
+      },
+      "area_scores": {
+        "seniors": 0.59,
+        "mental_health": 0.71,
+        "poverty": 0.68,
+        "homelessness": 0.05,
+        "disability": 0.74,
+        "family_foster_care": 0.52,
+        "health": 0.76
+      },
+      "category_scores": {
+        "aging": 0.57,
+        "loneliness": 0.62,
+        "depopulation": 0.83,
+        "mental_health": 0.71,
+        "service_access": 0.5
+      },
+      "top_areas": [
+        "health",
+        "disability",
+        "mental_health"
+      ],
+      "top_challenges": [
+        "depopulation",
+        "mental_health",
+        "loneliness"
+      ]
+    },
+    {
+      "code": "krakowski",
+      "name": "powiat krakowski",
+      "population": 304278,
+      "values": {
+        "share_65_plus": 17.39,
+        "care_potential": 384,
+        "oldest_old_support": 10,
+        "natural_increase": -1.67,
+        "net_migration": 8.11,
+        "external_cause_deaths": 2.92,
+        "care_homes": 0.99,
+        "welfare_spending": 361.98,
+        "poverty_clients": 46.81,
+        "meal_support": 9,
+        "unemployment": 4.3,
+        "homelessness_clients": 2.95,
+        "disability_share": 12.99,
+        "disability_clients": 41.29,
+        "foster_care_intensity": 4.15,
+        "deaths": 8.8,
+        "circulatory_disease": 201.39
+      },
+      "area_scores": {
+        "seniors": 0.14,
+        "mental_health": 0.33,
+        "poverty": 0.33,
+        "homelessness": 0.71,
+        "disability": 0.52,
+        "family_foster_care": 0.24,
+        "health": 0.38
+      },
+      "category_scores": {
+        "aging": 0.17,
+        "loneliness": 0.1,
+        "depopulation": 0.21,
+        "mental_health": 0.33,
+        "service_access": 0.69
+      },
+      "top_areas": [
+        "homelessness",
+        "disability",
+        "health"
+      ],
+      "top_challenges": [
+        "service_access",
+        "mental_health",
+        "depopulation"
+      ]
+    },
+    {
+      "code": "limanowski",
+      "name": "powiat limanowski",
+      "population": 131626,
+      "values": {
+        "share_65_plus": 15.07,
+        "care_potential": 350,
+        "oldest_old_support": 10,
+        "natural_increase": 1.43,
+        "net_migration": -1,
+        "external_cause_deaths": 3.51,
+        "care_homes": 1.52,
+        "welfare_spending": 375.42,
+        "poverty_clients": 47.06,
+        "meal_support": 26,
+        "unemployment": 7.1,
+        "homelessness_clients": 0.41,
+        "disability_share": 12,
+        "disability_clients": 26.84,
+        "foster_care_intensity": 3,
+        "deaths": 7.86,
+        "circulatory_disease": 210.52
+      },
+      "area_scores": {
+        "seniors": 0.1,
+        "mental_health": 0.62,
+        "poverty": 0.83,
+        "homelessness": 0,
+        "disability": 0.1,
+        "family_foster_care": 0.05,
+        "health": 0.33
+      },
+      "category_scores": {
+        "aging": 0.1,
+        "loneliness": 0.1,
+        "depopulation": 0.26,
+        "mental_health": 0.62,
+        "service_access": 0.55
+      },
+      "top_areas": [
+        "poverty",
+        "mental_health",
+        "health"
+      ],
+      "top_challenges": [
+        "mental_health",
+        "service_access",
+        "depopulation"
+      ]
+    },
+    {
+      "code": "krakow",
+      "name": "powiat m. Kraków",
+      "population": 809168,
+      "values": {
+        "share_65_plus": 19.89,
+        "care_potential": 241,
+        "oldest_old_support": 17,
+        "natural_increase": -0.62,
+        "net_migration": 4.04,
+        "external_cause_deaths": 2.54,
+        "care_homes": 0.87,
+        "welfare_spending": 820.76,
+        "poverty_clients": 46.43,
+        "meal_support": 12,
+        "unemployment": 2,
+        "homelessness_clients": 7.63,
+        "disability_share": 13.87,
+        "disability_clients": 36.84,
+        "foster_care_intensity": 6.17,
+        "deaths": 9.36,
+        "circulatory_disease": 201.96
+      },
+      "area_scores": {
+        "seniors": 0.87,
+        "mental_health": 0.14,
+        "poverty": 0.29,
+        "homelessness": 1,
+        "disability": 0.52,
+        "family_foster_care": 0.57,
+        "health": 0.48
+      },
+      "category_scores": {
+        "aging": 0.81,
+        "loneliness": 1,
+        "depopulation": 0.17,
+        "mental_health": 0.14,
+        "service_access": 0.4
+      },
+      "top_areas": [
+        "homelessness",
+        "seniors",
+        "family_foster_care"
+      ],
+      "top_challenges": [
+        "loneliness",
+        "aging",
+        "service_access"
+      ]
+    },
+    {
+      "code": "nowy-sacz",
+      "name": "powiat m. Nowy Sącz",
+      "population": 79821,
+      "values": {
+        "share_65_plus": 21.12,
+        "care_potential": 302,
+        "oldest_old_support": 13,
+        "natural_increase": -2.99,
+        "net_migration": -3.67,
+        "external_cause_deaths": 3.83,
+        "care_homes": 0,
+        "welfare_spending": 1033.38,
+        "poverty_clients": 60.2,
+        "meal_support": 14,
+        "unemployment": 3.5,
+        "homelessness_clients": 2.91,
+        "disability_share": 13.27,
+        "disability_clients": 49.16,
+        "foster_care_intensity": 11.49,
+        "deaths": 10.24,
+        "circulatory_disease": 163.72
+      },
+      "area_scores": {
+        "seniors": 0.7,
+        "mental_health": 0.76,
+        "poverty": 0.54,
+        "homelessness": 0.67,
+        "disability": 0.71,
+        "family_foster_care": 1,
+        "health": 0.36
+      },
+      "category_scores": {
+        "aging": 0.71,
+        "loneliness": 0.67,
+        "depopulation": 0.79,
+        "mental_health": 0.76,
+        "service_access": 0.4
+      },
+      "top_areas": [
+        "family_foster_care",
+        "mental_health",
+        "disability"
+      ],
+      "top_challenges": [
+        "depopulation",
+        "mental_health",
+        "aging"
+      ]
+    },
+    {
+      "code": "tarnow",
+      "name": "powiat m. Tarnów",
+      "population": 102123,
+      "values": {
+        "share_65_plus": 24.83,
+        "care_potential": 241,
+        "oldest_old_support": 16,
+        "natural_increase": -5.15,
+        "net_migration": -4.02,
+        "external_cause_deaths": 2.37,
+        "care_homes": 0.98,
+        "welfare_spending": 986.38,
+        "poverty_clients": 42.05,
+        "meal_support": 25,
+        "unemployment": 4.2,
+        "homelessness_clients": 4.53,
+        "disability_share": 18.68,
+        "disability_clients": 42.8,
+        "foster_care_intensity": 10.6,
+        "deaths": 10.84,
+        "circulatory_disease": 388.59
+      },
+      "area_scores": {
+        "seniors": 0.97,
+        "mental_health": 0.1,
+        "poverty": 0.51,
+        "homelessness": 0.9,
+        "disability": 0.88,
+        "family_foster_care": 0.86,
+        "health": 0.88
+      },
+      "category_scores": {
+        "aging": 0.98,
+        "loneliness": 0.95,
+        "depopulation": 0.93,
+        "mental_health": 0.1,
+        "service_access": 0.31
+      },
+      "top_areas": [
+        "seniors",
+        "homelessness",
+        "disability"
+      ],
+      "top_challenges": [
+        "aging",
+        "loneliness",
+        "depopulation"
+      ]
+    },
+    {
+      "code": "miechowski",
+      "name": "powiat miechowski",
+      "population": 46305,
+      "values": {
+        "share_65_plus": 23.51,
+        "care_potential": 255,
+        "oldest_old_support": 14,
+        "natural_increase": -7.09,
+        "net_migration": -1.25,
+        "external_cause_deaths": 4.32,
+        "care_homes": 0,
+        "welfare_spending": 643.21,
+        "poverty_clients": 33.83,
+        "meal_support": 13,
+        "unemployment": 5.2,
+        "homelessness_clients": 2.44,
+        "disability_share": 20.72,
+        "disability_clients": 37.38,
+        "foster_care_intensity": 11.33,
+        "deaths": 13.26,
+        "circulatory_disease": 209.82
+      },
+      "area_scores": {
+        "seniors": 0.9,
+        "mental_health": 0.9,
+        "poverty": 0.29,
+        "homelessness": 0.57,
+        "disability": 0.74,
+        "family_foster_care": 0.95,
+        "health": 0.81
+      },
+      "category_scores": {
+        "aging": 0.9,
+        "loneliness": 0.9,
+        "depopulation": 0.81,
+        "mental_health": 0.9,
+        "service_access": 0.48
+      },
+      "top_areas": [
+        "family_foster_care",
+        "seniors",
+        "mental_health"
+      ],
+      "top_challenges": [
+        "aging",
+        "loneliness",
+        "mental_health"
+      ]
+    },
+    {
+      "code": "myslenicki",
+      "name": "powiat myślenicki",
+      "population": 129984,
+      "values": {
+        "share_65_plus": 16.27,
+        "care_potential": 386,
+        "oldest_old_support": 9,
+        "natural_increase": -0.32,
+        "net_migration": 2.19,
+        "external_cause_deaths": 4.45,
+        "care_homes": 4.62,
+        "welfare_spending": 370.08,
+        "poverty_clients": 39.75,
+        "meal_support": 13,
+        "unemployment": 3.1,
+        "homelessness_clients": 1.25,
+        "disability_share": 12.92,
+        "disability_clients": 35.1,
+        "foster_care_intensity": 1.89,
+        "deaths": 9.2,
+        "circulatory_disease": 197.6
+      },
+      "area_scores": {
+        "seniors": 0.06,
+        "mental_health": 0.95,
+        "poverty": 0.24,
+        "homelessness": 0.24,
+        "disability": 0.26,
+        "family_foster_care": 0,
+        "health": 0.4
+      },
+      "category_scores": {
+        "aging": 0.1,
+        "loneliness": 0,
+        "depopulation": 0.17,
+        "mental_health": 0.95,
+        "service_access": 0.43
+      },
+      "top_areas": [
+        "mental_health",
+        "health",
+        "disability"
+      ],
+      "top_challenges": [
+        "mental_health",
+        "service_access",
+        "depopulation"
+      ]
+    },
+    {
+      "code": "nowosadecki",
+      "name": "powiat nowosądecki",
+      "population": 214876,
+      "values": {
+        "share_65_plus": 15.12,
+        "care_potential": 365,
+        "oldest_old_support": 10,
+        "natural_increase": 0.81,
+        "net_migration": -1.42,
+        "external_cause_deaths": 4.53,
+        "care_homes": 0.93,
+        "welfare_spending": 462.02,
+        "poverty_clients": 34.37,
+        "meal_support": 31,
+        "unemployment": 7.8,
+        "homelessness_clients": 0.54,
+        "disability_share": 11.93,
+        "disability_clients": 25.94,
+        "foster_care_intensity": 3.4,
+        "deaths": 7.99,
+        "circulatory_disease": 152.26
+      },
+      "area_scores": {
+        "seniors": 0.1,
+        "mental_health": 1,
+        "poverty": 0.65,
+        "homelessness": 0.1,
+        "disability": 0.02,
+        "family_foster_care": 0.1,
+        "health": 0.02
+      },
+      "category_scores": {
+        "aging": 0.1,
+        "loneliness": 0.1,
+        "depopulation": 0.4,
+        "mental_health": 1,
+        "service_access": 0.5
+      },
+      "top_areas": [
+        "mental_health",
+        "poverty",
+        "seniors"
+      ],
+      "top_challenges": [
+        "mental_health",
+        "service_access",
+        "depopulation"
+      ]
+    },
+    {
+      "code": "nowotarski",
+      "name": "powiat nowotarski",
+      "population": 189984,
+      "values": {
+        "share_65_plus": 17.16,
+        "care_potential": 322,
+        "oldest_old_support": 11,
+        "natural_increase": 0.01,
+        "net_migration": -0.56,
+        "external_cause_deaths": 4.09,
+        "care_homes": 2.63,
+        "welfare_spending": 315.18,
+        "poverty_clients": 48.03,
+        "meal_support": 12,
+        "unemployment": 4.8,
+        "homelessness_clients": 1.51,
+        "disability_share": 12.13,
+        "disability_clients": 39.54,
+        "foster_care_intensity": 5.55,
+        "deaths": 8.25,
+        "circulatory_disease": 168.72
+      },
+      "area_scores": {
+        "seniors": 0.29,
+        "mental_health": 0.81,
+        "poverty": 0.48,
+        "homelessness": 0.43,
+        "disability": 0.33,
+        "family_foster_care": 0.43,
+        "health": 0.14
+      },
+      "category_scores": {
+        "aging": 0.29,
+        "loneliness": 0.29,
+        "depopulation": 0.29,
+        "mental_health": 0.81,
+        "service_access": 0.64
+      },
+      "top_areas": [
+        "mental_health",
+        "poverty",
+        "homelessness"
+      ],
+      "top_challenges": [
+        "mental_health",
+        "service_access",
+        "aging"
+      ]
+    },
+    {
+      "code": "olkuski",
+      "name": "powiat olkuski",
+      "population": 105000,
+      "values": {
+        "share_65_plus": 23.56,
+        "care_potential": 292,
+        "oldest_old_support": 13,
+        "natural_increase": -6.59,
+        "net_migration": -1.92,
+        "external_cause_deaths": 2.23,
+        "care_homes": 4.76,
+        "welfare_spending": 439.3,
+        "poverty_clients": 41.67,
+        "meal_support": 11,
+        "unemployment": 6.7,
+        "homelessness_clients": 2.96,
+        "disability_share": 14.74,
+        "disability_clients": 29.09,
+        "foster_care_intensity": 6.7,
+        "deaths": 12.53,
+        "circulatory_disease": 326.7
+      },
+      "area_scores": {
+        "seniors": 0.79,
+        "mental_health": 0,
+        "poverty": 0.44,
+        "homelessness": 0.76,
+        "disability": 0.48,
+        "family_foster_care": 0.71,
+        "health": 0.95
+      },
+      "category_scores": {
+        "aging": 0.86,
+        "loneliness": 0.67,
+        "depopulation": 0.86,
+        "mental_health": 0,
+        "service_access": 0.24
+      },
+      "top_areas": [
+        "health",
+        "seniors",
+        "homelessness"
+      ],
+      "top_challenges": [
+        "aging",
+        "depopulation",
+        "loneliness"
+      ]
+    },
+    {
+      "code": "oswiecimski",
+      "name": "powiat oświęcimski",
+      "population": 147678,
+      "values": {
+        "share_65_plus": 21.44,
+        "care_potential": 285,
+        "oldest_old_support": 13,
+        "natural_increase": -4.76,
+        "net_migration": 0.1,
+        "external_cause_deaths": 2.83,
+        "care_homes": 0.68,
+        "welfare_spending": 420.34,
+        "poverty_clients": 45.4,
+        "meal_support": 13,
+        "unemployment": 4.7,
+        "homelessness_clients": 5.62,
+        "disability_share": 12.94,
+        "disability_clients": 48.71,
+        "foster_care_intensity": 7.85,
+        "deaths": 10.97,
+        "circulatory_disease": 247.71
+      },
+      "area_scores": {
+        "seniors": 0.78,
+        "mental_health": 0.29,
+        "poverty": 0.44,
+        "homelessness": 0.95,
+        "disability": 0.64,
+        "family_foster_care": 0.81,
+        "health": 0.81
+      },
+      "category_scores": {
+        "aging": 0.83,
+        "loneliness": 0.67,
+        "depopulation": 0.57,
+        "mental_health": 0.29,
+        "service_access": 0.67
+      },
+      "top_areas": [
+        "homelessness",
+        "family_foster_care",
+        "health"
+      ],
+      "top_challenges": [
+        "aging",
+        "loneliness",
+        "service_access"
+      ]
+    },
+    {
+      "code": "proszowicki",
+      "name": "powiat proszowicki",
+      "population": 41929,
+      "values": {
+        "share_65_plus": 20.79,
+        "care_potential": 311,
+        "oldest_old_support": 11,
+        "natural_increase": -4.03,
+        "net_migration": 1.5,
+        "external_cause_deaths": 3.48,
+        "care_homes": 0,
+        "welfare_spending": 467.97,
+        "poverty_clients": 36.94,
+        "meal_support": 15,
+        "unemployment": 5.5,
+        "homelessness_clients": 1.45,
+        "disability_share": 18.15,
+        "disability_clients": 26.78,
+        "foster_care_intensity": 6.67,
+        "deaths": 11.13,
+        "circulatory_disease": 281.65
+      },
+      "area_scores": {
+        "seniors": 0.52,
+        "mental_health": 0.57,
+        "poverty": 0.43,
+        "homelessness": 0.33,
+        "disability": 0.45,
+        "family_foster_care": 0.67,
+        "health": 0.88
+      },
+      "category_scores": {
+        "aging": 0.64,
+        "loneliness": 0.29,
+        "depopulation": 0.48,
+        "mental_health": 0.57,
+        "service_access": 0.57
+      },
+      "top_areas": [
+        "health",
+        "family_foster_care",
+        "mental_health"
+      ],
+      "top_challenges": [
+        "aging",
+        "mental_health",
+        "service_access"
+      ]
+    },
+    {
+      "code": "suski",
+      "name": "powiat suski",
+      "population": 82546,
+      "values": {
+        "share_65_plus": 18.02,
+        "care_potential": 321,
+        "oldest_old_support": 11,
+        "natural_increase": -2.84,
+        "net_migration": -1.37,
+        "external_cause_deaths": 3.36,
+        "care_homes": 1.21,
+        "welfare_spending": 344.47,
+        "poverty_clients": 59.96,
+        "meal_support": 19,
+        "unemployment": 4.4,
+        "homelessness_clients": 1.52,
+        "disability_share": 12.85,
+        "disability_clients": 44.86,
+        "foster_care_intensity": 5.85,
+        "deaths": 10.67,
+        "circulatory_disease": 196.83
+      },
+      "area_scores": {
+        "seniors": 0.38,
+        "mental_health": 0.52,
+        "poverty": 0.65,
+        "homelessness": 0.48,
+        "disability": 0.55,
+        "family_foster_care": 0.48,
+        "health": 0.57
+      },
+      "category_scores": {
+        "aging": 0.43,
+        "loneliness": 0.29,
+        "depopulation": 0.64,
+        "mental_health": 0.52,
+        "service_access": 0.71
+      },
+      "top_areas": [
+        "poverty",
+        "health",
+        "disability"
+      ],
+      "top_challenges": [
+        "service_access",
+        "depopulation",
+        "mental_health"
+      ]
+    },
+    {
+      "code": "tarnowski",
+      "name": "powiat tarnowski",
+      "population": 197119,
+      "values": {
+        "share_65_plus": 17.39,
+        "care_potential": 321,
+        "oldest_old_support": 11,
+        "natural_increase": -1.9,
+        "net_migration": 0.7,
+        "external_cause_deaths": 4.25,
+        "care_homes": 4.06,
+        "welfare_spending": 395.46,
+        "poverty_clients": 37.7,
+        "meal_support": 19,
+        "unemployment": 6.7,
+        "homelessness_clients": 0.77,
+        "disability_share": 14.45,
+        "disability_clients": 36.33,
+        "foster_care_intensity": 3.88,
+        "deaths": 9.14,
+        "circulatory_disease": 175.14
+      },
+      "area_scores": {
+        "seniors": 0.32,
+        "mental_health": 0.86,
+        "poverty": 0.54,
+        "homelessness": 0.19,
+        "disability": 0.52,
+        "family_foster_care": 0.14,
+        "health": 0.31
+      },
+      "category_scores": {
+        "aging": 0.33,
+        "loneliness": 0.29,
+        "depopulation": 0.36,
+        "mental_health": 0.86,
+        "service_access": 0.43
+      },
+      "top_areas": [
+        "mental_health",
+        "poverty",
+        "disability"
+      ],
+      "top_challenges": [
+        "mental_health",
+        "service_access",
+        "depopulation"
+      ]
+    },
+    {
+      "code": "tatrzanski",
+      "name": "powiat tatrzański",
+      "population": 66346,
+      "values": {
+        "share_65_plus": 19.39,
+        "care_potential": 293,
+        "oldest_old_support": 13,
+        "natural_increase": -1.1,
+        "net_migration": -0.99,
+        "external_cause_deaths": 3.55,
+        "care_homes": 1.51,
+        "welfare_spending": 386.92,
+        "poverty_clients": 44.18,
+        "meal_support": 14,
+        "unemployment": 8,
+        "homelessness_clients": 1.25,
+        "disability_share": 12.63,
+        "disability_clients": 41.55,
+        "foster_care_intensity": 7.18,
+        "deaths": 8.74,
+        "circulatory_disease": 159.09
+      },
+      "area_scores": {
+        "seniors": 0.67,
+        "mental_health": 0.67,
+        "poverty": 0.67,
+        "homelessness": 0.24,
+        "disability": 0.45,
+        "family_foster_care": 0.76,
+        "health": 0.12
+      },
+      "category_scores": {
+        "aging": 0.67,
+        "loneliness": 0.67,
+        "depopulation": 0.4,
+        "mental_health": 0.67,
+        "service_access": 0.55
+      },
+      "top_areas": [
+        "family_foster_care",
+        "seniors",
+        "mental_health"
+      ],
+      "top_challenges": [
+        "aging",
+        "loneliness",
+        "mental_health"
+      ]
+    },
+    {
+      "code": "wadowicki",
+      "name": "powiat wadowicki",
+      "population": 157099,
+      "values": {
+        "share_65_plus": 18.23,
+        "care_potential": 347,
+        "oldest_old_support": 11,
+        "natural_increase": -2.64,
+        "net_migration": 0.06,
+        "external_cause_deaths": 3.04,
+        "care_homes": 1.27,
+        "welfare_spending": 453.04,
+        "poverty_clients": 52.32,
+        "meal_support": 10,
+        "unemployment": 5.6,
+        "homelessness_clients": 3.22,
+        "disability_share": 13.43,
+        "disability_clients": 47.09,
+        "foster_care_intensity": 5.08,
+        "deaths": 10.07,
+        "circulatory_disease": 233.87
+      },
+      "area_scores": {
+        "seniors": 0.37,
+        "mental_health": 0.43,
+        "poverty": 0.52,
+        "homelessness": 0.81,
+        "disability": 0.71,
+        "family_foster_care": 0.33,
+        "health": 0.67
+      },
+      "category_scores": {
+        "aging": 0.4,
+        "loneliness": 0.29,
+        "depopulation": 0.45,
+        "mental_health": 0.43,
+        "service_access": 0.43
+      },
+      "top_areas": [
+        "homelessness",
+        "disability",
+        "health"
+      ],
+      "top_challenges": [
+        "depopulation",
+        "mental_health",
+        "service_access"
+      ]
+    },
+    {
+      "code": "wielicki",
+      "name": "powiat wielicki",
+      "population": 145276,
+      "values": {
+        "share_65_plus": 15.58,
+        "care_potential": 426,
+        "oldest_old_support": 9,
+        "natural_increase": 0.23,
+        "net_migration": 11.19,
+        "external_cause_deaths": 3,
+        "care_homes": 2.75,
+        "welfare_spending": 401.11,
+        "poverty_clients": 39.79,
+        "meal_support": 9,
+        "unemployment": 3.5,
+        "homelessness_clients": 2.52,
+        "disability_share": 11.81,
+        "disability_clients": 36.52,
+        "foster_care_intensity": 4.06,
+        "deaths": 8.72,
+        "circulatory_disease": 166.42
+      },
+      "area_scores": {
+        "seniors": 0.03,
+        "mental_health": 0.38,
+        "poverty": 0.16,
+        "homelessness": 0.62,
+        "disability": 0.19,
+        "family_foster_care": 0.19,
+        "health": 0.14
+      },
+      "category_scores": {
+        "aging": 0.05,
+        "loneliness": 0,
+        "depopulation": 0.05,
+        "mental_health": 0.38,
+        "service_access": 0.43
+      },
+      "top_areas": [
+        "homelessness",
+        "mental_health",
+        "disability"
+      ],
+      "top_challenges": [
+        "service_access",
+        "mental_health",
+        "aging"
+      ]
+    }
+  ]
+}
