@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { getToolName, isToolUIPart, type UIMessage } from "ai";
 import { AiThinking } from "@/components/ai/ai-thinking";
-import { ChatSurface, type ToolPart } from "@/components/ai/chat-surface";
+import { ChatSurface, type RenderToolPart } from "@/components/ai/chat-surface";
 import { useSkillChat } from "@/lib/ai/use-skill-chat";
 import { MATCH_EXAMPLES } from "@/lib/matchmaking/examples";
 import { SHOW_MATCHES, type ShowMatchesInput, type ShowMatchesOutput } from "@/lib/matchmaking/show-matches";
@@ -77,16 +77,19 @@ export function MatchFlow({
         (part.output as ShowMatchesOutput).shown,
     )?.toolCallId;
 
-  const renderShowMatches = (part: ToolPart) => {
-    if (part.state === "input-streaming" || part.state === "input-available") {
-      return busy ? <AiThinking label={showMatchesLabel} /> : null;
-    }
-    if (part.state !== "output-available" || !(part.output as ShowMatchesOutput).shown) return null;
+  // The reply in progress shows one „Wybieram…”, also when showMatches runs twice.
+  const liveShowMatches = messages
+    .at(-1)
+    ?.parts.filter(isToolUIPart)
+    .findLast((part) => getToolName(part) === SHOW_MATCHES)?.toolCallId;
+
+  const renderShowMatches: RenderToolPart = (part, { streaming }) => {
     // ChatSurface remounts a message when its turn ends, so the results wait
     // for that: mounted once, they keep their focus and state.
-    if (busy && messages.at(-1)?.parts.some((candidate) => candidate === part)) {
-      return <AiThinking label={showMatchesLabel} />;
+    if (streaming) {
+      return part.toolCallId === liveShowMatches ? <AiThinking label={showMatchesLabel} /> : null;
     }
+    if (part.state !== "output-available" || !(part.output as ShowMatchesOutput).shown) return null;
 
     const input = part.input as ShowMatchesInput;
     if (input.noMatch) {
