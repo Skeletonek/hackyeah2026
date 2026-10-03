@@ -23,7 +23,7 @@ Stan trzyma się w cookies (`lib/a11y-prefs.ts`), a layout główny nakłada go 
 | Kontrast | `data-theme="kontrast"` | wariant `kontrast:` |
 | Rozmiar tekstu | klasa `a-plus` (112,5%) / `a-plusplus` (125%) | nic; wystarczy używać `rem` |
 
-Rozmiar tekstu to `SelectMenu` (shadcn `select` na Radix) z opcjami „Zwykły” / „Większy” / „Największy”. Wybór od razu wysyła wartość do tej samej akcji serwerowej co pozostałe przełączniki. Bez JS widać natywny `<select>` z przyciskiem „Zastosuj”.
+Rozmiar tekstu to `SelectMenu` (shadcn `select` na Radix): zamknięty pokazuje „Tekst: A” / „A+” / „A++”, lista dodaje słowa „Zwykły” / „Większy” / „Największy”. Nazwa dostępna to np. „Tekst: A+, większy”. Wybór od razu wysyła wartość do tej samej akcji serwerowej co pozostałe przełączniki. Bez JS widać natywny `<select>` z przyciskiem „Zastosuj”.
 
 Skala tekstu w trybie Prościej: `text-simple-h1` (3 rem), `text-simple-h2` (2,5 rem), `text-simple-h3` (2 rem), `text-simple-h4` i `text-simple-lead` (1,625 rem), `text-simple-base` (1,375 rem), `text-simple-sm` (1,125 rem). Używaj z wariantem: `text-h1 simple:text-simple-h1`. Tekst `body` rośnie do `text-simple-base` sam.
 
