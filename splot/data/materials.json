@@ -1,0 +1,667 @@
+{
+  "source": {
+    "title": "Materiały ROPS Kraków",
+    "pages": [
+      "https://rops.krakow.pl/badania-analizy-raporty/raporty-z-badan",
+      "https://rops.krakow.pl/innowacje-spoleczne/publikacje-ze-swiata-innowacji",
+      "https://rops.krakow.pl/innowacje-spoleczne/biblioteka-innowacji-spolecznych/kategorie"
+    ],
+    "note": "Linki do stron i plików ROPS; plików nie przechowujemy w repo."
+  },
+  "materials": [
+    {
+      "kind": "report",
+      "title": "Mapa Wyzwań Społecznych",
+      "year": 2024,
+      "publisher": "ROPS Kraków, Dział Innowacji Społecznych",
+      "url": "https://rops.krakow.pl/mpliki/IS/IWS_20/za._nr_2._Mapa_Wyzwa_Spoecznych.pdf",
+      "description": "Osiem obszarów wyzwań społecznych z definicjami, danymi, kluczowymi wyzwaniami, personami i raportami do pogłębienia wiedzy. Dane ogólnopolskie.",
+      "areas": [
+        "family_foster_care",
+        "homelessness",
+        "disability",
+        "poverty",
+        "foreigners",
+        "health",
+        "mental_health",
+        "seniors"
+      ],
+      "categories": []
+    },
+    {
+      "kind": "report",
+      "title": "Ocena zasobów pomocy społecznej w województwie małopolskim za rok 2024",
+      "year": 2025,
+      "publisher": "ROPS Kraków",
+      "url": "https://rops.krakow.pl/mpliki/PS/BA/Raport_OZPS_za_rok_2024.pdf",
+      "description": "Coroczny raport o zasobach pomocy społecznej w Małopolsce: kadry, placówki, świadczenia i potrzeby gmin i powiatów.",
+      "areas": [
+        "poverty",
+        "homelessness",
+        "disability",
+        "seniors",
+        "family_foster_care"
+      ],
+      "categories": [
+        "service_access",
+        "coordination"
+      ]
+    },
+    {
+      "kind": "report",
+      "title": "Wyzwania i potrzeby sektora opiekuńczego w Małopolsce. Perspektywa opiekunów oraz podmiotów realizujących opiekę",
+      "year": 2026,
+      "publisher": "ROPS Kraków",
+      "url": "https://rops.krakow.pl/pliki-do-pobrania/wpis,2026-i-wyzwania-i-potrzeby-sektora-opiekunczego-w-malopolsce-perspektywa-opiekunow-oraz-podmiotow-realizujacych-opieke,1479",
+      "description": "Raport z badania o wyzwaniach i potrzebach opieki w Małopolsce z perspektywy opiekunów i podmiotów, które ją realizują.",
+      "areas": [
+        "seniors",
+        "disability"
+      ],
+      "categories": [
+        "aging",
+        "service_access"
+      ]
+    },
+    {
+      "kind": "report",
+      "title": "Usługi społeczne w Małopolsce – deficyty, potrzeby, potencjał rozwojowy. Zaktualizowane wnioski z diagnozy",
+      "year": 2025,
+      "publisher": "ROPS Kraków",
+      "url": "https://rops.krakow.pl/pliki-do-pobrania/wpis,2025-uslugi-spoleczne-w-malopolsce-deficyty-potrzeby-potencjal-rozwojowy-zaktualizowane-wnioski-z-diagnozy,1348",
+      "description": "Zaktualizowane wnioski z diagnozy usług społecznych w Małopolsce: deficyty, potrzeby i potencjał rozwojowy.",
+      "areas": [],
+      "categories": [
+        "service_access",
+        "coordination"
+      ]
+    },
+    {
+      "kind": "report",
+      "title": "Mieszkania wspomagane i treningowe w Małopolsce jako priorytet w rozwoju usług społecznych i deinstytucjonalizacji",
+      "year": 2025,
+      "publisher": "ROPS Kraków",
+      "url": "https://rops.krakow.pl/pliki-do-pobrania/wpis,2025-mieszkania-wspomagane-i-treningowe-w-malopolsce-jako-priorytet-w-rozwoju-uslug-spolecznych-i-deinstytucjonalizacji,1310",
+      "description": "Raport o mieszkaniach wspomaganych i treningowych w Małopolsce jako priorytecie rozwoju usług społecznych i deinstytucjonalizacji.",
+      "areas": [
+        "disability",
+        "homelessness"
+      ],
+      "categories": [
+        "service_access"
+      ]
+    },
+    {
+      "kind": "report",
+      "title": "Domy pomocy społecznej w Małopolsce wobec wyzwań deinstytucjonalizacji opieki długoterminowej",
+      "year": 2025,
+      "publisher": "ROPS Kraków",
+      "url": "https://rops.krakow.pl/pliki-do-pobrania/wpis,2025-domy-pomocy-spolecznej-w-malopolsce-wobec-wyzwan-deinstytucjonalizacji-opieki-dlugoterminowej,1257",
+      "description": "Raport o małopolskich domach pomocy społecznej wobec deinstytucjonalizacji opieki długoterminowej.",
+      "areas": [
+        "seniors",
+        "disability"
+      ],
+      "categories": [
+        "aging",
+        "service_access"
+      ]
+    },
+    {
+      "kind": "report",
+      "title": "Piecza zastępcza w Małopolsce. Stan, potrzeby, wyzwania",
+      "year": 2024,
+      "publisher": "ROPS Kraków",
+      "url": "https://rops.krakow.pl/pliki-do-pobrania/wpis,2024-piecza-zastepcza-w-malopolsce-stan-potrzeby-wyzwania,1105",
+      "description": "Raport o stanie, potrzebach i wyzwaniach pieczy zastępczej w Małopolsce.",
+      "areas": [
+        "family_foster_care"
+      ],
+      "categories": [
+        "service_access"
+      ]
+    },
+    {
+      "kind": "report",
+      "title": "Diagnoza potrzeb, zasobów i potencjału rozwojowego (Załącznik do Programu Wsparcia Rodziny „Rodzinna Małopolska 2030”)",
+      "year": 2023,
+      "publisher": "ROPS Kraków",
+      "url": "https://rops.krakow.pl/pliki-do-pobrania/wpis,2023-diagnoza-potrzeb-zasobow-i-potencjalu-rozwojowego-zalacznik-do-programu-wsparcia-rodziny-rodzinna-malopolska-2030,856",
+      "description": "Diagnoza potrzeb, zasobów i potencjału rozwojowego w obszarze wsparcia rodziny, załącznik do programu „Rodzinna Małopolska 2030”.",
+      "areas": [
+        "family_foster_care"
+      ],
+      "categories": [
+        "service_access"
+      ]
+    },
+    {
+      "kind": "report",
+      "title": "Usługi społeczne w Małopolsce – deficyty, potrzeby, potencjał rozwojowy (Załącznik do „Regionalnego planu rozwoju usług społecznych i deinstytucjonalizacji” na lata 2023–2025 z perspektywą do 2030)",
+      "year": 2023,
+      "publisher": "ROPS Kraków",
+      "url": "https://rops.krakow.pl/pliki-do-pobrania/wpis,2023-uslugi-spoleczne-w-malopolsce-deficyty-potrzeby-potencjal-rozwojowy-zalacznik-do-regionalnego-planu-rozwoju-uslug-spolecznych-i-deinstytucjonalizacji-na-lata-2023-2025-z-perspektywa-do-2030,855",
+      "description": "Diagnoza usług społecznych w Małopolsce, załącznik do regionalnego planu rozwoju usług społecznych i deinstytucjonalizacji.",
+      "areas": [],
+      "categories": [
+        "service_access",
+        "coordination"
+      ]
+    },
+    {
+      "kind": "report",
+      "title": "Diagnoza sytuacji społecznej i gospodarczej oraz sektora ekonomii społecznej w Małopolsce",
+      "year": 2021,
+      "publisher": "ROPS Kraków",
+      "url": "https://rops.krakow.pl/pliki-do-pobrania/wpis,2021-diagnoza-sytuacji-spolecznej-i-gospodarczej-oraz-sektora-ekonomii-spolecznej-w-malopolsce,903",
+      "description": "Diagnoza sytuacji społecznej i gospodarczej Małopolski oraz sektora ekonomii społecznej.",
+      "areas": [
+        "poverty"
+      ],
+      "categories": [
+        "coordination"
+      ]
+    },
+    {
+      "kind": "report",
+      "title": "Opiekunowie rodzinni osób starszych – problemy, potrzeby, wyzwania dla polityki społecznej",
+      "year": 2015,
+      "publisher": "ROPS Kraków",
+      "url": "https://rops.krakow.pl/pliki-do-pobrania/wpis,2015-opiekunowie-rodzinni-osob-starszych-problemy-potrzeby-wyzwania-dla-polityki-spolecznej,842",
+      "description": "Raport o problemach i potrzebach rodzinnych opiekunów osób starszych oraz wyzwaniach dla polityki społecznej.",
+      "areas": [
+        "seniors"
+      ],
+      "categories": [
+        "aging",
+        "loneliness"
+      ]
+    },
+    {
+      "kind": "report",
+      "title": "Mieszkania chronione dla osób opuszczających pieczę zastępczą w Małopolsce. Analiza dostępnej oferty i zapotrzebowania",
+      "year": 2015,
+      "publisher": "ROPS Kraków",
+      "url": "https://rops.krakow.pl/pliki-do-pobrania/wpis,2015-mieszkania-chronione-dla-osob-opuszczajacych-piecze-zastepcza-w-malopolsce-analiza-dostepnej-oferty-i-zapotrzebowania,843",
+      "description": "Analiza oferty mieszkań chronionych i zapotrzebowania na nie wśród osób opuszczających pieczę zastępczą.",
+      "areas": [
+        "family_foster_care",
+        "homelessness"
+      ],
+      "categories": [
+        "service_access"
+      ]
+    },
+    {
+      "kind": "report",
+      "title": "Kondycja małopolskiej rodziny",
+      "year": 2014,
+      "publisher": "ROPS Kraków",
+      "url": "https://rops.krakow.pl/pliki-do-pobrania/wpis,2014-kondycja-malopolskiej-rodziny,854",
+      "description": "Raport z badania kondycji rodzin w Małopolsce.",
+      "areas": [
+        "family_foster_care"
+      ],
+      "categories": []
+    },
+    {
+      "kind": "report",
+      "title": "Wykluczenie społeczne w Małopolsce – strategie przeciwdziałania. Wnioski na przyszłość",
+      "year": 2013,
+      "publisher": "ROPS Kraków",
+      "url": "https://rops.krakow.pl/pliki-do-pobrania/wpis,2013-wykluczenie-spoleczne-w-malopolsce-strategie-przeciwdzialania-wnioski-na-przyszlosc,844",
+      "description": "Podsumowanie cyklu badań o wykluczeniu społecznym w Małopolsce i wnioski na przyszłość.",
+      "areas": [
+        "poverty"
+      ],
+      "categories": [
+        "coordination"
+      ]
+    },
+    {
+      "kind": "report",
+      "title": "Wykluczenie społeczne w Małopolsce – strategie przeciwdziałania. Osoby niepełnosprawne",
+      "year": 2013,
+      "publisher": "ROPS Kraków",
+      "url": "https://rops.krakow.pl/pliki-do-pobrania/wpis,2013-wykluczenie-spoleczne-w-malopolsce-strategie-przeciwdzialania-osoby-niepelnosprawne,846",
+      "description": "Raport z cyklu o wykluczeniu społecznym: osoby z niepełnosprawnościami.",
+      "areas": [
+        "disability"
+      ],
+      "categories": [
+        "service_access"
+      ]
+    },
+    {
+      "kind": "report",
+      "title": "Wykluczenie społeczne w Małopolsce – strategie przeciwdziałania. Osoby chorujące psychicznie",
+      "year": 2013,
+      "publisher": "ROPS Kraków",
+      "url": "https://rops.krakow.pl/pliki-do-pobrania/wpis,2013-wykluczenie-spoleczne-w-malopolsce-strategie-przeciwdzialania-osoby-chorujace-psychicznie,847",
+      "description": "Raport z cyklu o wykluczeniu społecznym: osoby chorujące psychicznie.",
+      "areas": [
+        "mental_health"
+      ],
+      "categories": [
+        "mental_health"
+      ]
+    },
+    {
+      "kind": "report",
+      "title": "Wykluczenie społeczne w Małopolsce – strategie przeciwdziałania. Osoby opuszczające placówki opiekuńczo-wychowawcze",
+      "year": 2013,
+      "publisher": "ROPS Kraków",
+      "url": "https://rops.krakow.pl/pliki-do-pobrania/wpis,2013-wykluczenie-spoleczne-w-malopolsce-strategie-przeciwdzialania-osoby-opuszczajace-placowki-opiekunczo-wychowawcze,848",
+      "description": "Raport z cyklu o wykluczeniu społecznym: osoby opuszczające placówki opiekuńczo-wychowawcze.",
+      "areas": [
+        "family_foster_care"
+      ],
+      "categories": []
+    },
+    {
+      "kind": "report",
+      "title": "Wykluczenie społeczne w Małopolsce – strategie przeciwdziałania. Osoby bezrobotne",
+      "year": 2013,
+      "publisher": "ROPS Kraków",
+      "url": "https://rops.krakow.pl/pliki-do-pobrania/wpis,2013-wykluczenie-spoleczne-w-malopolsce-strategie-przeciwdzialania-osoby-bezrobotne,849",
+      "description": "Raport z cyklu o wykluczeniu społecznym: osoby bezrobotne.",
+      "areas": [
+        "poverty"
+      ],
+      "categories": []
+    },
+    {
+      "kind": "report",
+      "title": "Wykluczenie społeczne w Małopolsce – strategie przeciwdziałania. Osoby bezdomne",
+      "year": 2013,
+      "publisher": "ROPS Kraków",
+      "url": "https://rops.krakow.pl/pliki-do-pobrania/wpis,2013-wykluczenie-spoleczne-w-malopolsce-strategie-przeciwdzialania-osoby-bezdomne,850",
+      "description": "Raport z cyklu o wykluczeniu społecznym: osoby w kryzysie bezdomności.",
+      "areas": [
+        "homelessness"
+      ],
+      "categories": []
+    },
+    {
+      "kind": "report",
+      "title": "Wykluczenie społeczne w Małopolsce – strategie przeciwdziałania. Osoby opuszczające zakłady karne",
+      "year": 2013,
+      "publisher": "ROPS Kraków",
+      "url": "https://rops.krakow.pl/pliki-do-pobrania/wpis,2013-wykluczenie-spoleczne-w-malopolsce-strategie-przeciwdzialania-osoby-opuszczajace-zaklady-karne,845",
+      "description": "Raport z cyklu o wykluczeniu społecznym: osoby opuszczające zakłady karne.",
+      "areas": [],
+      "categories": []
+    },
+    {
+      "kind": "report",
+      "title": "Przemoc w rodzinie w opinii Małopolan",
+      "year": 2011,
+      "publisher": "ROPS Kraków",
+      "url": "https://rops.krakow.pl/pliki-do-pobrania/wpis,2011-przemoc-w-rodzinie-w-opinii-malopolan,1106",
+      "description": "Raport z badania opinii mieszkańców Małopolski o przemocy w rodzinie.",
+      "areas": [
+        "family_foster_care"
+      ],
+      "categories": []
+    },
+    {
+      "kind": "guide",
+      "title": "Połącz kropki, czyli o sile innowacji społecznych w obszarze włączenia społecznego",
+      "year": 2023,
+      "publisher": "ROPS Kraków",
+      "url": "https://rops.krakow.pl/mpliki/IS/PUBLIKACJE_INKUBATOROW/Pocz_kropki_Publikacja_IWS.pdf",
+      "description": "Innowacje społeczne inkubowane w projekcie „Inkubator Włączenia Społecznego”.",
+      "areas": [],
+      "categories": []
+    },
+    {
+      "kind": "guide",
+      "title": "Innowacje społeczne dla dostępności",
+      "year": 2022,
+      "publisher": "ROPS Kraków",
+      "url": "https://rops.krakow.pl/mpliki/IS/ikony_PUBLIKACJE/Innowacje_spoleczne_dla_dostepnosci.pdf",
+      "description": "Nowe rozwiązania dla dostępności przetestowane w projekcie „Inkubator Dostępności”.",
+      "areas": [
+        "disability"
+      ],
+      "categories": [
+        "service_access"
+      ]
+    },
+    {
+      "kind": "guide",
+      "title": "Przewodnik po innowacjach społecznych",
+      "year": 2019,
+      "publisher": "ROPS Kraków",
+      "url": "https://rops.krakow.pl/mpliki/IS/ikony_PUBLIKACJE/InnMalopolska_przewodnik_po_innowacjach.pdf",
+      "description": "Czy i jak administracja publiczna może inkubować innowacje społeczne? Doświadczenia projektu „Małopolski Inkubator Innowacji Społecznych”.",
+      "areas": [],
+      "categories": [
+        "coordination"
+      ]
+    },
+    {
+      "kind": "guide",
+      "title": "Guide to social innovations",
+      "year": 2019,
+      "publisher": "ROPS Kraków",
+      "url": "https://rops.krakow.pl/mpliki/IS/PUBLIKACJE_INKUBATOROW/InnMalopolska_Guide_to_social_innovations_MIIS_ENG.pdf",
+      "description": "Experiences from the project „Malopolska Incubator for Social Innovation” (w języku angielskim).",
+      "areas": [],
+      "categories": [
+        "coordination"
+      ],
+      "language": "en"
+    },
+    {
+      "kind": "guide",
+      "title": "Sami-Dzielni! Nowe standardy mieszkalnictwa wspomaganego dla osób z niepełnosprawnościami sprzężonymi",
+      "year": 2023,
+      "publisher": "ROPS Kraków",
+      "url": "https://rops.krakow.pl/dzial-publikacje/sami-dzielni-nowe-standardy-mieszkalnictwa-wspomaganego-dla-osob-z-niepelnosprawnosciami-sprzezonymi-2023-1",
+      "description": "Standardy mieszkalnictwa wspomaganego dla osób z niepełnosprawnościami sprzężonymi.",
+      "areas": [
+        "disability"
+      ],
+      "categories": [
+        "service_access"
+      ]
+    },
+    {
+      "kind": "guide",
+      "title": "Standardy tworzenia dostępnych dokumentów, treści, multimediów i wydarzeń on-line w ROPS w Krakowie",
+      "year": 2022,
+      "publisher": "ROPS Kraków",
+      "url": "https://rops.krakow.pl/dzial-publikacje/standardy-tworzenia-dostepnych-dokumentow-tresci-multimediow-i-wydarzen-on-line-w-rops-w-krakowie-2022-2",
+      "description": "Jak przygotować dostępne dokumenty, treści, multimedia i wydarzenia on-line.",
+      "areas": [
+        "disability"
+      ],
+      "categories": [
+        "digital_exclusion"
+      ]
+    },
+    {
+      "kind": "guide",
+      "title": "Ewaluacja programów i przedsięwzięć społecznych. Katalog dobrych praktyk",
+      "year": 2012,
+      "publisher": "ROPS Kraków",
+      "url": "https://rops.krakow.pl/pliki-do-pobrania/wpis,2012-ewaluacja-programow-i-przedsiewziec-spolecznych-katalog-dobrych-praktyk,890",
+      "description": "Katalog dobrych praktyk w ewaluacji programów i przedsięwzięć społecznych.",
+      "areas": [],
+      "categories": [
+        "coordination"
+      ]
+    },
+    {
+      "kind": "canvas",
+      "title": "Kanwa Innowacji Społecznych (Social Canvas)",
+      "publisher": "INNO AGH, ROPS Kraków",
+      "url": "https://rops.krakow.pl/mpliki/IS/Moj_folder/INNO_AGH_-_SOCIAL_CANVAS.pdf",
+      "description": "Plansza do planowania innowacji społecznej: problem, rozwiązanie, zasoby, zmiana, partnerzy, dotarcie, odbiorcy, koszty, wskaźniki sukcesu i finansowanie. Do wydruku lub wypełnienia.",
+      "areas": [],
+      "categories": []
+    },
+    {
+      "kind": "video",
+      "title": "BaWita",
+      "publisher": "ROPS Kraków, Biblioteka Innowacji Społecznych",
+      "url": "https://www.youtube.com/watch?v=o7UhDlebLJo",
+      "description": "BaWita - tablica manipulacyjno terapeutyczna dla seniorów i osób z chorobami dementywnymi",
+      "areas": [
+        "seniors"
+      ],
+      "categories": [
+        "aging",
+        "service_access"
+      ],
+      "innovation_slug": "bawita"
+    },
+    {
+      "kind": "video",
+      "title": "Edki - kredki terapeutyczne",
+      "publisher": "ROPS Kraków, Biblioteka Innowacji Społecznych",
+      "url": "https://www.youtube.com/watch?v=ev173g-d_vA&t=5s",
+      "description": "Kredki terapeutyczne dla dzieci ze spastycznością kończyny górnej.",
+      "areas": [
+        "family_foster_care"
+      ],
+      "categories": [
+        "service_access"
+      ],
+      "innovation_slug": "edki-kredki-terapeutyczne"
+    },
+    {
+      "kind": "video",
+      "title": "Głuchy czytelnik w bibliotece",
+      "publisher": "ROPS Kraków, Biblioteka Innowacji Społecznych",
+      "url": "https://www.youtube.com/watch?v=BoAC-J1Owr4",
+      "description": "Publikacja przybliżająca osobom g/Głuchym instytucję jaką jest biblioteka oraz pokazująca, że czytanie jest ważne",
+      "areas": [
+        "disability"
+      ],
+      "categories": [
+        "service_access"
+      ],
+      "innovation_slug": "gluchy-czytelnik-w-bibliotece"
+    },
+    {
+      "kind": "video",
+      "title": "Gra o zdrowie",
+      "publisher": "ROPS Kraków, Biblioteka Innowacji Społecznych",
+      "url": "https://www.youtube.com/watch?v=YRzg98fveHc",
+      "description": "Terapeutyczna gra planszowa dotycząca rynku pracy, dedykowana osobom z doświadczeniem problemów zdrowia psychicznego.",
+      "areas": [
+        "health"
+      ],
+      "categories": [
+        "mental_health",
+        "service_access"
+      ],
+      "innovation_slug": "gra-o-zdrowie"
+    },
+    {
+      "kind": "video",
+      "title": "Hear IT",
+      "publisher": "ROPS Kraków, Biblioteka Innowacji Społecznych",
+      "url": "https://www.youtube.com/watch?v=uDLOSoCb3E8",
+      "description": "Internetowa platforma edukacyjna opracowana w Polskim Języku Migowym dla osób g/Głuchych pragnących wejść w branżę IT.",
+      "areas": [
+        "disability"
+      ],
+      "categories": [
+        "service_access",
+        "digital_exclusion"
+      ],
+      "innovation_slug": "hear-it"
+    },
+    {
+      "kind": "video",
+      "title": "Himalaje autyzmu",
+      "publisher": "ROPS Kraków, Biblioteka Innowacji Społecznych",
+      "url": "https://www.youtube.com/watch?v=q31uQ435YAo",
+      "description": "Metoda pracy z osobami neuroatypowymi (przede wszystkim ze spektrum autyzmu), które przejawiają zachowania nieakceptowane społecznie, w tym agresywne i autoagresywne mająca na celu przygotowanie pacjenta do wizyty lekarskiej, umożliwienie diagnozy schorzenia i podjęcie leczenia.",
+      "areas": [
+        "health"
+      ],
+      "categories": [
+        "service_access"
+      ],
+      "innovation_slug": "himalaje-autyzmu"
+    },
+    {
+      "kind": "video",
+      "title": "Hop hop - mobilny plac zabaw",
+      "publisher": "ROPS Kraków, Biblioteka Innowacji Społecznych",
+      "url": "https://www.youtube.com/watch?v=kE9lpr4OJPQ",
+      "description": "Meblozabawka wspomagająca rozwój ruchowy i rehabilitację dzieci w wieku przedszkolnym z trudnościami motorycznymi.",
+      "areas": [
+        "family_foster_care"
+      ],
+      "categories": [
+        "service_access"
+      ],
+      "innovation_slug": "hop-hop-mobilny-plac-zabaw"
+    },
+    {
+      "kind": "video",
+      "title": "koMIX życiowy",
+      "publisher": "ROPS Kraków, Biblioteka Innowacji Społecznych",
+      "url": "https://www.youtube.com/watch?v=hohm7FnsukY",
+      "description": "koMIX życiowy - gra terapeutyczna dla wychowanków placówek opiekuńczo-wychowawczych",
+      "areas": [
+        "family_foster_care"
+      ],
+      "categories": [
+        "mental_health"
+      ],
+      "innovation_slug": "komix-zyciowy"
+    },
+    {
+      "kind": "video",
+      "title": "Merkury",
+      "publisher": "ROPS Kraków, Biblioteka Innowacji Społecznych",
+      "url": "http://www.youtube.com/watch?v=BK6a8fjELR0&t=48s",
+      "description": "Merkury - symulator kiosków samoobsługowych",
+      "areas": [
+        "seniors"
+      ],
+      "categories": [
+        "digital_exclusion",
+        "aging"
+      ],
+      "innovation_slug": "merkury"
+    },
+    {
+      "kind": "video",
+      "title": "Paszport pacjenta z chorobą rzadką",
+      "publisher": "ROPS Kraków, Biblioteka Innowacji Społecznych",
+      "url": "https://www.youtube.com/watch?v=7QedTbxzsPk",
+      "description": "Paszport jest rozwiązaniem informatycznym, w ramach którego zapisane są najważniejsze informacje na temat choroby, leków, lekarzy prowadzących pacjenta z chorobą rzadką. Informacje te znajdują się na elektronicznym nośniku, który pacjent może zawsze mieć przy sobie.",
+      "areas": [
+        "health"
+      ],
+      "categories": [
+        "service_access",
+        "coordination"
+      ],
+      "innovation_slug": "paszport-pacjenta-z-choroba-rzadka"
+    },
+    {
+      "kind": "video",
+      "title": "Patryk i Kropka",
+      "publisher": "ROPS Kraków, Biblioteka Innowacji Społecznych",
+      "url": "https://youtu.be/JfmyToWVuOs",
+      "description": "Patryk i Kropka - opowiadania łatwe do czytania i rozumienia dla młodzieży z niepełnosprawnością intelektualną",
+      "areas": [
+        "family_foster_care"
+      ],
+      "categories": [
+        "service_access"
+      ],
+      "innovation_slug": "patryk-i-kropka"
+    },
+    {
+      "kind": "video",
+      "title": "Przenośne, modularne łazienki",
+      "publisher": "ROPS Kraków, Biblioteka Innowacji Społecznych",
+      "url": "https://www.youtube.com/watch?v=Pl5bkpxEqgs",
+      "description": "Przenośne, modularne łazienki dla osób ubogich",
+      "areas": [
+        "seniors"
+      ],
+      "categories": [
+        "service_access",
+        "loneliness"
+      ],
+      "innovation_slug": "przenosne-modularne-lazienki"
+    },
+    {
+      "kind": "video",
+      "title": "Puzzle 3D",
+      "publisher": "ROPS Kraków, Biblioteka Innowacji Społecznych",
+      "url": "https://www.youtube.com/watch?v=T_OM-4WqGzE",
+      "description": "Zabawki edukacyjne (puzzle 3D) wspomagające naukę alfabetu Braille'a dzieci i młodzieży z dysfunkcją wzroku",
+      "areas": [
+        "family_foster_care"
+      ],
+      "categories": [
+        "service_access"
+      ],
+      "innovation_slug": "puzzle-3d"
+    },
+    {
+      "kind": "video",
+      "title": "Rodzina adopcyjna dorasta",
+      "publisher": "ROPS Kraków, Biblioteka Innowacji Społecznych",
+      "url": "https://www.youtube.com/watch?v=HZzYekiW_nY",
+      "description": "Narządzie do pracy własnej dla rodziców adopcyjnych, których dzieci wkraczają w wiek nastoletnim.",
+      "areas": [
+        "family_foster_care"
+      ],
+      "categories": [
+        "service_access",
+        "mental_health"
+      ],
+      "innovation_slug": "rodzina-adopcyjna-dorasta"
+    },
+    {
+      "kind": "video",
+      "title": "Strażnik",
+      "publisher": "ROPS Kraków, Biblioteka Innowacji Społecznych",
+      "url": "https://www.youtube.com/watch?v=zYVr0zMAqWE",
+      "description": "Aplikacja mobilna dla osób g/Głuchych współpracująca z opaskami typu \"smart band\" i telefonami, która powiadamia użytkownika o sygnale dźwiękowym wskazującym na zagrożenie (np. pożar).",
+      "areas": [
+        "disability"
+      ],
+      "categories": [
+        "digital_exclusion",
+        "service_access"
+      ],
+      "innovation_slug": "straznik"
+    },
+    {
+      "kind": "video",
+      "title": "Wibraap",
+      "publisher": "ROPS Kraków, Biblioteka Innowacji Społecznych",
+      "url": "https://www.youtube.com/watch?v=nmsEAH6BbR0",
+      "description": "Urządzenie elektroniczne w postaci kamizelki, które umożliwia pozasłuchowe odczuwanie muzyki osobom z niepełnosprawnością narządu słuchu.",
+      "areas": [
+        "disability"
+      ],
+      "categories": [
+        "service_access",
+        "digital_exclusion"
+      ],
+      "innovation_slug": "wibraap"
+    },
+    {
+      "kind": "video",
+      "title": "Wsparcie imprez masowych dla osób z niepełnosprawnością wzroku",
+      "publisher": "ROPS Kraków, Biblioteka Innowacji Społecznych",
+      "url": "https://www.youtube.com/watch?v=3s2kYAWWVkM",
+      "description": "Modułowe, mobilne maty naprowadzające, które tworzą drogi bezpiecznego poruszania się na koncertach, festiwalach oraz wewnątrz budynków dla osób z niepełnosprawnościami.",
+      "areas": [
+        "disability"
+      ],
+      "categories": [
+        "service_access"
+      ],
+      "innovation_slug": "wsparcie-imprez-masowych-dla-osob-z-niepelnosprawnoscia-wzroku"
+    },
+    {
+      "kind": "video",
+      "title": "Zakupy na jednym wózku z dzieckiem z niepełnosprawnością ruchową",
+      "publisher": "ROPS Kraków, Biblioteka Innowacji Społecznych",
+      "url": "https://www.youtube.com/watch?v=2tUImD7I-CE",
+      "description": "Nakładka na wózek zakupowy, umożliwiająca dokonywanie samodzielnych zakupów z dzieckiem z niepełnosprawnością (m.in. z mózgowym porażeniem dziecięcym).",
+      "areas": [
+        "disability"
+      ],
+      "categories": [
+        "service_access"
+      ],
+      "innovation_slug": "zakupy-na-jednym-wozku-z-dzieckiem-z-niepelnosprawnoscia-ruchowa"
+    }
+  ]
+}
