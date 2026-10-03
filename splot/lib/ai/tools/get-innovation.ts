@@ -18,12 +18,12 @@ export type InnovationDetails = {
   evidence: string | null;
   stage: Enums<"innovation_stage">;
   categories: Enums<"challenge_category">[];
-  target_group: string | null;
+  target_groups: string[];
   source_url: string | null;
 };
 
 const COLUMNS =
-  "slug, title, lead, solution, problem, audience, adopters, evidence, stage, categories, target_group, source_url";
+  "slug, title, lead, solution, problem, audience, adopters, evidence, stage, categories, target_groups, source_url";
 
 /** One published innovation in full, or `null` when the slug is unknown. */
 export async function getInnovation(

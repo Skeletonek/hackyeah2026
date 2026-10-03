@@ -141,7 +141,7 @@ export function createSkillHandler<CONTEXT>(skill: Skill<CONTEXT>) {
 
     const tools =
       typeof skill.tools === "function"
-        ? skill.tools({ supabase, conversationId: id, context })
+        ? skill.tools({ supabase, conversationId: id, messages, context })
         : skill.tools;
 
     const result = streamText({
