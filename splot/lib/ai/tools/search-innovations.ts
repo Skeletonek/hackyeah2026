@@ -30,15 +30,13 @@ export async function searchInnovations(
 ): Promise<InnovationMatch[]> {
   const embedding = await embed(input.query);
 
-  // `match_innovations` comes from the Data contract migration (SPL-18);
-  // drop the cast once database.types.ts is regenerated with it.
-  const { data, error } = await (supabase as SupabaseClient).rpc("match_innovations", {
+  const { data, error } = await supabase.rpc("match_innovations", {
     query_text: input.query,
     query_embedding: JSON.stringify(embedding),
     match_count: input.limit,
-    filter_categories: input.categories?.length ? input.categories : null,
+    filter_categories: input.categories?.length ? input.categories : undefined,
   });
   if (error) throw new Error(`match_innovations failed: ${error.message}`);
 
-  return (data ?? []) as InnovationMatch[];
+  return data ?? [];
 }
