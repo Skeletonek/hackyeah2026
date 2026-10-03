@@ -25,9 +25,7 @@ async function showMatches(
 ): Promise<ShowMatchesOutput> {
   let sources: MatchSource[] = [];
   if (input.items.length > 0) {
-    // `solution` and `problem` come from the Data contract migration (SPL-18);
-    // drop the cast once database.types.ts is regenerated with them.
-    const { data, error } = await (supabase as SupabaseClient)
+    const { data, error } = await supabase
       .from("innovations")
       .select("slug, solution, problem")
       .in(
@@ -36,7 +34,7 @@ async function showMatches(
       )
       .eq("published", true);
     if (error) throw new Error(`showMatches failed: ${error.message}`);
-    sources = (data ?? []) as MatchSource[];
+    sources = data ?? [];
   }
 
   const problems = checkMatches(input, sources);

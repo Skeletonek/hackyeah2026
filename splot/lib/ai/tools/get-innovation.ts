@@ -18,7 +18,7 @@ export type InnovationDetails = {
   evidence: string | null;
   stage: Enums<"innovation_stage">;
   categories: Enums<"challenge_category">[];
-  target_groups: string[];
+  target_groups: Enums<"target_group">[];
   source_url: string | null;
 };
 
@@ -30,9 +30,7 @@ export async function getInnovation(
   supabase: SupabaseClient<Database>,
   input: z.infer<typeof getInnovationInput>,
 ): Promise<InnovationDetails | null> {
-  // These columns come from the Data contract migration (SPL-18); drop the
-  // cast once database.types.ts is regenerated with them.
-  const { data, error } = await (supabase as SupabaseClient)
+  const { data, error } = await supabase
     .from("innovations")
     .select(COLUMNS)
     .eq("slug", input.slug)
@@ -40,5 +38,5 @@ export async function getInnovation(
     .maybeSingle();
   if (error) throw new Error(`getInnovation failed: ${error.message}`);
 
-  return data as InnovationDetails | null;
+  return data;
 }
