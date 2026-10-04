@@ -1,5 +1,7 @@
 import "server-only";
 
+import type { UIMessage } from "ai";
+import { z } from "zod";
 import { Constants } from "@/lib/supabase/database.types";
 import { createClient } from "@/lib/supabase/server";
 import type {
@@ -91,6 +93,69 @@ export async function listSubmissions(filters: SubmissionFilters): Promise<Inbox
   const { data, error } = await query;
   if (error) throw new Error(`listSubmissions failed: ${error.message}`);
   return (data ?? []) as InboxRow[];
+}
+
+export type SubmissionDetail = InboxRow & {
+  author_id: string;
+  ai_needs_expert: boolean | null;
+  /** The other submission behind the duplicate banner, if it still exists. */
+  duplicate: { id: string; case_number: string } | null;
+  /** Suggested innovations in the AI order; unknown or unpublished slugs are dropped. */
+  suggestions: { slug: string; title: string }[];
+  /** The assistant conversations behind the submission, oldest first. */
+  messages: UIMessage[];
+};
+
+/** Everything the detail page shows; `null` for an unknown or deleted id. */
+export async function getSubmissionDetail(id: string): Promise<SubmissionDetail | null> {
+  if (!z.uuid().safeParse(id).success) return null;
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("submissions")
+    .select(`${COLUMNS}, author_id, ai_needs_expert, ai_suggested_slugs`)
+    .eq("id", id)
+    .maybeSingle();
+  if (error) throw new Error(`getSubmissionDetail failed: ${error.message}`);
+  if (!data) return null;
+  const { ai_suggested_slugs, ...row } = data as InboxRow &
+    Pick<SubmissionDetail, "author_id" | "ai_needs_expert"> & { ai_suggested_slugs: string[] | null };
+
+  const slugs = ai_suggested_slugs ?? [];
+  const [duplicate, innovations, conversations] = await Promise.all([
+    row.possible_duplicate_id
+      ? supabase
+          .from("submissions")
+          .select("id, case_number")
+          .eq("id", row.possible_duplicate_id)
+          .maybeSingle()
+      : null,
+    slugs.length > 0
+      ? supabase.from("innovations").select("slug, title").in("slug", slugs).eq("published", true)
+      : null,
+    supabase
+      .from("conversations")
+      .select("messages")
+      .eq("submission_id", id)
+      .order("created_at", { ascending: true }),
+  ]);
+  if (conversations.error) {
+    throw new Error(`getSubmissionDetail conversations failed: ${conversations.error.message}`);
+  }
+
+  const titles = new Map((innovations?.data ?? []).map((item) => [item.slug, item.title]));
+
+  return {
+    ...row,
+    duplicate: duplicate?.data ?? null,
+    suggestions: slugs.flatMap((slug) => {
+      const title = titles.get(slug);
+      return title ? [{ slug, title }] : [];
+    }),
+    messages: (conversations.data ?? []).flatMap(
+      (conversation) => conversation.messages as unknown as UIMessage[],
+    ),
+  };
 }
 
 /** The row behind the preview pane; `null` for an unknown or deleted id. */
