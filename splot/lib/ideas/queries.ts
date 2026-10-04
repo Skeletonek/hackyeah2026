@@ -2,6 +2,7 @@ import "server-only";
 import type { IdeaStage, SubmissionKind, SubmissionStatus } from "@/lib/labels";
 import type { CreatedSubmission } from "@/lib/submissions/on-created";
 import { createClient } from "@/lib/supabase/server";
+import type { CanvasGrantCall } from "./canvas";
 import { isUuid, type Idea } from "./card";
 
 type Client = Awaited<ReturnType<typeof createClient>>;
@@ -37,6 +38,23 @@ export async function getOpenGrantCall(id: string | undefined): Promise<OpenGran
   if (error) {
     console.error("getOpenGrantCall failed", error.message);
     return null;
+  }
+  return data;
+}
+
+/** Grant calls that take applications now; the canvas reads them for „Finansowanie”. */
+export async function listOpenGrantCalls(): Promise<CanvasGrantCall[]> {
+  const now = new Date().toISOString();
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("grant_calls")
+    .select("title, description, closes_at")
+    .lte("opens_at", now)
+    .gte("closes_at", now)
+    .order("closes_at");
+  if (error) {
+    console.error("listOpenGrantCalls failed", error.message);
+    return [];
   }
   return data;
 }
