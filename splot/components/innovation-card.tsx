@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { INNOVATION_STAGE_LABELS, type ChallengeCategory, type InnovationStage } from "@/lib/labels";
 import { cn } from "@/lib/utils";
 
-const STAGE_ICONS: Record<InnovationStage, LucideIcon> = {
+/** Stage as an icon next to its label; shared with the innovation page. */
+export const STAGE_ICONS: Record<InnovationStage, LucideIcon> = {
   idea: Lightbulb,
   pilot: FlaskConical,
   deployed: CircleCheck,

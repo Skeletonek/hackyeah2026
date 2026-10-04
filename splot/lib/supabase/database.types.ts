@@ -640,6 +640,22 @@ export type Database = {
         }[]
       }
       owns_active_pilot: { Args: { p_pilot_id: string }; Returns: boolean }
+      pilot_stats: {
+        Args: { p_innovation_id: string }
+        Returns: {
+          active_pilots: number
+          avg_rating: number
+          review_count: number
+        }[]
+      }
+      public_pilot_places: {
+        Args: { p_innovation_id: string }
+        Returns: {
+          municipality: string
+          organization_type: Database["public"]["Enums"]["organization_type"]
+          status: Database["public"]["Enums"]["pilot_status"]
+        }[]
+      }
       set_user_role: {
         Args: {
           p_role: Database["public"]["Enums"]["user_role"]
