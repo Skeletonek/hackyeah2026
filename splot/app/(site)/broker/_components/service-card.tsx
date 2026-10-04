@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { MapPin, MessagesSquare, Printer } from "lucide-react";
+import { MapPin, Search, Printer } from "lucide-react";
 import { AiHint } from "@/components/ai/ai-hint";
 import { Button } from "@/components/ui/button";
 import type { ServiceCard } from "@/lib/broker/schema";
@@ -115,8 +115,8 @@ export function ServiceCardView({
           </Button>
           <Button type="button" variant="outline" asChild>
             <Link href={`/match?q=${encodeURIComponent(innovationTitle)}`}>
-              <MessagesSquare aria-hidden strokeWidth={2} />
-              Zapytaj eksperta
+              <Search aria-hidden strokeWidth={2} />
+              Szukaj podobnych rozwiązań
             </Link>
           </Button>
         </div>

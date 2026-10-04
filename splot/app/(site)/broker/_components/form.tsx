@@ -26,6 +26,7 @@ export function BrokerForm({
   initialSlug: string;
 }) {
   const [slug, setSlug] = useState(initialSlug);
+  const [submittedInnovation, setSubmittedInnovation] = useState<BrokerInnovationOption | null>(null);
   const [municipalityType, setMunicipalityType] = useState("wiejska");
   const [population, setPopulation] = useState("5-20-tys");
   const [budget, setBudget] = useState("10-50-tys");
@@ -46,8 +47,6 @@ export function BrokerForm({
 
   const card = object as Partial<ServiceCard> | undefined;
   const done = !isLoading && !error && !streamFailed && Boolean(card?.title);
-  const innovationTitle =
-    innovations.find((item) => item.slug === slug)?.title ?? slug;
 
   function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
@@ -58,6 +57,11 @@ export function BrokerForm({
     setStaffError(nextStaffError);
     if (nextSlugError || nextStaffError) return;
 
+    // Keep the card's links and feedback tied to the request, even if the form changes.
+    setSubmittedInnovation({
+      slug,
+      title: innovations.find((item) => item.slug === slug)?.title ?? slug,
+    });
     setStreamFailed(false);
     submit({
       slug,
@@ -172,11 +176,11 @@ export function BrokerForm({
           </p>
         ) : null}
 
-        {card?.title ? (
+        {card?.title && submittedInnovation ? (
           <ServiceCardView
             card={card}
-            slug={slug}
-            innovationTitle={innovationTitle}
+            slug={submittedInnovation.slug}
+            innovationTitle={submittedInnovation.title}
             complete={done}
           />
         ) : null}

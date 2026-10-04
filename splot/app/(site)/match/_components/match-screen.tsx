@@ -41,7 +41,7 @@ export async function MatchScreen({
   const id = z.uuid().safeParse(c);
   // `?m=` keeps the municipality given on the entry screen across a reload.
   const municipality = matchmakingContext.shape.municipality.safeParse(m);
-  // `?q=` pre-fills the problem field, e.g. from the broker's „Zapytaj eksperta”.
+  // `?q=` pre-fills the problem field, e.g. from the broker's search for similar solutions.
   const initialQuery = typeof q === "string" && q.trim() ? q.slice(0, 2000) : undefined;
   const [initialMessages, innovationCount, user] = await Promise.all([
     id.success ? loadConversationMessages("matchmaking", id.data) : [],

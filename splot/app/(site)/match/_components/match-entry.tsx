@@ -25,7 +25,7 @@ export function MatchEntry({
 }: {
   copy: MatchCopy;
   askMunicipality: boolean;
-  /** Pre-fills the problem field, e.g. from the broker's „Zapytaj eksperta”. */
+  /** Pre-fills the problem field, e.g. from the broker's search for similar solutions. */
   initialQuery?: string;
   onSubmit: (text: string, municipality?: string) => void;
 }) {
