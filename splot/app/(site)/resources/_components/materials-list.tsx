@@ -21,9 +21,10 @@ export function MaterialsList({ materials }: { materials: Material[] }) {
               {MATERIAL_KIND_LABELS[kind]}{" "}
               <span className="text-muted-foreground">({items.length})</span>
             </h2>
-            <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {/* Masonry via CSS columns: DOM order runs down each column, so focus and reading order match the visual order. */}
+            <ul className="-mb-4 columns-1 gap-4 sm:columns-2 lg:columns-3">
               {items.map((item) => (
-                <li key={item.url}>
+                <li key={item.url} className="mb-4 break-inside-avoid">
                   <MaterialCard material={item} />
                 </li>
               ))}
