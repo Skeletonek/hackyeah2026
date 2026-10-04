@@ -1,7 +1,6 @@
-import Link from "next/link";
 import { CategoryBadge } from "@/components/category-badge";
 import { formatDate, formatTime } from "@/lib/dates";
-import type { InboxRow, SubmissionFilters } from "@/lib/admin/queries";
+import { inboxHref, type InboxRow, type SubmissionFilters } from "@/lib/admin/queries";
 import {
   DuplicateChip,
   KindChip,
@@ -10,16 +9,7 @@ import {
   StatusChip,
 } from "./chips";
 import { RetryTriageButton } from "./retry-triage-button";
-
-/** Current filters plus the row to preview, as a query string. */
-function rowHref(filters: SubmissionFilters, id: string) {
-  const params = new URLSearchParams();
-  for (const [key, value] of Object.entries(filters)) {
-    if (value) params.set(key, value);
-  }
-  params.set("selected", id);
-  return `/admin/submissions?${params}`;
-}
+import { RowLink } from "./row-link";
 
 /**
  * The inbox list. Every row is a link to `?selected=<id>`, so selecting works
@@ -48,8 +38,9 @@ export function InboxList({
             }
           >
             <div className="flex flex-wrap items-start gap-3">
-              <Link
-                href={rowHref(filters, row.id)}
+              <RowLink
+                href={inboxHref(filters, row.id)}
+                data-submission-id={row.id}
                 aria-current={isSelected ? "true" : undefined}
                 className="flex min-w-0 flex-1 flex-wrap items-center gap-x-3 gap-y-2 rounded-md"
               >
@@ -70,7 +61,7 @@ export function InboxList({
                   {formatDate(row.created_at)}, {formatTime(row.created_at)}
                 </span>
                 {isSelected ? <span className="sr-only">— wybrane zgłoszenie</span> : null}
-              </Link>
+              </RowLink>
 
               {row.ai_triaged_at ? null : (
                 <div className="shrink-0">
