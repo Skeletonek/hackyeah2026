@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { startTransition, useCallback, useEffect, useRef, useState } from "react";
 import type { UIMessage } from "ai";
 import { Lightbulb } from "lucide-react";
 import { AiHint } from "@/components/ai/ai-hint";
@@ -14,6 +14,7 @@ import { InnovationCard } from "@/components/innovation-card";
 import { Button } from "@/components/ui/button";
 import { useSkillChat } from "@/lib/ai/use-skill-chat";
 import type { IdeaCardValues } from "@/lib/ideas/card";
+import { hasEnteredIdeaStep, stepEntryText } from "@/lib/ideas/assistant-history";
 import type {
   ListGapsInput,
   ShowSimilarItem,
@@ -51,7 +52,7 @@ function readLiveCard(snapshot: IdeaCardValues): IdeaCardValues {
   };
   const list = (name: keyof IdeaCardValues, fallback: string[]) => {
     const values = data.getAll(name).map(String);
-    return values.length > 0 ? values : fallback;
+    return form.querySelector(`[name="${name}"]`) ? values : fallback;
   };
   return {
     title: text("title", snapshot.title),
@@ -225,7 +226,10 @@ export function AssistantPanel({
 }) {
   const [conversationId] = useState(() => initialConversationId ?? crypto.randomUUID());
   const [announcement, setAnnouncement] = useState("");
+  const [linkFailed, setLinkFailed] = useState(false);
   const linkedRef = useRef(Boolean(initialConversationId));
+  const linkingRef = useRef<Promise<void> | null>(null);
+  const pendingMessageRef = useRef<{ text: string; metadata?: { auto: boolean } } | null>(null);
 
   const { messages, status, sendMessage, addToolOutput, regenerate, stop } = useSkillChat<{
     step: number;
@@ -234,39 +238,50 @@ export function AssistantPanel({
     getContext: () => ({ step, card: readLiveCard(snapshot) }),
   });
 
-  // The first message owns the conversation: link it to the card.
-  const ensureLinked = () => {
+  // Create and link the conversation before any message can be sent.
+  // Keep failures retryable and share a pending link between callers.
+  const ensureLinked = useCallback(() => {
     if (linkedRef.current) return Promise.resolve();
-    linkedRef.current = true;
-    return setIdeaConversation(ideaId, conversationId).catch((error: unknown) => {
-      console.error("setIdeaConversation failed", error);
+    if (!linkingRef.current) {
+      linkingRef.current = setIdeaConversation(ideaId, conversationId)
+        .then(() => {
+          linkedRef.current = true;
+        })
+        .finally(() => {
+          linkingRef.current = null;
+        });
+    }
+    return linkingRef.current;
+  }, [ideaId, conversationId]);
+
+  const sendWithLink = useCallback((message: { text: string; metadata?: { auto: boolean } }) => {
+    pendingMessageRef.current = message;
+    startTransition(async () => {
+      setLinkFailed(false);
+      try {
+        await ensureLinked();
+      } catch (error) {
+        console.error("setIdeaConversation failed", error);
+        setLinkFailed(true);
+        return;
+      }
+      pendingMessageRef.current = null;
+      await sendMessage(message);
     });
-  };
+  }, [ensureLinked, sendMessage]);
 
   // Proactive once per step: on first entry the assistant asks the Kanwa
   // question for this step. Never on revisits, never twice.
-  const autoSentRef = useRef(false);
+  const autoSentStepsRef = useRef(new Set<number>());
   useEffect(() => {
-    if (autoSentRef.current || status !== "ready" || messages.length > 0) return;
-    let entered: number[] = [];
-    try {
-      entered = JSON.parse(localStorage.getItem(`idea-assistant:auto:${conversationId}`) ?? "[]");
-    } catch {
-      entered = [];
+    if (linkFailed || status !== "ready" || autoSentStepsRef.current.has(step) || hasEnteredIdeaStep(messages, step)) {
+      return;
     }
-    if (entered.includes(step)) return;
-    autoSentRef.current = true;
-    try {
-      localStorage.setItem(`idea-assistant:auto:${conversationId}`, JSON.stringify([...entered, step]));
-    } catch {
-      // Private mode: the turn still goes out, just without the revisit guard.
-    }
-    void ensureLinked().finally(() => {
-      void sendMessage({ text: `Otwarto krok ${step} z 4.`, metadata: { auto: true } });
-    });
-    // Once per mount by design.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    // Reserve synchronously, including while the link action is pending and
+    // during Strict Mode's repeated effects. Stored turns guard remounts.
+    autoSentStepsRef.current.add(step);
+    sendWithLink({ text: stepEntryText(step), metadata: { auto: true } });
+  }, [step, status, messages, linkFailed, sendWithLink]);
 
   const renderToolPart: Record<string, RenderToolPart> = {
     suggestEdits: (part, { streaming }) =>
@@ -299,14 +314,13 @@ export function AssistantPanel({
       </p>
       <ChatSurface
         messages={messages}
-        status={status}
-        onSend={(text) => {
-          void ensureLinked().finally(() => {
-            void sendMessage({ text });
-          });
-        }}
+        status={linkFailed ? "error" : status}
+        onSend={(text) => sendWithLink({ text })}
         onStop={() => stop()}
-        onRetry={() => regenerate()}
+        onRetry={() => {
+          if (linkFailed && pendingMessageRef.current) sendWithLink(pendingMessageRef.current);
+          else void regenerate();
+        }}
         addToolOutput={addToolOutput}
         renderToolPart={renderToolPart}
         toolLabels={{

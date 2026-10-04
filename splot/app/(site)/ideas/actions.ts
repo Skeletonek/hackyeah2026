@@ -12,6 +12,7 @@ import {
   type IdeaFormStep,
 } from "@/lib/ideas/card";
 import { getIdeaSubmission } from "@/lib/ideas/queries";
+import { linkIdeaConversation } from "@/lib/ideas/conversation";
 import { parseIdeaStep, readIdeaStep } from "@/lib/ideas/schema";
 import { onSubmissionCreated, submissionHref } from "@/lib/submissions/on-created";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -96,8 +97,9 @@ export async function setIdeaConversation(ideaId: string, conversationId: string
   if (!isUuid(ideaId) || !isUuid(conversationId)) throw new Error("invalid id");
 
   const supabase = await ensureSession();
-  const { error } = await supabase.from("ideas").update({ conversation_id: conversationId }).eq("id", ideaId);
-  if (error) throw new Error(`setIdeaConversation failed: ${error.message}`);
+  const { data } = await supabase.auth.getClaims();
+  if (!data?.claims) throw new Error("session unavailable");
+  await linkIdeaConversation(supabase, data.claims.sub, ideaId, conversationId);
 }
 
 /**

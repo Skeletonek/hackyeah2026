@@ -30,6 +30,7 @@ export default async function Page({ params, searchParams }: PageProps<"/ideas/[
 
   const assistant = (
     <AssistantPanel
+      key={idea.id}
       ideaId={idea.id}
       step={step}
       snapshot={ideaValues(idea)}
