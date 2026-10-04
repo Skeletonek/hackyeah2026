@@ -213,6 +213,7 @@ export async function findSimilarSubmissions(conversationId: string): Promise<Si
 
 const requestConnectionInput = z.object({
   conversationId: z.uuid(),
+  municipality: saveMatchSubmissionInput.shape.municipality,
   toSubmissionId: z.uuid(),
 });
 
@@ -230,9 +231,9 @@ export async function requestConnection(
 ): Promise<RequestConnectionResult> {
   const parsed = requestConnectionInput.safeParse(input);
   if (!parsed.success) return { ok: false, error: CONNECTION_RETRY };
-  const { conversationId, toSubmissionId } = parsed.data;
+  const { conversationId, municipality, toSubmissionId } = parsed.data;
 
-  const own = await saveMatchSubmission({ conversationId });
+  const own = await saveMatchSubmission({ conversationId, municipality });
   if (!own.ok) return { ok: false, error: own.error };
   if (own.id === toSubmissionId) return { ok: false, error: CONNECTION_RETRY };
 

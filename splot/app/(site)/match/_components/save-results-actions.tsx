@@ -9,9 +9,11 @@ import { SaveDialog, type SaveIntent } from "./save-dialog";
 /** The results screen's action bar: „Zapisz wyniki” and „Wyślij mi na e-mail”. */
 export function SaveResultsActions({
   conversationId,
+  municipality,
   onSaved,
 }: {
   conversationId: string;
+  municipality?: string;
   onSaved: (saved: SavedSubmission) => void;
 }) {
   const [intent, setIntent] = useState<SaveIntent>("save");
@@ -34,6 +36,7 @@ export function SaveResultsActions({
       </Button>
       <SaveDialog
         conversationId={conversationId}
+        municipality={municipality}
         intent={intent}
         open={dialogOpen}
         onOpenChange={setDialogOpen}
