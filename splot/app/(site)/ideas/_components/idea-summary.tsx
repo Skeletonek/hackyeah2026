@@ -1,15 +1,29 @@
 import Link from "next/link";
-import { ArrowLeft, FileText, LayoutGrid, Pencil, Send } from "lucide-react";
+import { ArrowLeft, Eye, FileText, LayoutGrid, Pencil } from "lucide-react";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { formatDateWithYear } from "@/lib/dates";
 import { ideaApplicationHref, ideaCanvasHref, ideaStepHref, type Idea } from "@/lib/ideas/card";
 import type { OpenGrantCall } from "@/lib/ideas/queries";
 import { IDEA_ASSET_LABELS, IDEA_STAGE_LABELS, TARGET_GROUP_LABELS, type IdeaAsset } from "@/lib/labels";
+import { sendIdeaToRops } from "../actions";
+import { SendIdeaButton } from "./send-idea-button";
 
 /** Step 4 (KRE4): the finished idea card and what the author can do with it. */
-export function IdeaSummary({ idea, call }: { idea: Idea; call: OpenGrantCall | null }) {
+export function IdeaSummary({
+  idea,
+  call,
+  submission,
+  sendFailed,
+}: {
+  idea: Idea;
+  call: OpenGrantCall | null;
+  /** The advice submission, once the card was sent to ROPS. */
+  submission: { caseNumber: string; href: string } | null;
+  sendFailed: boolean;
+}) {
   const callId = call?.id;
+  const sendVariant = call ? "outline" : "default";
   const assets = idea.assets as IdeaAsset[];
 
   return (
@@ -50,6 +64,11 @@ export function IdeaSummary({ idea, call }: { idea: Idea; call: OpenGrantCall | 
             <p>Wnioski przyjmujemy do {formatDateWithYear(call.closes_at)}. Z tej fiszki przygotujesz wniosek.</p>
           </Alert>
         )}
+        {sendFailed && !submission && (
+          <Alert tone="error" title="Nie udało się wysłać fiszki">
+            <p>Fiszka jest zapisana. Spróbuj wysłać ją jeszcze raz za chwilę.</p>
+          </Alert>
+        )}
         {/* The call the person came for goes first and gets the primary look. */}
         <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
           {call && (
@@ -60,11 +79,19 @@ export function IdeaSummary({ idea, call }: { idea: Idea; call: OpenGrantCall | 
               </Link>
             </Button>
           )}
-          {/* Sending is the „sendIdeaToRops” action of the next issue (I3). */}
-          <Button size="lg" variant={call ? "outline" : "default"} disabled aria-describedby="idea-send-note">
-            <Send aria-hidden strokeWidth={2} />
-            Wyślij do ROPS po radę
-          </Button>
+          {submission ? (
+            <Button asChild size="lg" variant={sendVariant}>
+              <Link href={submission.href} aria-describedby="idea-send-note">
+                <Eye aria-hidden strokeWidth={2} />
+                Zobacz zgłoszenie
+              </Link>
+            </Button>
+          ) : (
+            <form action={sendIdeaToRops.bind(null, idea.id)} className="contents">
+              {callId && <input type="hidden" name="call" value={callId} />}
+              <SendIdeaButton variant={sendVariant} />
+            </form>
+          )}
           <Button asChild size="lg" variant="outline">
             <Link href={ideaCanvasHref(idea.id)}>
               <LayoutGrid aria-hidden strokeWidth={2} />
@@ -81,7 +108,14 @@ export function IdeaSummary({ idea, call }: { idea: Idea; call: OpenGrantCall | 
           )}
         </div>
         <p id="idea-send-note" className="text-sm text-muted-foreground simple:text-simple-sm">
-          Wysyłanie fiszki do ROPS uruchomimy wkrótce. Szkic jest już zapisany.
+          {submission ? (
+            <>
+              Fiszka jest u ROPS jako zgłoszenie <strong className="font-mono whitespace-nowrap">{submission.caseNumber}</strong>.
+              Możesz ją dalej zmieniać; ROPS widzi wersję z dnia wysłania.
+            </>
+          ) : (
+            "ROPS przeczyta fiszkę i odpowie Ci w zgłoszeniu. Fiszkę możesz potem dalej zmieniać."
+          )}
         </p>
       </section>
 

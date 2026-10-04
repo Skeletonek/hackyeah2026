@@ -15,6 +15,14 @@ export function trackingLink(sub: Pick<CreatedSubmission, "case_number" | "track
 }
 
 /**
+ * Where the author reads a submission: in the account, or by the tracking
+ * link when the session is anonymous (/account needs a real account).
+ */
+export function submissionHref(sub: Pick<CreatedSubmission, "id" | "case_number" | "tracking_token">, isAnonymous: boolean) {
+  return isAnonymous ? trackingLink(sub) : `/account/submissions/${sub.id}`;
+}
+
+/**
  * The only thing a stream calls after inserting a submission. Triage and the
  * "received" notification run after the response, so they never slow down or
  * fail the save.
