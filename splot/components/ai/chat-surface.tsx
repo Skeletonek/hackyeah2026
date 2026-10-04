@@ -18,6 +18,7 @@ import { AiHint } from "@/components/ai/ai-hint"
 import { AiThinking } from "@/components/ai/ai-thinking"
 import { ChatBubble } from "@/components/ai/chat-bubble"
 import { QuickReplies } from "@/components/ai/quick-replies"
+import { ToolSteps, ToolStepsSummary, type ToolStep } from "@/components/ai/tool-steps"
 import { Alert } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { Field } from "@/components/ui/field"
@@ -30,6 +31,9 @@ type RenderToolPart = (part: ToolPart, options: { streaming: boolean }) => React
 
 /** Same call shape as `addToolOutput` from `useChat`, so it can be passed straight through. */
 type AddToolOutput = (args: { tool: string; toolCallId: string; output: unknown }) => unknown
+
+/** What a finished step says; a function gets the number of parallel calls, e.g. five `getInnovation`. */
+type ToolDoneLabel = string | ((count: number) => string)
 
 function isRunning(part: ToolPart) {
   return part.state === "input-streaming" || part.state === "input-available"
@@ -44,7 +48,8 @@ function isAutoMessage(message: UIMessage) {
 /**
  * Presentational chat: renders `UIMessage[]` from `useChat` / `useSkillChat`
  * and owns no transport. Streams render their own tool UI through
- * `renderToolPart`; while other tools run, the reply shows one `AiThinking`.
+ * `renderToolPart`; other tools show as `ToolSteps` during the reply and as
+ * one folded summary once it ends.
  *
  * Screen readers hear each message once, when it is finished: the message
  * that is still streaming sits outside the `role="log"` region.
@@ -58,6 +63,7 @@ function ChatSurface({
   addToolOutput,
   renderToolPart = {},
   toolLabels = {},
+  toolDoneLabels = {},
   finalTextOnly = false,
   inputLabel = "Twoja wiadomość",
   inputHint,
@@ -79,6 +85,8 @@ function ChatSurface({
   renderToolPart?: Partial<Record<string, RenderToolPart>>
   /** What `AiThinking` says while a tool without a renderer runs, e.g. `{ searchInnovations: "Przeglądam 100 innowacji…" }`. */
   toolLabels?: Partial<Record<string, string>>
+  /** What a tool's chip says once it finishes, e.g. `{ searchInnovations: "Przejrzano 100 innowacji" }`. */
+  toolDoneLabels?: Partial<Record<string, ToolDoneLabel>>
   /**
    * Shows only the text after a reply's last tool call. For Skills whose answer
    * is a tool UI: whatever the model writes between its tool calls stays hidden.
@@ -161,6 +169,7 @@ function ChatSurface({
       addToolOutput={addToolOutput}
       renderToolPart={renderToolPart}
       toolLabels={toolLabels}
+      toolDoneLabels={toolDoneLabels}
       finalTextOnly={finalTextOnly}
       feedbackTargetType={feedbackTargetType}
     />
@@ -174,7 +183,8 @@ function ChatSurface({
           {logged.map(({ message, to }) => renderMessage(message, { to }))}
         </div>
         {live && renderMessage(live, { streaming: true, from: keptParts })}
-        {waiting && <AiThinking />}
+        {/* A reply that continues the last message shows its own „Myślę…” in `ToolSteps`. */}
+        {waiting && !live && <AiThinking />}
         <div ref={endRef} />
       </div>
 
@@ -232,6 +242,7 @@ function MessageView({
   addToolOutput,
   renderToolPart,
   toolLabels,
+  toolDoneLabels,
   finalTextOnly,
   feedbackTargetType,
 }: {
@@ -242,6 +253,7 @@ function MessageView({
   addToolOutput?: AddToolOutput
   renderToolPart: Partial<Record<string, RenderToolPart>>
   toolLabels: Partial<Record<string, string>>
+  toolDoneLabels: Partial<Record<string, ToolDoneLabel>>
   finalTextOnly: boolean
   feedbackTargetType: string
 }) {
@@ -258,30 +270,32 @@ function MessageView({
   }
 
   const lastIndex = message.parts.length - 1
-  // Parallel calls (two searches, five getInnovation) share one progress line,
-  // the last one's. Only the reply in progress shows it: a call left open by
-  // „Zatrzymaj” stays quiet in later turns.
-  const progressIndex = streaming
-    ? message.parts.findLastIndex(
-        (part, index) =>
-          index >= from &&
-          isToolUIPart(part) &&
-          isRunning(part) &&
-          !renderToolPart[getToolName(part)] &&
-          getToolName(part) !== ASK_QUESTION
-      )
-    : -1
+  const inRange = (index: number) => index >= from && index < to
+  const steps = toolSteps(message, { from, to, streaming, renderToolPart, toolLabels, toolDoneLabels })
 
   const lastToolIndex = finalTextOnly ? message.parts.findLastIndex(isToolUIPart) : -1
-  // A tool with its own renderer reports its own progress during the turn.
-  const hasRenderedTool = message.parts.some(
-    (part, index) => index >= from && isToolUIPart(part) && renderToolPart[getToolName(part)]
-  )
+  const rendered = message.parts.map((part, index) => {
+    if (!inRange(index) || !isToolUIPart(part)) return null
+    return renderToolPart[getToolName(part)]?.(part, { streaming }) ?? null
+  })
+  // A tool with its own renderer, or a question, reports its own progress during the turn.
+  const reportsOwnProgress =
+    rendered.some((node) => node !== null) ||
+    message.parts.some((part, index) => inRange(index) && isToolUIPart(part) && getToolName(part) === ASK_QUESTION)
+  const lastPart = message.parts.at(-1)
+  const showsText = !finalTextOnly && lastPart?.type === "text" && lastPart.text.trim() !== ""
+  // Between tool calls and before a hidden final text: the model is deciding what to do next.
+  const thinking = streaming && !steps.some((step) => !step.done) && !reportsOwnProgress && !showsText
 
   return (
     <div data-message-id={message.id} className="flex flex-col gap-4 empty:hidden">
+      {streaming ? (
+        <ToolSteps steps={steps} thinking={thinking} />
+      ) : (
+        steps.length > 0 && <ToolStepsSummary steps={steps} />
+      )}
       {message.parts.map((part, index) => {
-        if (index < from || index >= to) return null
+        if (!inRange(index)) return null
         const key = `${message.id}-${index}`
 
         if (part.type === "text") {
@@ -289,10 +303,7 @@ function MessageView({
           if (finalTextOnly) {
             if (index < lastToolIndex) return null
             // A tool call may still follow, so text waits for the end of the turn.
-            if (streaming) {
-              const quiet = index === lastIndex && progressIndex === -1 && !hasRenderedTool
-              return quiet ? <AiThinking key={key} /> : null
-            }
+            if (streaming) return null
           }
           const typing = part.state === "streaming" || (streaming && index === lastIndex)
           return (
@@ -319,18 +330,75 @@ function MessageView({
         if (!isToolUIPart(part)) return null
 
         const name = getToolName(part)
-        const render = renderToolPart[name]
-        if (render) return <React.Fragment key={key}>{render(part, { streaming })}</React.Fragment>
+        if (renderToolPart[name]) return <React.Fragment key={key}>{rendered[index]}</React.Fragment>
 
         if (name === ASK_QUESTION) {
           return <AskQuestionPart key={key} part={part} streaming={streaming} addToolOutput={addToolOutput} />
         }
 
-        if (index !== progressIndex) return null
-        return <AiThinking key={key} label={toolLabels[name] ?? part.title ?? "Pracuję nad odpowiedzią…"} />
+        return null
       })}
     </div>
   )
+}
+
+/**
+ * The tools without their own UI, as steps. Parallel calls of one tool
+ * (five `getInnovation`) make one step; a new model step starts a new one.
+ * A failed call, or one left open by „Zatrzymaj”, leaves no step.
+ */
+function toolSteps(
+  message: UIMessage,
+  {
+    from,
+    to,
+    streaming,
+    renderToolPart,
+    toolLabels,
+    toolDoneLabels,
+  }: {
+    from: number
+    to: number
+    streaming: boolean
+    renderToolPart: Partial<Record<string, RenderToolPart>>
+    toolLabels: Partial<Record<string, string>>
+    toolDoneLabels: Partial<Record<string, ToolDoneLabel>>
+  }
+): ToolStep[] {
+  const groups: { id: string; name: string; title?: string; count: number; done: boolean }[] = []
+  let open: (typeof groups)[number] | undefined
+
+  message.parts.forEach((part, index) => {
+    if (index < from || index >= to) return
+    if (part.type === "step-start") {
+      open = undefined
+      return
+    }
+    if (!isToolUIPart(part)) return
+    const name = getToolName(part)
+    if (renderToolPart[name] || name === ASK_QUESTION) {
+      open = undefined
+      return
+    }
+    const done = part.state === "output-available"
+    if (!done && !(streaming && isRunning(part))) return
+
+    if (open?.name === name) {
+      open.count += 1
+      open.done &&= done
+    } else {
+      open = { id: part.toolCallId, name, title: part.title, count: 1, done }
+      groups.push(open)
+    }
+  })
+
+  return groups.map(({ id, name, title, count, done }) => {
+    const doneLabel = toolDoneLabels[name]
+    const label = done
+      ? (typeof doneLabel === "function" ? doneLabel(count) : doneLabel) ?? "Gotowe"
+      : toolLabels[name] ?? title ?? "Pracuję nad odpowiedzią…"
+    return { id, label, done }
+  })
 }
 
 function AskQuestionPart({
@@ -370,4 +438,4 @@ function AskQuestionPart({
   )
 }
 
-export { ChatSurface, type ToolPart, type RenderToolPart, type AddToolOutput }
+export { ChatSurface, type ToolPart, type RenderToolPart, type AddToolOutput, type ToolDoneLabel }

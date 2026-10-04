@@ -328,6 +328,11 @@ export function AssistantPanel({
           getInnovation: "Czytam opisy podobnych rozwiązań…",
           showSimilar: "Wybieram podobne rozwiązania…",
         }}
+        toolDoneLabels={{
+          searchInnovations: "Przeszukano bibliotekę",
+          getInnovation: (count) =>
+            count === 1 ? "Przeczytano opis 1 podobnego rozwiązania" : `Przeczytano opisy ${count} podobnych rozwiązań`,
+        }}
         finalTextOnly
         inputLabel="Zapytaj asystenta"
         inputHint="Na przykład: jak opisać to prościej?"
