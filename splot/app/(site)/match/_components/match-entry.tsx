@@ -20,16 +20,19 @@ const MAX_LENGTH = 2000;
 export function MatchEntry({
   copy,
   askMunicipality,
+  initialQuery,
   onSubmit,
 }: {
   copy: MatchCopy;
   askMunicipality: boolean;
+  /** Pre-fills the problem field, e.g. from the broker's search for similar solutions. */
+  initialQuery?: string;
   onSubmit: (text: string, municipality?: string) => void;
 }) {
   const fieldId = useId();
   const examplesId = useId();
   const fieldRef = useRef<HTMLTextAreaElement>(null);
-  const [text, setText] = useState("");
+  const [text, setText] = useState(initialQuery ?? "");
   const [municipality, setMunicipality] = useState("");
   const [error, setError] = useState<string>();
 
