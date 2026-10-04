@@ -1,12 +1,16 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
+import Link from "next/link";
+import { SlidersHorizontal } from "lucide-react";
 import { getToolName, isToolUIPart, type UIMessage } from "ai";
 import { AiHint } from "@/components/ai/ai-hint";
 import { InnovationCard } from "@/components/innovation-card";
 import { ReadAloudButton } from "@/components/read-aloud-button";
+import { Button } from "@/components/ui/button";
 import type { InnovationMatch } from "@/lib/ai/tools/search-innovations";
 import type { ShowMatchesInput } from "@/lib/matchmaking/show-matches";
+import type { MatchmakingContext } from "@/lib/matchmaking/skill";
 import type { SavedSubmission } from "../actions";
 import { ResultsExpert } from "./results-expert";
 import { ResultsSimilar } from "./results-similar";
@@ -45,7 +49,8 @@ export function matchedInnovations(messages: UIMessage[]) {
 /**
  * MM5 + MM6: up to 5 innovations with grounded reasons, similar submissions
  * from other municipalities and the ways to act. In simple mode: 3 cards, each
- * with „Przeczytaj na głos”, and no similar submissions.
+ * with „Przeczytaj na głos”, and no similar submissions. A municipality
+ * official also gets „Dostosuj do mojej gminy” (the broker) on every card.
  */
 export function Results({
   conversationId,
@@ -54,6 +59,8 @@ export function Results({
   latest,
   focusOnMount,
   hasAccount,
+  role,
+  municipality,
   onSaved,
 }: {
   conversationId: string;
@@ -64,6 +71,9 @@ export function Results({
   /** True when the results arrived in this visit, not with a reloaded conversation. */
   focusOnMount: boolean;
   hasAccount: boolean;
+  role: MatchmakingContext["role"];
+  /** Given on the entry screen; prefills the submission. */
+  municipality?: string;
   onSaved: (saved: SavedSubmission) => void;
 }) {
   const headingId = useId();
@@ -114,10 +124,21 @@ export function Results({
                 </AiHint>
               }
               actions={
-                <ReadAloudButton
-                  text={[innovation.title, innovation.lead].filter(Boolean).join(". ")}
-                  className="hidden w-full simple:inline-flex"
-                />
+                <>
+                  {role === "municipality" && (
+                    <Button asChild className="simple:hidden">
+                      <Link href={`/broker?innovation=${encodeURIComponent(slug)}`}>
+                        <SlidersHorizontal aria-hidden strokeWidth={2} />
+                        Dostosuj do mojej gminy
+                        <span className="sr-only">: {innovation.title}</span>
+                      </Link>
+                    </Button>
+                  )}
+                  <ReadAloudButton
+                    text={[innovation.title, innovation.lead].filter(Boolean).join(". ")}
+                    className="hidden w-full simple:inline-flex"
+                  />
+                </>
               }
             />
           </li>
@@ -126,9 +147,9 @@ export function Results({
 
       {latest && (
         <>
-          <ResultsSimilar conversationId={conversationId} />
-          <ResultsExpert conversationId={conversationId} hasAccount={hasAccount} />
-          <SaveResultsActions conversationId={conversationId} onSaved={onSaved} />
+          <ResultsSimilar conversationId={conversationId} municipality={municipality} />
+          <ResultsExpert conversationId={conversationId} municipality={municipality} hasAccount={hasAccount} />
+          <SaveResultsActions conversationId={conversationId} municipality={municipality} onSaved={onSaved} />
         </>
       )}
     </section>

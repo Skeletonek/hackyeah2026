@@ -57,10 +57,12 @@ const field = (formData: FormData, name: string) => String(formData.get(name) ??
 
 function SaveForm({
   conversationId,
+  municipality,
   intent,
   onSaved,
 }: {
   conversationId: string;
+  municipality?: string;
   intent: SaveIntent;
   onSaved: (saved: SavedSubmission) => void;
 }) {
@@ -80,7 +82,8 @@ function SaveForm({
       }
       const result = await saveMatchSubmission({
         conversationId,
-        municipality: field(formData, "municipality"),
+        // „Wyślij mi na e-mail” has no location fields, so it keeps what was given earlier.
+        municipality: askLocation ? field(formData, "municipality") : municipality,
         county: field(formData, "county"),
         contactEmail,
       });
@@ -119,7 +122,12 @@ function SaveForm({
             hint="Pomoże ROPS zobaczyć, gdzie występuje problem."
             error={fieldErrors?.municipality?.[0]}
           >
-            <Input name="municipality" autoComplete="address-level2" placeholder="np. Myślenice" />
+            <Input
+              name="municipality"
+              autoComplete="address-level2"
+              defaultValue={municipality}
+              placeholder="np. Myślenice"
+            />
           </Field>
           <Field label="Powiat" optional error={fieldErrors?.county?.[0]}>
             <Select name="county" defaultValue="">
@@ -170,12 +178,15 @@ function SaveForm({
  */
 export function SaveDialog({
   conversationId,
+  municipality,
   intent,
   open,
   onOpenChange,
   onSaved,
 }: {
   conversationId: string;
+  /** Given on the entry screen (`/municipalities`); prefills the field. */
+  municipality?: string;
   intent: SaveIntent;
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -193,6 +204,7 @@ export function SaveDialog({
         {/* Mounted only while open, so every opening starts with a clean form. */}
         <SaveForm
           conversationId={conversationId}
+          municipality={municipality}
           intent={intent}
           onSaved={(saved) => {
             onOpenChange(false);

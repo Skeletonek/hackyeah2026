@@ -19,11 +19,13 @@ const MAX_PREFILL_LENGTH = 1000;
 export function NoMatch({
   conversationId,
   description,
+  municipality,
   onSaved,
 }: {
   conversationId: string;
   /** The person's description of the problem, from `problemDescription()`. */
   description: string;
+  municipality?: string;
   onSaved: (saved: SavedSubmission) => void;
 }) {
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -56,6 +58,7 @@ export function NoMatch({
       </EmptyState>
       <SaveDialog
         conversationId={conversationId}
+        municipality={municipality}
         intent="challenge"
         open={dialogOpen}
         onOpenChange={setDialogOpen}

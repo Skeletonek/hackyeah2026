@@ -12,7 +12,15 @@ import { saveMatchSubmission } from "../actions";
  * thread with ROPS. Without an account the thread is under the tracking link,
  * because `/account` needs a sign-in.
  */
-export function ResultsExpert({ conversationId, hasAccount }: { conversationId: string; hasAccount: boolean }) {
+export function ResultsExpert({
+  conversationId,
+  municipality,
+  hasAccount,
+}: {
+  conversationId: string;
+  municipality?: string;
+  hasAccount: boolean;
+}) {
   const headingId = useId();
   const router = useRouter();
   const [pending, setPending] = useState(false);
@@ -22,7 +30,7 @@ export function ResultsExpert({ conversationId, hasAccount }: { conversationId: 
     setPending(true);
     setError(undefined);
     try {
-      const result = await saveMatchSubmission({ conversationId });
+      const result = await saveMatchSubmission({ conversationId, municipality });
       if (result.ok) {
         router.push(hasAccount ? `/account/submissions/${result.id}` : result.trackingUrl);
         return;

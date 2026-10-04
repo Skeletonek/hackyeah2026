@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
-import { RouteStub } from "@/components/route-stub";
+import { MATCH_COPY } from "@/lib/matchmaking/copy";
+import { MatchScreen } from "../match/_components/match-screen";
 
-const TITLE = "Rozwiązania dla gmin";
+export const metadata: Metadata = { title: MATCH_COPY.municipality.title };
 
-export const metadata: Metadata = { title: TITLE };
-
-export default function Page() {
-  return <RouteStub title={TITLE} />;
+export default function Page({ searchParams }: PageProps<"/municipalities">) {
+  return <MatchScreen role="municipality" searchParams={searchParams} />;
 }

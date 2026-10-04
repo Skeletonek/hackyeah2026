@@ -5,27 +5,32 @@ import { Search } from "lucide-react";
 import { MicButton } from "@/components/mic-button";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import type { MatchExample } from "@/lib/matchmaking/examples";
+import type { MatchCopy, MatchExample } from "@/lib/matchmaking/copy";
 
 /** Same cap as one message part in the Skill handler would allow, kept short on purpose. */
 const MAX_LENGTH = 2000;
 
 /**
  * MM1 + MM2: one field for the problem, dictation and example descriptions.
- * The only screen with a `MicButton`.
+ * The only screen with a `MicButton`. A municipality official is asked for
+ * the municipality here, before the conversation starts.
  */
 export function MatchEntry({
-  examples,
+  copy,
+  askMunicipality,
   onSubmit,
 }: {
-  examples: MatchExample[];
-  onSubmit: (text: string) => void;
+  copy: MatchCopy;
+  askMunicipality: boolean;
+  onSubmit: (text: string, municipality?: string) => void;
 }) {
   const fieldId = useId();
   const examplesId = useId();
   const fieldRef = useRef<HTMLTextAreaElement>(null);
   const [text, setText] = useState("");
+  const [municipality, setMunicipality] = useState("");
   const [error, setError] = useState<string>();
 
   const handleSubmit = (event: React.FormEvent) => {
@@ -36,7 +41,7 @@ export function MatchEntry({
       fieldRef.current?.focus();
       return;
     }
-    onSubmit(problem);
+    onSubmit(problem, municipality.trim() || undefined);
   };
 
   const fill = (example: MatchExample) => {
@@ -47,12 +52,20 @@ export function MatchEntry({
 
   return (
     <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
-      <Field
-        id={fieldId}
-        label="Opisz własnymi słowami, co jest problemem"
-        hint="Wystarczą 2–3 zdania. Nie podawaj nazwisk, adresów ani numerów telefonu."
-        error={error}
-      >
+      {askMunicipality && (
+        <Field label="Gmina" optional hint="Dopasujemy podpowiedzi do Twojej gminy.">
+          <Input
+            name="municipality"
+            autoComplete="address-level2"
+            value={municipality}
+            maxLength={100}
+            onChange={(event) => setMunicipality(event.target.value)}
+            placeholder="np. Myślenice"
+          />
+        </Field>
+      )}
+
+      <Field id={fieldId} label={copy.fieldLabel} hint={copy.fieldHint} error={error}>
         <Textarea
           ref={fieldRef}
           name="problem"
@@ -81,7 +94,7 @@ export function MatchEntry({
           Nie wiesz, jak zacząć? Wybierz przykład
         </h2>
         <ul className="flex flex-col gap-3">
-          {examples.map((example) => (
+          {copy.examples.map((example) => (
             <li key={example.label}>
               <Button
                 variant="outline"

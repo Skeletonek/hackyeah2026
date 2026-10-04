@@ -16,7 +16,15 @@ function place({ municipality, county }: SimilarSubmission) {
   return parts.length > 0 ? parts.join(", ") : "Małopolska";
 }
 
-function SimilarCard({ conversationId, submission }: { conversationId: string; submission: SimilarSubmission }) {
+function SimilarCard({
+  conversationId,
+  municipality,
+  submission,
+}: {
+  conversationId: string;
+  municipality?: string;
+  submission: SimilarSubmission;
+}) {
   const [pending, setPending] = useState(false);
   const [result, setResult] = useState<RequestConnectionResult | null>(null);
   const where = place(submission);
@@ -24,7 +32,7 @@ function SimilarCard({ conversationId, submission }: { conversationId: string; s
   async function connect() {
     setPending(true);
     try {
-      setResult(await requestConnection({ conversationId, toSubmissionId: submission.id }));
+      setResult(await requestConnection({ conversationId, municipality, toSubmissionId: submission.id }));
     } catch {
       setResult({ ok: false, error: "Nie udało się przekazać prośby. Spróbuj jeszcze raz za chwilę." });
     } finally {
@@ -79,7 +87,7 @@ function SimilarCard({ conversationId, submission }: { conversationId: string; s
  * and AI summary (never the body). Renders nothing until there is at least one;
  * hidden in simple mode.
  */
-export function ResultsSimilar({ conversationId }: { conversationId: string }) {
+export function ResultsSimilar({ conversationId, municipality }: { conversationId: string; municipality?: string }) {
   const headingId = useId();
   const [similar, setSimilar] = useState<SimilarSubmission[]>([]);
 
@@ -110,7 +118,12 @@ export function ResultsSimilar({ conversationId }: { conversationId: string }) {
       </div>
       <ul className="flex flex-col gap-4">
         {similar.map((submission) => (
-          <SimilarCard key={submission.id} conversationId={conversationId} submission={submission} />
+          <SimilarCard
+            key={submission.id}
+            conversationId={conversationId}
+            municipality={municipality}
+            submission={submission}
+          />
         ))}
       </ul>
     </section>
