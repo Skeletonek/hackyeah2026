@@ -14,8 +14,8 @@ export type Priority = Enums<"priority">;
 export type PilotStatus = Enums<"pilot_status">;
 export type OrganizationType = Enums<"organization_type">;
 
-/** `idea_stage` enum and `ideas.assets` values from the ideas migration (I1). */
-export type IdeaStage = "concept" | "first_trial" | "running" | "scaling";
+export type IdeaStage = Enums<"idea_stage">;
+/** Values of `ideas.assets` (a checked `text[]`, not an enum). */
 export type IdeaAsset = "place" | "people" | "partner" | "money";
 
 export const CHALLENGE_CATEGORY_LABELS: Record<ChallengeCategory, string> = {
