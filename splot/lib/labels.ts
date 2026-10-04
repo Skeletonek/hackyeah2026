@@ -74,6 +74,15 @@ export const PILOT_STATUS_LABELS: Record<PilotStatus, string> = {
   rejected: "Odrzucony",
 };
 
+/** `pilot_reviews.rating` 1–5 in words, so a number is never shown alone. */
+export const PILOT_RATING_LABELS: Record<1 | 2 | 3 | 4 | 5, string> = {
+  1: "Nie działa",
+  2: "Działa słabo",
+  3: "Działa średnio",
+  4: "Działa dobrze",
+  5: "Bardzo dobrze",
+};
+
 export const ORGANIZATION_TYPE_LABELS: Record<OrganizationType, string> = {
   municipality: "Samorząd",
   ngo: "Organizacja pozarządowa",
