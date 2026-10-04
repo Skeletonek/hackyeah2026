@@ -1,4 +1,5 @@
 import "server-only";
+import { pageHref, pageRange, toPage, type Page } from "@/lib/pagination";
 import { createClient } from "@/lib/supabase/server";
 import type { ChallengeCategory } from "@/lib/labels";
 
@@ -24,9 +25,10 @@ export type SubmissionSide = {
   authorId: string;
 };
 
-export async function listPendingConnectionRequests(): Promise<ConnectionRequest[]> {
+/** One page of pending requests, newest first. */
+export async function listPendingConnectionRequests(page: number): Promise<Page<ConnectionRequest>> {
   const supabase = await createClient();
-  const { data, error } = await supabase
+  const { data, count, error } = await supabase
     .from("connection_requests")
     .select(
       `
@@ -39,13 +41,19 @@ export async function listPendingConnectionRequests(): Promise<ConnectionRequest
         id, case_number, county, municipality, category, ai_summary, author_id
       )
     `,
+      { count: "exact" },
     )
     .eq("status", "pending")
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false })
+    .order("id")
+    .range(...pageRange(page));
 
-  if (error) throw new Error(`listPendingConnectionRequests failed: ${error.message}`);
+  const result = toPage({ data, count, error }, page, {
+    label: "listPendingConnectionRequests",
+    href: (n) => pageHref("/admin/connections", {}, n),
+  });
 
-  return (data ?? []).map((row) => {
+  const items = result.items.map((row) => {
     const from = row.from as unknown as SubmissionSideRaw;
     const to = row.to as unknown as SubmissionSideRaw;
     return {
@@ -55,6 +63,7 @@ export async function listPendingConnectionRequests(): Promise<ConnectionRequest
       to: normalizeSide(to),
     };
   });
+  return { ...result, items };
 }
 
 type SubmissionSideRaw = {

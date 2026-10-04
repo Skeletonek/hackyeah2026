@@ -3,6 +3,7 @@ import Link from "next/link";
 import { EyeOff, Globe, Plus } from "lucide-react";
 import { CategoryBadge } from "@/components/category-badge";
 import { EmptyState } from "@/components/empty-state";
+import { Pagination } from "@/components/pagination";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -15,6 +16,7 @@ import {
   type LibraryAdminRow,
 } from "@/lib/admin/library";
 import { INNOVATION_STAGE_LABELS } from "@/lib/labels";
+import { pageHref, parsePage } from "@/lib/pagination";
 import { cn } from "@/lib/utils";
 import { setPublished } from "./actions";
 
@@ -23,8 +25,9 @@ const TITLE = "Biblioteka";
 export const metadata: Metadata = { title: TITLE };
 
 export default async function AdminLibraryPage({ searchParams }: PageProps<"/admin/library">) {
-  const filters = parseLibraryAdminFilters(await searchParams);
-  const rows = await listLibraryAdmin(filters);
+  const params = await searchParams;
+  const filters = parseLibraryAdminFilters(params);
+  const rows = await listLibraryAdmin(filters, parsePage(params), params);
   const filtered = hasLibraryAdminFilters(filters);
 
   return (
@@ -68,10 +71,10 @@ export default async function AdminLibraryPage({ searchParams }: PageProps<"/adm
       <section aria-labelledby="library-list-heading" className="flex flex-col gap-3">
         <h2 id="library-list-heading" className="text-h3">
           {filtered ? "Wyniki" : "Wszystkie innowacje"}
-          <span className="font-normal text-muted-foreground"> ({rows.length})</span>
+          <span className="font-normal text-muted-foreground"> ({rows.total})</span>
         </h2>
 
-        {rows.length === 0 ? (
+        {rows.total === 0 ? (
           <EmptyState
             title="Brak innowacji"
             action={
@@ -85,11 +88,18 @@ export default async function AdminLibraryPage({ searchParams }: PageProps<"/adm
               : "Biblioteka jest pusta. Dodaj pierwszą innowację."}
           </EmptyState>
         ) : (
-          <ul className="flex flex-col gap-2">
-            {rows.map((row) => (
-              <LibraryRow key={row.id} row={row} />
-            ))}
-          </ul>
+          <>
+            <ul className="flex flex-col gap-2">
+              {rows.items.map((row) => (
+                <LibraryRow key={row.id} row={row} />
+              ))}
+            </ul>
+            <Pagination
+              page={rows}
+              href={(n) => pageHref("/admin/library", params, n)}
+              label="Strony biblioteki"
+            />
+          </>
         )}
       </section>
     </main>

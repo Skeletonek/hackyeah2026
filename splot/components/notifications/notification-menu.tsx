@@ -32,11 +32,14 @@ export function NotificationMenu({
   items,
   unreadCount,
   showWhenEmpty,
+  hasAccount,
 }: {
   userId: string;
   items: NotificationItem[];
   unreadCount: number;
   showWhenEmpty: boolean;
+  /** Only a signed-in account has /account/notifications with the full list. */
+  hasAccount: boolean;
 }) {
   const router = useRouter();
   const headingId = useId();
@@ -154,11 +157,22 @@ export function NotificationMenu({
               </ul>
             )}
 
-            {unreadCount > 0 && (
-              <Button variant="outline" size="sm" loading={pending} onClick={markAllRead} className="self-start">
-                Oznacz jako przeczytane
-              </Button>
-            )}
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+              {unreadCount > 0 && (
+                <Button variant="outline" size="sm" loading={pending} onClick={markAllRead}>
+                  Oznacz jako przeczytane
+                </Button>
+              )}
+              {hasAccount && items.length > 0 && (
+                <Link
+                  href="/account/notifications"
+                  onClick={() => setOpen(false)}
+                  className="inline-flex min-h-11 items-center font-bold text-primary underline underline-offset-4 hover:decoration-[3px] simple:min-h-16"
+                >
+                  Wszystkie powiadomienia
+                </Link>
+              )}
+            </div>
             {error && (
               <p role="alert" className="text-destructive">
                 {error}

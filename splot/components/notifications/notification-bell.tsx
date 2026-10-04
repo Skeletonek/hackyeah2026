@@ -29,6 +29,7 @@ export async function NotificationBell() {
       unreadCount={unread.count ?? 0}
       // Without an account the bell appears once something arrives.
       showWhenEmpty={!user.isAnonymous}
+      hasAccount={!user.isAnonymous}
     />
   );
 }

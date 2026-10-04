@@ -18,10 +18,12 @@ import { RowLink } from "./row-link";
 export function InboxList({
   rows,
   filters,
+  page,
   selectedId,
 }: {
   rows: InboxRow[];
   filters: SubmissionFilters;
+  page: number;
   selectedId: string | null;
 }) {
   return (
@@ -39,7 +41,7 @@ export function InboxList({
           >
             <div className="flex flex-wrap items-start gap-3">
               <RowLink
-                href={inboxHref(filters, row.id)}
+                href={inboxHref(filters, { page, selected: row.id })}
                 data-submission-id={row.id}
                 aria-current={isSelected ? "true" : undefined}
                 className="flex min-w-0 flex-1 flex-wrap items-center gap-x-3 gap-y-2 rounded-md"

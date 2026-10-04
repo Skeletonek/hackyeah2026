@@ -1,5 +1,13 @@
 import type { Metadata } from "next";
-import { areaKey, challengeCategoryEnum, materials } from "@/lib/resources/materials";
+import { Pagination } from "@/components/pagination";
+import { pageHref, parsePage, slicePage } from "@/lib/pagination";
+import {
+  areaKey,
+  challengeCategoryEnum,
+  filterMaterials,
+  MATERIAL_KINDS,
+  type MaterialKind,
+} from "@/lib/resources/materials";
 import { FilterBar } from "./_components/filter-bar";
 import { MaterialsList } from "./_components/materials-list";
 
@@ -25,11 +33,13 @@ export default async function ResourcesPage({
   const selectedArea = areaParse?.success ? areaParse.data : undefined;
   const selectedCategory = categoryParse?.success ? categoryParse.data : undefined;
 
-  const filteredMaterials = materials.filter((item) => {
-    if (selectedArea && !item.areas.includes(selectedArea)) return false;
-    if (selectedCategory && !item.categories.includes(selectedCategory)) return false;
-    return true;
-  });
+  // Filters run on the whole set; only the current page goes to the browser.
+  const filteredMaterials = filterMaterials({ area: selectedArea, category: selectedCategory });
+  const href = (n: number) => pageHref("/resources", params, n);
+  const page = slicePage(filteredMaterials, parsePage(params), href);
+  const totals = Object.fromEntries(
+    MATERIAL_KINDS.map((kind) => [kind, filteredMaterials.filter((item) => item.kind === kind).length]),
+  ) as Record<MaterialKind, number>;
 
   return (
     <main
@@ -50,7 +60,10 @@ export default async function ResourcesPage({
           Brak materiałów dla wybranych filtrów.
         </p>
       ) : (
-        <MaterialsList materials={filteredMaterials} />
+        <>
+          <MaterialsList materials={page.items} totals={totals} />
+          <Pagination page={page} href={href} label="Strony materiałów" />
+        </>
       )}
     </main>
   );

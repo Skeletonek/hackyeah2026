@@ -3,18 +3,20 @@ import Link from "next/link";
 import { CalendarClock, CircleCheck, CircleDot, Plus } from "lucide-react";
 import { CategoryBadge } from "@/components/category-badge";
 import { EmptyState } from "@/components/empty-state";
+import { Pagination } from "@/components/pagination";
 import { Button } from "@/components/ui/button";
 import { CALL_STATUS_LABELS, type CallStatus } from "@/lib/admin/call-fields";
-import { listCallsAdmin, type CallAdminRow } from "@/lib/admin/calls";
+import { callsHref, listCallsAdmin, type CallAdminRow } from "@/lib/admin/calls";
 import { formatDateWithYear } from "@/lib/dates";
+import { parsePage } from "@/lib/pagination";
 import { cn } from "@/lib/utils";
 
 const TITLE = "Nabory";
 
 export const metadata: Metadata = { title: TITLE };
 
-export default async function AdminCallsPage() {
-  const rows = await listCallsAdmin();
+export default async function AdminCallsPage({ searchParams }: PageProps<"/admin/calls">) {
+  const rows = await listCallsAdmin(parsePage(await searchParams));
 
   return (
     <main id="main-content" className="flex flex-col gap-6 p-4 sm:p-8">
@@ -31,10 +33,10 @@ export default async function AdminCallsPage() {
       <section aria-labelledby="calls-list-heading" className="flex flex-col gap-3">
         <h2 id="calls-list-heading" className="text-h3">
           Wszystkie nabory
-          <span className="font-normal text-muted-foreground"> ({rows.length})</span>
+          <span className="font-normal text-muted-foreground"> ({rows.total})</span>
         </h2>
 
-        {rows.length === 0 ? (
+        {rows.total === 0 ? (
           <EmptyState
             title="Brak naborów"
             action={
@@ -46,11 +48,14 @@ export default async function AdminCallsPage() {
             Dodaj pierwszy nabór. Jego pola i kryteria zobaczą autorzy pomysłów, gdy będą pisać wniosek.
           </EmptyState>
         ) : (
-          <ul className="flex flex-col gap-2">
-            {rows.map((row) => (
-              <CallRow key={row.id} row={row} />
-            ))}
-          </ul>
+          <>
+            <ul className="flex flex-col gap-2">
+              {rows.items.map((row) => (
+                <CallRow key={row.id} row={row} />
+              ))}
+            </ul>
+            <Pagination page={rows} href={callsHref} label="Strony naborów" />
+          </>
         )}
       </section>
     </main>

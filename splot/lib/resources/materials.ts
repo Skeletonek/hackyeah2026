@@ -62,3 +62,22 @@ export function materialsByKind(kind: MaterialKind): Material[] {
     .filter((item) => item.kind === kind)
     .sort((a, b) => (b.year ?? 0) - (a.year ?? 0));
 }
+
+/**
+ * Materials for the /resources filters, in display order: grouped by kind,
+ * the newest first within each, so a page can be cut from any position.
+ */
+export function filterMaterials(filters: { area?: string; category?: string }): Material[] {
+  return materials
+    .filter((item) => {
+      if (filters.area && !item.areas.includes(filters.area as Material["areas"][number])) return false;
+      if (filters.category && !item.categories.includes(filters.category as Material["categories"][number])) {
+        return false;
+      }
+      return true;
+    })
+    .sort(
+      (a, b) =>
+        MATERIAL_KINDS.indexOf(a.kind) - MATERIAL_KINDS.indexOf(b.kind) || (b.year ?? 0) - (a.year ?? 0),
+    );
+}

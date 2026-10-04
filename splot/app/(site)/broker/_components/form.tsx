@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useObject } from "@ai-sdk/react";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
@@ -13,19 +13,28 @@ import {
   serviceCardSchema,
   type ServiceCard,
 } from "@/lib/broker/schema";
+import type { BrokerInnovationOption, BrokerInnovationResults } from "@/lib/broker/innovations";
+import { findBrokerInnovations } from "../actions";
 import { ServiceCardView } from "./service-card";
 
-export type BrokerInnovationOption = { slug: string; title: string };
+/** Waits for a pause in typing before the picker searches. */
+const SEARCH_DELAY_MS = 300;
 
 /** At most 5 context fields plus the innovation choice. `useObject` reads the result. */
 export function BrokerForm({
-  innovations,
-  initialSlug,
+  initialResults,
+  initialInnovation,
 }: {
-  innovations: BrokerInnovationOption[];
-  initialSlug: string;
+  /** The first page of the picker, before any search. */
+  initialResults: BrokerInnovationResults;
+  /** Preselected from `?innovation=<slug>`. */
+  initialInnovation: BrokerInnovationOption | null;
 }) {
-  const [slug, setSlug] = useState(initialSlug);
+  const [slug, setSlug] = useState(initialInnovation?.slug ?? "");
+  const [picked, setPicked] = useState(initialInnovation);
+  const [search, setSearch] = useState("");
+  const [searchResults, setSearchResults] = useState(initialResults);
+  const [searching, startSearch] = useTransition();
   const [submittedInnovation, setSubmittedInnovation] = useState<BrokerInnovationOption | null>(null);
   const [municipalityType, setMunicipalityType] = useState("wiejska");
   const [population, setPopulation] = useState("5-20-tys");
@@ -45,6 +54,35 @@ export function BrokerForm({
     },
   });
 
+  // The picker lists one page of titles; typing searches the whole library on the server.
+  const query = search.trim();
+  useEffect(() => {
+    if (!query) return;
+    let current = true;
+    const timer = setTimeout(() => {
+      startSearch(async () => {
+        const next = await findBrokerInnovations(query);
+        if (current) setSearchResults(next);
+      });
+    }, SEARCH_DELAY_MS);
+    return () => {
+      current = false;
+      clearTimeout(timer);
+    };
+  }, [query]);
+  const results = query ? searchResults : initialResults;
+
+  // The chosen innovation stays selectable while a search shows other titles.
+  const options =
+    picked && !results.items.some((item) => item.slug === picked.slug)
+      ? [picked, ...results.items]
+      : results.items;
+
+  function pick(value: string) {
+    setSlug(value);
+    setPicked(options.find((item) => item.slug === value) ?? null);
+  }
+
   const card = object as Partial<ServiceCard> | undefined;
   const done = !isLoading && !error && !streamFailed && Boolean(card?.title);
 
@@ -60,7 +98,7 @@ export function BrokerForm({
     // Keep the card's links and feedback tied to the request, even if the form changes.
     setSubmittedInnovation({
       slug,
-      title: innovations.find((item) => item.slug === slug)?.title ?? slug,
+      title: picked?.title ?? slug,
     });
     setStreamFailed(false);
     submit({
@@ -78,20 +116,37 @@ export function BrokerForm({
   return (
     <div className="flex flex-col gap-8">
       <form onSubmit={handleSubmit} className="flex flex-col gap-5 print:hidden" noValidate>
+        <Field label="Szukaj innowacji" hint="Wpisz część nazwy, np. „senior” albo „opieka”." optional>
+          <Input
+            type="search"
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            autoComplete="off"
+            maxLength={200}
+          />
+        </Field>
+
         <Field
           label="Innowacja"
           hint="Wybierz rozwiązanie, które chcesz przenieść do gminy."
           error={slugError}
         >
-          <Select value={slug} onChange={(event) => setSlug(event.target.value)} required>
+          <Select value={slug} onChange={(event) => pick(event.target.value)} aria-busy={searching} required>
             <option value="">Wybierz…</option>
-            {innovations.map((item) => (
+            {options.map((item) => (
               <option key={item.slug} value={item.slug}>
                 {item.title}
               </option>
             ))}
           </Select>
         </Field>
+        <p role="status" className="-mt-3 text-sm text-muted-foreground simple:text-simple-sm">
+          {results.total === 0
+            ? "Żadna innowacja nie pasuje. Spróbuj innej nazwy."
+            : results.total > results.items.length
+              ? `Na liście ${results.items.length} z ${results.total} innowacji. Wpisz nazwę, aby znaleźć pozostałe.`
+              : `Na liście wszystkie pasujące innowacje: ${results.total}.`}
+        </p>
 
         <Field label="Rodzaj gminy" hint="Wybierz typ swojej gminy.">
           <Select

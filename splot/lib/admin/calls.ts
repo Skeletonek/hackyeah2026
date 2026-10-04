@@ -1,28 +1,71 @@
 import "server-only";
 
-import { callStatus, type CallStatus } from "@/lib/admin/call-fields";
+import { redirect } from "next/navigation";
+import type { CallStatus } from "@/lib/admin/call-fields";
+import { pageCount, pageHref, pageRange, PAGE_SIZE, type Page } from "@/lib/pagination";
 import { createClient } from "@/lib/supabase/server";
 
 /** The grant call configurator (/admin/calls): the list and one call to edit. */
 
-const STATUS_ORDER: Record<CallStatus, number> = { open: 0, planned: 1, closed: 2 };
+/** The list order: open calls first, then planned, then closed. */
+const STATUS_ORDER = ["open", "planned", "closed"] as const satisfies readonly CallStatus[];
 
-/** Open calls first, then planned, then closed; the latest deadline first within each. */
-export async function listCallsAdmin() {
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("grant_calls")
-    .select("id, title, opens_at, closes_at, category, sections, criteria")
-    .order("closes_at", { ascending: false });
-  if (error) throw new Error(`admin calls list failed: ${error.message}`);
+const LIST_COLUMNS = "id, title, opens_at, closes_at, category, sections, criteria";
 
-  const now = new Date();
-  return data
-    .map((call) => ({ ...call, status: callStatus(call, now) }))
-    .sort((a, b) => STATUS_ORDER[a.status] - STATUS_ORDER[b.status]);
+export const callsHref = (page: number) => pageHref("/admin/calls", {}, page);
+
+type Supabase = Awaited<ReturnType<typeof createClient>>;
+
+/** Calls in one status at `now`, the same split as `callStatus`. */
+function callsIn(supabase: Supabase, status: CallStatus, now: string, head = false) {
+  // One select for both, so the builder keeps one type; `head` reads no rows.
+  const query = supabase.from("grant_calls").select(LIST_COLUMNS, head ? { count: "exact", head } : {});
+  if (status === "planned") return query.gt("opens_at", now);
+  if (status === "closed") return query.lte("opens_at", now).lt("closes_at", now);
+  return query.lte("opens_at", now).gte("closes_at", now);
 }
 
-export type CallAdminRow = Awaited<ReturnType<typeof listCallsAdmin>>[number];
+/**
+ * One page in the list order; the latest deadline first within each status.
+ * The status depends on today's date, so the order cannot be a column: each
+ * status is counted, and the page reads only the slices of each that fall on it.
+ */
+export async function listCallsAdmin(page: number) {
+  const supabase = await createClient();
+  const now = new Date().toISOString();
+
+  const counts = await Promise.all(STATUS_ORDER.map((status) => callsIn(supabase, status, now, true)));
+  const failed = counts.find((result) => result.error);
+  if (failed?.error) throw new Error(`admin calls count failed: ${failed.error.message}`);
+
+  const sizes = counts.map((result) => result.count ?? 0);
+  const total = sizes.reduce((sum, size) => sum + size, 0);
+  const pages = pageCount(total);
+  if (page > pages) redirect(callsHref(pages));
+
+  const [from, to] = pageRange(page);
+  let start = 0;
+  const slices = STATUS_ORDER.flatMap((status, index) => {
+    const segment = { status, from: Math.max(from, start) - start, to: Math.min(to, start + sizes[index] - 1) - start };
+    start += sizes[index];
+    return segment.from <= segment.to ? [segment] : [];
+  });
+
+  const results = await Promise.all(
+    slices.map(async ({ status, from: sliceFrom, to: sliceTo }) => {
+      const { data, error } = await callsIn(supabase, status, now)
+        .order("closes_at", { ascending: false })
+        .order("id")
+        .range(sliceFrom, sliceTo);
+      if (error) throw new Error(`admin calls list failed: ${error.message}`);
+      return data.map((call) => ({ ...call, status }));
+    }),
+  );
+
+  return { items: results.flat(), page, pageSize: PAGE_SIZE, total, pageCount: pages } satisfies Page<unknown>;
+}
+
+export type CallAdminRow = Awaited<ReturnType<typeof listCallsAdmin>>["items"][number];
 
 export async function getCallForEdit(id: string) {
   const supabase = await createClient();
