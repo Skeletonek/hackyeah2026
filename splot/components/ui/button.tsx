@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils"
 
 // Focus comes from the global `:focus-visible` ring in globals.css.
 const buttonVariants = cva(
-  "inline-flex min-w-11 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-md border-2 border-transparent text-center font-bold transition-[background-color,border-color,transform] select-none active:translate-y-px disabled:translate-y-0 disabled:cursor-not-allowed disabled:border-muted disabled:bg-muted disabled:text-muted-foreground aria-busy:pointer-events-none aria-disabled:translate-y-0 aria-disabled:cursor-not-allowed aria-disabled:border-muted aria-disabled:bg-muted aria-disabled:text-muted-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-6",
+  "inline-flex max-w-full min-w-11 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-md border-2 border-transparent text-center font-bold transition-[background-color,border-color,transform] select-none active:translate-y-px disabled:translate-y-0 disabled:cursor-not-allowed disabled:border-muted disabled:bg-muted disabled:text-muted-foreground aria-busy:pointer-events-none aria-disabled:translate-y-0 aria-disabled:cursor-not-allowed aria-disabled:border-muted aria-disabled:bg-muted aria-disabled:text-muted-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-6",
   {
     variants: {
       variant: {

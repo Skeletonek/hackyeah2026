@@ -17,7 +17,7 @@ export function AccountNav() {
             <NavLink
               href={item.href}
               exact={item.exact}
-              className="inline-flex min-h-11 items-center border-b-4 border-transparent px-3 font-bold hover:border-input aria-[current=page]:border-primary aria-[current=page]:text-primary"
+              className="inline-flex min-h-11 items-center border-b-4 border-transparent px-3 font-bold hover:border-input simple:min-h-16 aria-[current=page]:border-primary aria-[current=page]:text-primary"
             >
               {item.label}
             </NavLink>

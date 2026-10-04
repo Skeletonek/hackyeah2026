@@ -15,14 +15,14 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
   if (state.status === "sent") {
     return (
       <div className="flex flex-col gap-6">
-        <h1 className="text-h1">Sprawdź swoją pocztę</h1>
+        <h1 className="text-h1 simple:text-simple-h1">Sprawdź swoją pocztę</h1>
         <Alert tone="success" title={`Wysłaliśmy link na adres ${state.email}`}>
           <p>Otwórz wiadomość od Splotu i kliknij przycisk „Zaloguj się”. Link działa 15 minut.</p>
         </Alert>
         <form action={formAction}>
           <input type="hidden" name="email" value={state.email} />
           <input type="hidden" name="next" value={nextPath} />
-          <Button type="submit" variant="outline" loading={isPending}>
+          <Button type="submit" variant="outline" loading={isPending} className="simple:w-full">
             Wyślij link jeszcze raz
           </Button>
         </form>
@@ -35,7 +35,7 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
   return (
     <form action={formAction} noValidate className="flex flex-col gap-6">
       <div>
-        <h1 className="text-h1">Zaloguj się bez hasła</h1>
+        <h1 className="text-h1 simple:text-simple-h1">Zaloguj się bez hasła</h1>
         <p className="mt-3 text-muted-foreground">
           Wpisz swój e-mail. Wyślemy Ci link, który zaloguje Cię jednym kliknięciem.
         </p>
@@ -54,7 +54,7 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
       <Button type="submit" size="lg" loading={isPending}>
         {isPending ? "Wysyłam link…" : "Wyślij link do logowania"}
       </Button>
-      <p className="text-sm text-muted-foreground">
+      <p className="text-sm text-muted-foreground simple:text-simple-sm">
         Link działa 15 minut. Nie widzisz wiadomości? Sprawdź folder „Spam”.
       </p>
     </form>

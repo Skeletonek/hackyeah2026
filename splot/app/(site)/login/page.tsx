@@ -14,12 +14,12 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
         <LoginForm nextPath={safePath(next)} />
       </section>
       <aside className="min-w-0 flex-[1_1_320px] rounded-lg bg-secondary p-8 text-secondary-foreground">
-        <h2 className="text-h3">Nie masz konta? Nie szkodzi.</h2>
+        <h2 className="text-h3 simple:text-simple-h3">Nie masz konta? Nie szkodzi.</h2>
         <p className="mt-3">
           Problem albo pomysł możesz zgłosić bez logowania. Dostaniesz numer zgłoszenia, po którym
           sprawdzisz, co się z nim dzieje.
         </p>
-        <Link href="/match" className="mt-4 inline-flex min-h-11 items-center font-bold underline underline-offset-4">
+        <Link href="/match" className="mt-4 inline-flex min-h-11 items-center font-bold underline underline-offset-4 simple:min-h-16">
           Opisz problem bez logowania
         </Link>
       </aside>

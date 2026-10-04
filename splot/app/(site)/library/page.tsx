@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { MessageSquareText } from "lucide-react";
+import { CappedList } from "@/components/capped-list";
 import { EmptyState } from "@/components/empty-state";
 import { InnovationCard } from "@/components/innovation-card";
 import { Button } from "@/components/ui/button";
@@ -47,14 +48,14 @@ export default async function Page({ searchParams }: PageProps<"/library">) {
             {filters.q && <> dla „{filters.q}”</>}
           </p>
           {filters.q && innovations.length > 0 && (
-            <p className="text-muted-foreground">Najlepiej pasujące są na początku.</p>
+            <p className="text-muted-foreground simple:hidden">Najlepiej pasujące są na początku.</p>
           )}
         </div>
 
         {innovations.length > 0 ? (
-          <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 simple:sm:grid-cols-1 simple:lg:grid-cols-1">
+          <CappedList className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 simple:sm:grid-cols-1 simple:lg:grid-cols-1">
             {innovations.map((innovation) => (
-              <li key={innovation.id} className="flex">
+              <li key={innovation.id} className="flex min-w-0">
                 <InnovationCard
                   slug={innovation.slug}
                   title={innovation.title}
@@ -65,7 +66,7 @@ export default async function Page({ searchParams }: PageProps<"/library">) {
                 />
               </li>
             ))}
-          </ul>
+          </CappedList>
         ) : (
           <EmptyState
             title="Nie znaleźliśmy takiej innowacji"

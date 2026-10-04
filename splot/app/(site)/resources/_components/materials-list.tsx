@@ -1,3 +1,4 @@
+import { CappedList } from "@/components/capped-list";
 import { MATERIAL_KIND_LABELS, MATERIAL_KINDS, type Material, type MaterialKind } from "@/lib/resources/materials";
 import { MaterialCard } from "./material-card";
 
@@ -22,13 +23,13 @@ export function MaterialsList({ materials }: { materials: Material[] }) {
               <span className="text-muted-foreground">({items.length})</span>
             </h2>
             {/* Masonry via CSS columns: DOM order runs down each column, so focus and reading order match the visual order. */}
-            <ul className="-mb-4 columns-1 gap-4 sm:columns-2 lg:columns-3">
+            <CappedList className="-mb-4 columns-1 gap-4 sm:columns-2 lg:columns-3 simple:sm:columns-1 simple:lg:columns-1">
               {items.map((item) => (
                 <li key={item.url} className="mb-4 break-inside-avoid">
                   <MaterialCard material={item} />
                 </li>
               ))}
-            </ul>
+            </CappedList>
           </section>
         );
       })}

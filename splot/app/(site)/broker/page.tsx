@@ -41,8 +41,8 @@ export default async function Page({
   return (
     <main id="main-content" className="mx-auto flex w-full max-w-[1200px] flex-col gap-6 px-4 py-10 sm:px-8">
       <div className="flex max-w-[68ch] flex-col gap-3">
-        <h1 className="text-h1">{TITLE}</h1>
-        <p className="text-lead text-muted-foreground">
+        <h1 className="text-h1 simple:text-simple-h1">{TITLE}</h1>
+        <p className="text-lead text-muted-foreground simple:text-simple-lead">
           Wybierz innowację i opisz gminę w 5 polach. Przygotujemy plan usługi.
         </p>
       </div>
