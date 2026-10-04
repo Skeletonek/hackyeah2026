@@ -11,11 +11,11 @@ import { submissionHref } from "@/lib/submissions/on-created";
 import { createClient } from "@/lib/supabase/server";
 import { cn } from "@/lib/utils";
 import { IdeaNotFound } from "../../_components/idea-not-found";
+import { PrintButton } from "../../_components/print-button";
 import { SendIdeaButton } from "../../_components/send-idea-button";
 import { sendIdeaToRops } from "../../actions";
 import { CanvasBoard } from "./_components/canvas-board";
 import styles from "./_components/canvas.module.css";
-import { PrintButton } from "./_components/print-button";
 
 const TITLE = "Kanwa Innowacji Społecznych";
 

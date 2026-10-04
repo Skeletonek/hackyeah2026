@@ -1,7 +1,9 @@
 import "server-only";
 import type { IdeaStage, SubmissionKind, SubmissionStatus } from "@/lib/labels";
 import type { CreatedSubmission } from "@/lib/submissions/on-created";
+import type { Tables } from "@/lib/supabase/database.types";
 import { createClient } from "@/lib/supabase/server";
+import type { GrantCall } from "./application";
 import type { CanvasGrantCall } from "./canvas";
 import { isUuid, type Idea } from "./card";
 
@@ -123,4 +125,50 @@ export async function listOwnIdeas(userId: string): Promise<OwnIdea[]> {
       submitted: application.status === "submitted",
     })),
   }));
+}
+
+/**
+ * The grant call an application is for: the one from `?call=` while it takes
+ * applications, otherwise the open call that closes first.
+ */
+export async function getApplicationCall(id: string | undefined): Promise<GrantCall | null> {
+  const now = new Date().toISOString();
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("grant_calls")
+    .select("*")
+    .lte("opens_at", now)
+    .gte("closes_at", now)
+    .order("closes_at");
+  if (error) {
+    console.error("getApplicationCall failed", error.message);
+    return null;
+  }
+  return data.find((call) => call.id === id) ?? data[0] ?? null;
+}
+
+/** The idea card's application in one grant call, when RLS shows it (the owner or an admin). */
+export async function getGrantApplication(ideaId: string, callId: string): Promise<Tables<"grant_applications"> | null> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("grant_applications")
+    .select("*")
+    .eq("idea_id", ideaId)
+    .eq("call_id", callId)
+    .maybeSingle();
+  if (error) throw new Error(`getGrantApplication failed: ${error.message}`);
+  return data;
+}
+
+/** Whether this person already asked to hear about the next grant call for this card. */
+export async function hasCallAlert(userId: string, ideaId: string): Promise<boolean> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("call_alerts")
+    .select("id")
+    .eq("user_id", userId)
+    .eq("idea_id", ideaId)
+    .limit(1);
+  if (error) console.error("hasCallAlert failed", error.message);
+  return (data?.length ?? 0) > 0;
 }
