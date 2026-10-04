@@ -8,7 +8,7 @@ export function SearchForm() {
       <label htmlFor="home-search" className="text-h4 simple:text-simple-h4">
         Szukaj w bibliotece innowacji
       </label>
-      <div className="flex flex-col gap-2 sm:flex-row">
+      <div className="flex flex-col gap-2 sm:flex-row simple:sm:flex-col">
         <Input
           id="home-search"
           name="q"
