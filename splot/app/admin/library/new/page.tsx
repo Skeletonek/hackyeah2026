@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { InnovationForm } from "../_components/innovation-form";
+import { NewInnovationEditor } from "./_components/ai-fill";
 
 const TITLE = "Nowa innowacja";
 
@@ -21,7 +21,7 @@ export default function NewInnovationPage() {
       <p className="max-w-[68ch] text-muted-foreground">
         Wystarczy tytuł i jedno wyzwanie. Nowa innowacja zostaje szkicem, dopóki nie zaznaczysz „Opublikowana”.
       </p>
-      <InnovationForm innovation={null} />
+      <NewInnovationEditor />
     </main>
   );
 }
