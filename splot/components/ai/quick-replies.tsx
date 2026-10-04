@@ -51,7 +51,8 @@ function QuickReplies({
               disabled={answered && !chosen}
               aria-pressed={answered ? chosen : undefined}
               onClick={answered ? undefined : () => onAnswer?.(option)}
-              className={cn("whitespace-normal text-left", chosen && "pointer-events-none")}
+              // `Button` never shrinks, so a long option is capped to the row and wraps.
+              className={cn("max-w-full whitespace-normal text-left", chosen && "pointer-events-none")}
             >
               {chosen && <Check aria-hidden strokeWidth={2} />}
               {option}
