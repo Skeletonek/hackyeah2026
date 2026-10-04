@@ -40,8 +40,11 @@ Z katalogu `splot/` zbuduj obraz, podając publiczne dane Supabase (są osadzane
 docker build \
   --build-arg NEXT_PUBLIC_SUPABASE_URL="https://<project-ref>.supabase.co" \
   --build-arg NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY="sb_publishable_..." \
+  --build-arg NEXT_PUBLIC_SITE_URL="https://<adres-aplikacji>" \
   -t splot .
 ```
+
+`NEXT_PUBLIC_SITE_URL` to adres w linkach w e-mailach z powiadomieniami (bez niego: `http://localhost:3000`). E-maile wysyłają się tylko, gdy w runtime jest `RESEND_API_KEY` (opcjonalnie `RESEND_FROM`); bez klucza działa sam dzwonek w aplikacji.
 
 `SUPABASE_SECRET_KEY` nie jest potrzebny podczas budowania. Uruchom kontener z `.env.local`, aby przekazać go wyłącznie w runtime:
 

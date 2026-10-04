@@ -169,6 +169,64 @@ export type Database = {
           },
         ]
       }
+      grant_applications: {
+        Row: {
+          call_id: string
+          created_at: string
+          criteria: Json
+          fields: Json
+          id: string
+          idea_id: string
+          status: string
+          submission_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          call_id: string
+          created_at?: string
+          criteria?: Json
+          fields?: Json
+          id?: string
+          idea_id: string
+          status?: string
+          submission_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          call_id?: string
+          created_at?: string
+          criteria?: Json
+          fields?: Json
+          id?: string
+          idea_id?: string
+          status?: string
+          submission_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "grant_applications_call_id_fkey"
+            columns: ["call_id"]
+            isOneToOne: false
+            referencedRelation: "grant_calls"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "grant_applications_idea_id_fkey"
+            columns: ["idea_id"]
+            isOneToOne: false
+            referencedRelation: "ideas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "grant_applications_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       grant_calls: {
         Row: {
           category: Database["public"]["Enums"]["challenge_category"] | null
@@ -207,6 +265,68 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      ideas: {
+        Row: {
+          assets: string[]
+          audience: string | null
+          canvas: Json
+          conversation_id: string | null
+          created_at: string
+          id: string
+          location: string | null
+          problem: string | null
+          reach: string | null
+          solution: string | null
+          stage: Database["public"]["Enums"]["idea_stage"] | null
+          target_groups: Database["public"]["Enums"]["target_group"][]
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          assets?: string[]
+          audience?: string | null
+          canvas?: Json
+          conversation_id?: string | null
+          created_at?: string
+          id?: string
+          location?: string | null
+          problem?: string | null
+          reach?: string | null
+          solution?: string | null
+          stage?: Database["public"]["Enums"]["idea_stage"] | null
+          target_groups?: Database["public"]["Enums"]["target_group"][]
+          title: string
+          updated_at?: string
+          user_id?: string
+        }
+        Update: {
+          assets?: string[]
+          audience?: string | null
+          canvas?: Json
+          conversation_id?: string | null
+          created_at?: string
+          id?: string
+          location?: string | null
+          problem?: string | null
+          reach?: string | null
+          solution?: string | null
+          stage?: Database["public"]["Enums"]["idea_stage"] | null
+          target_groups?: Database["public"]["Enums"]["target_group"][]
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ideas_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       innovations: {
         Row: {
@@ -331,6 +451,47 @@ export type Database = {
             columns: ["thread_id"]
             isOneToOne: false
             referencedRelation: "threads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          created_at: string
+          id: string
+          link: string
+          read_at: string | null
+          submission_id: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          link: string
+          read_at?: string | null
+          submission_id?: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          link?: string
+          read_at?: string | null
+          submission_id?: string | null
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "submissions"
             referencedColumns: ["id"]
           },
         ]
@@ -473,6 +634,7 @@ export type Database = {
           embedding: string | null
           expert_id: string | null
           id: string
+          idea_id: string | null
           kind: Database["public"]["Enums"]["submission_kind"]
           municipality: string | null
           possible_duplicate_id: string | null
@@ -497,6 +659,7 @@ export type Database = {
           embedding?: string | null
           expert_id?: string | null
           id?: string
+          idea_id?: string | null
           kind?: Database["public"]["Enums"]["submission_kind"]
           municipality?: string | null
           possible_duplicate_id?: string | null
@@ -521,6 +684,7 @@ export type Database = {
           embedding?: string | null
           expert_id?: string | null
           id?: string
+          idea_id?: string | null
           kind?: Database["public"]["Enums"]["submission_kind"]
           municipality?: string | null
           possible_duplicate_id?: string | null
@@ -535,6 +699,13 @@ export type Database = {
             columns: ["expert_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "submissions_idea_id_fkey"
+            columns: ["idea_id"]
+            isOneToOne: false
+            referencedRelation: "ideas"
             referencedColumns: ["id"]
           },
           {
@@ -707,6 +878,7 @@ export type Database = {
         | "service_access"
         | "coordination"
         | "depopulation"
+      idea_stage: "concept" | "first_trial" | "running" | "scaling"
       innovation_stage: "idea" | "pilot" | "deployed"
       organization_type: "municipality" | "ngo" | "community_group" | "other"
       pilot_status:
@@ -870,6 +1042,7 @@ export const Constants = {
         "coordination",
         "depopulation",
       ],
+      idea_stage: ["concept", "first_trial", "running", "scaling"],
       innovation_stage: ["idea", "pilot", "deployed"],
       organization_type: ["municipality", "ngo", "community_group", "other"],
       pilot_status: [
