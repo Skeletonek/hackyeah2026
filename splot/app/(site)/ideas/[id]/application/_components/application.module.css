@@ -1,0 +1,68 @@
+/**
+ * The grant application (KRE6) on paper: the form and its buttons stay on the
+ * screen, the printed A4 page gets the same content as plain text.
+ */
+
+.printOnly {
+  display: none;
+}
+
+/* A named page, so other printable pages keep their own paper format. */
+@page application {
+  size: A4 portrait;
+  margin: 15mm;
+}
+
+@media print {
+  /* The application, not the site chrome around it. */
+  :global(body):has(.page) :global(header),
+  :global(body):has(.page) :global(footer),
+  :global(body):has(.page) :global(a[href="#main-content"]),
+  .noPrint {
+    display: none !important;
+  }
+
+  .printOnly {
+    display: block;
+  }
+
+  /* Text-size and simple mode are for the screen. */
+  :global(html):has(.page) {
+    font-size: 11pt !important;
+  }
+
+  :global(html):has(.page),
+  :global(body):has(.page) {
+    background: #fff !important;
+  }
+
+  /* Paper is always light, also when the screen is in the Kontrast theme. */
+  .page {
+    page: application;
+    --background: #fff;
+    --foreground: #13201e;
+    --muted-foreground: #475955;
+    --primary: #0b5e57;
+    --border: #677b77;
+    max-width: none !important;
+    padding: 0 !important;
+    color: var(--foreground);
+  }
+
+  .page * {
+    font-size: inherit;
+    line-height: 1.45;
+  }
+
+  .page h1 {
+    font-size: 1.6rem;
+  }
+
+  .page h2 {
+    font-size: 1.15rem;
+  }
+
+  .printSection {
+    break-inside: avoid;
+  }
+}
