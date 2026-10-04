@@ -1,9 +1,17 @@
 import type { Metadata } from "next";
 import { EmptyState } from "@/components/empty-state";
-import { hasFilters, getSubmission, listSubmissions, parseFilters } from "@/lib/admin/queries";
+import {
+  hasFilters,
+  getSubmission,
+  inboxHref,
+  listSubmissions,
+  parseFilters,
+} from "@/lib/admin/queries";
+import { SUBMISSION_KIND_LABELS, SUBMISSION_STATUS_LABELS } from "@/lib/labels";
 import { SubmissionFiltersForm } from "./_components/filters";
 import { InboxList } from "./_components/inbox-list";
 import { NewSubmissionToast } from "./_components/new-submission-toast";
+import { PreviewDrawer } from "./_components/preview-drawer";
 import { SubmissionPreview } from "./_components/preview";
 
 export const metadata: Metadata = { title: "Zgłoszenia" };
@@ -46,10 +54,18 @@ export default async function AdminInboxPage({
           )}
         </section>
 
-        <section aria-labelledby="preview-pane-heading" className="flex flex-col gap-3">
-          <h2 id="preview-pane-heading" className="sr-only">
-            Podgląd zgłoszenia
-          </h2>
+        <PreviewDrawer
+          selected={
+            selectedRow
+              ? {
+                  id: selectedRow.id,
+                  title: `Zgłoszenie ${selectedRow.case_number}`,
+                  description: `${SUBMISSION_KIND_LABELS[selectedRow.kind]}, status: ${SUBMISSION_STATUS_LABELS[selectedRow.status]}`,
+                }
+              : null
+          }
+          closeHref={inboxHref(filters)}
+        >
           {selectedRow ? (
             <SubmissionPreview row={selectedRow} />
           ) : (
@@ -58,7 +74,7 @@ export default async function AdminInboxPage({
               wątkiem znajdziesz po otwarciu zgłoszenia.
             </EmptyState>
           )}
-        </section>
+        </PreviewDrawer>
       </div>
     </main>
   );

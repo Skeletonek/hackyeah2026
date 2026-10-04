@@ -75,6 +75,17 @@ export function hasFilters(filters: SubmissionFilters): boolean {
   return Object.values(filters).some(Boolean);
 }
 
+/** The inbox URL with the current filters and, optionally, the row to preview. */
+export function inboxHref(filters: SubmissionFilters, selected?: string): string {
+  const params = new URLSearchParams();
+  for (const [key, value] of Object.entries(filters)) {
+    if (value) params.set(key, value);
+  }
+  if (selected) params.set("selected", selected);
+  const query = params.toString();
+  return query ? `/admin/submissions?${query}` : "/admin/submissions";
+}
+
 /** Newest first. Admins see every submission through the admin RLS policy. */
 export async function listSubmissions(filters: SubmissionFilters): Promise<InboxRow[]> {
   const supabase = await createClient();

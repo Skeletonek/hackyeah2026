@@ -35,9 +35,10 @@ export function SubmissionPreview({ row }: { row: InboxRow }) {
   return (
     <article
       aria-labelledby="preview-heading"
+      data-slot="submission-preview"
       className="flex flex-col gap-4 rounded-lg border-2 border-border bg-card p-5"
     >
-      <div className="flex flex-wrap items-center gap-3">
+      <div data-slot="submission-preview-header" className="flex flex-wrap items-center gap-3">
         <h2 id="preview-heading" className="font-mono text-h4">
           {row.case_number}
         </h2>
@@ -89,7 +90,7 @@ export function SubmissionPreview({ row }: { row: InboxRow }) {
         </div>
       )}
 
-      <div className="border-t-2 border-border pt-4">
+      <div data-slot="submission-preview-footer" className="border-t-2 border-border pt-4">
         <Button asChild variant="outline">
           <Link href={`/admin/submissions/${row.id}`}>
             Pełny widok
