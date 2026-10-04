@@ -2,10 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, ChevronDown } from "lucide-react";
 import { EmptyState } from "@/components/empty-state";
+import { Pagination } from "@/components/pagination";
 import { Alert } from "@/components/ui/alert";
 import { requireRole } from "@/lib/auth";
 import { formatDateWithYear } from "@/lib/dates";
-import { getStaffThread, listStaffThreads } from "@/lib/threads/queries";
+import { parsePage } from "@/lib/pagination";
+import { getStaffThread, listStaffThreads, staffThreadsHref } from "@/lib/threads/queries";
 import { cn } from "@/lib/utils";
 import { KindChip, StatusChip } from "../submissions/_components/chips";
 import { StaffThread } from "./_components/staff-thread";
@@ -21,12 +23,12 @@ export default async function AdminMessagesPage({ searchParams }: PageProps<"/ad
   const user = await requireRole(["admin"], "/admin/messages");
   const params = await searchParams;
   const selected = Array.isArray(params.submission) ? params.submission[0] : params.submission;
+  const page = parsePage(params);
 
   const [rows, thread] = await Promise.all([
-    listStaffThreads(),
+    listStaffThreads(page, selected),
     selected ? getStaffThread(selected, user.id) : Promise.resolve(null),
   ]);
-  const awaiting = rows.filter((row) => row.awaitingReply).length;
 
   return (
     <main id="main-content" className="flex flex-col gap-6 p-4 sm:p-8">
@@ -44,16 +46,19 @@ export default async function AdminMessagesPage({ searchParams }: PageProps<"/ad
             Wątki
             <span className="font-normal text-muted-foreground">
               {" "}
-              ({rows.length}, czeka na odpowiedź: {awaiting})
+              ({rows.total}, czeka na odpowiedź: {rows.awaiting})
             </span>
           </h2>
-          {rows.length === 0 ? (
+          {rows.total === 0 ? (
             <EmptyState title="Brak wątków" headingLevel="h3">
               Wątek powstaje razem ze zgłoszeniem. Gdy ktoś opisze problem albo wyśle pomysł,
               rozmowa pojawi się tutaj.
             </EmptyState>
           ) : (
-            <ThreadList rows={rows} selectedId={thread?.submission.id ?? null} />
+            <>
+              <ThreadList rows={rows.items} page={page} selectedId={thread?.submission.id ?? null} />
+              <Pagination page={rows} href={(n) => staffThreadsHref(n)} label="Strony wątków" />
+            </>
           )}
         </section>
 
@@ -63,7 +68,7 @@ export default async function AdminMessagesPage({ searchParams }: PageProps<"/ad
         >
           {selected && (
             <Link
-              href="/admin/messages"
+              href={staffThreadsHref(page)}
               className="inline-flex min-h-11 w-fit items-center gap-2 font-bold text-primary underline underline-offset-4 xl:hidden"
             >
               <ArrowLeft aria-hidden className="size-5" strokeWidth={2} />

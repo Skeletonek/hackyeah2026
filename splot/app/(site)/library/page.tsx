@@ -4,8 +4,10 @@ import { MessageSquareText } from "lucide-react";
 import { CappedList } from "@/components/capped-list";
 import { EmptyState } from "@/components/empty-state";
 import { InnovationCard } from "@/components/innovation-card";
+import { Pagination } from "@/components/pagination";
 import { Button } from "@/components/ui/button";
-import { hasFilters, listInnovations, parseLibraryFilters } from "@/lib/library/queries";
+import { hasFilters, libraryHref, listInnovations, parseLibraryFilters } from "@/lib/library/queries";
+import { parsePage } from "@/lib/pagination";
 import { LibraryFilters } from "./_components/library-filters";
 
 const TITLE = "Biblioteka innowacji";
@@ -22,9 +24,10 @@ function innovationsCount(count: number) {
 }
 
 export default async function Page({ searchParams }: PageProps<"/library">) {
-  const filters = parseLibraryFilters(await searchParams);
+  const params = await searchParams;
+  const filters = parseLibraryFilters(params);
   const filtered = hasFilters(filters);
-  const innovations = await listInnovations(filters);
+  const innovations = await listInnovations(filters, parsePage(params), params);
 
   return (
     <main id="main-content" className="mx-auto flex w-full max-w-[1200px] flex-col gap-8 px-4 py-10 sm:px-8">
@@ -43,30 +46,44 @@ export default async function Page({ searchParams }: PageProps<"/library">) {
           Wyniki
         </h2>
         <div role="status" className="flex flex-col gap-1">
+          {/* Search ranks the whole (filtered) library, so a count would only repeat its size. */}
           <p className="text-h4 simple:text-simple-h4">
-            Znaleziono {innovationsCount(innovations.length)}
-            {filters.q && <> dla „{filters.q}”</>}
+            {filters.q && innovations.total > 0 ? (
+              <>Wyniki dla „{filters.q}”</>
+            ) : (
+              <>
+                Znaleziono {innovationsCount(innovations.total)}
+                {filters.q && <> dla „{filters.q}”</>}
+              </>
+            )}
           </p>
-          {filters.q && innovations.length > 0 && (
+          {filters.q && innovations.total > 0 && (
             <p className="text-muted-foreground simple:hidden">Najlepiej pasujące są na początku.</p>
           )}
         </div>
 
-        {innovations.length > 0 ? (
-          <CappedList className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 simple:sm:grid-cols-1 simple:lg:grid-cols-1">
-            {innovations.map((innovation) => (
-              <li key={innovation.id} className="flex min-w-0">
-                <InnovationCard
-                  slug={innovation.slug}
-                  title={innovation.title}
-                  lead={innovation.lead}
-                  categories={innovation.categories}
-                  stage={innovation.stage}
-                  className="w-full"
-                />
-              </li>
-            ))}
-          </CappedList>
+        {innovations.total > 0 ? (
+          <>
+            <CappedList className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 simple:sm:grid-cols-1 simple:lg:grid-cols-1">
+              {innovations.items.map((innovation) => (
+                <li key={innovation.id} className="flex min-w-0">
+                  <InnovationCard
+                    slug={innovation.slug}
+                    title={innovation.title}
+                    lead={innovation.lead}
+                    categories={innovation.categories}
+                    stage={innovation.stage}
+                    className="w-full"
+                  />
+                </li>
+              ))}
+            </CappedList>
+            <Pagination
+              page={innovations}
+              href={(n) => libraryHref(params, n)}
+              label="Strony wyników"
+            />
+          </>
         ) : (
           <EmptyState
             title="Nie znaleźliśmy takiej innowacji"

@@ -2,6 +2,7 @@ import "server-only";
 
 import type { UIMessage } from "ai";
 import { z } from "zod";
+import { pageRange, toPage, type Page } from "@/lib/pagination";
 import { Constants } from "@/lib/supabase/database.types";
 import { createClient } from "@/lib/supabase/server";
 import type {
@@ -46,8 +47,6 @@ type Submission = {
 const COLUMNS =
   "id, case_number, kind, created_at, category, priority, status, possible_duplicate_id, ai_triaged_at, ai_summary, body, municipality, county, contact_email";
 
-const PAGE_SIZE = 50;
-
 /** One filter value or nothing; anything unknown is dropped, never trusted. */
 function pick<T extends string>(
   value: string | string[] | undefined,
@@ -75,35 +74,45 @@ export function hasFilters(filters: SubmissionFilters): boolean {
   return Object.values(filters).some(Boolean);
 }
 
-/** The inbox URL with the current filters and, optionally, the row to preview. */
-export function inboxHref(filters: SubmissionFilters, selected?: string): string {
+/** The inbox URL with the current filters, the page and, optionally, the row to preview. */
+export function inboxHref(
+  filters: SubmissionFilters,
+  { page = 1, selected }: { page?: number; selected?: string } = {},
+): string {
   const params = new URLSearchParams();
   for (const [key, value] of Object.entries(filters)) {
     if (value) params.set(key, value);
   }
+  if (page > 1) params.set("page", String(page));
   if (selected) params.set("selected", selected);
   const query = params.toString();
   return query ? `/admin/submissions?${query}` : "/admin/submissions";
 }
 
-/** Newest first. Admins see every submission through the admin RLS policy. */
-export async function listSubmissions(filters: SubmissionFilters): Promise<InboxRow[]> {
+/** One page, newest first. Admins see every submission through the admin RLS policy. */
+export async function listSubmissions(
+  filters: SubmissionFilters,
+  page: number,
+): Promise<Page<InboxRow>> {
   const supabase = await createClient();
 
   let query = supabase
     .from("submissions")
-    .select(COLUMNS)
+    .select(COLUMNS, { count: "exact" })
     .order("created_at", { ascending: false })
-    .limit(PAGE_SIZE);
+    .order("id")
+    .range(...pageRange(page));
 
   if (filters.status) query = query.eq("status", filters.status);
   if (filters.kind) query = query.eq("kind", filters.kind);
   if (filters.category) query = query.eq("category", filters.category);
   if (filters.priority) query = query.eq("priority", filters.priority);
 
-  const { data, error } = await query;
-  if (error) throw new Error(`listSubmissions failed: ${error.message}`);
-  return (data ?? []) as InboxRow[];
+  const result = await query;
+  return toPage({ ...result, data: result.data as InboxRow[] | null }, page, {
+    label: "listSubmissions",
+    href: (n) => inboxHref(filters, { page: n }),
+  });
 }
 
 export type SubmissionDetail = InboxRow & {
@@ -171,6 +180,7 @@ export async function getSubmissionDetail(id: string): Promise<SubmissionDetail 
 
 /** The row behind the preview pane; `null` for an unknown or deleted id. */
 export async function getSubmission(id: string): Promise<InboxRow | null> {
+  if (!z.uuid().safeParse(id).success) return null;
   const supabase = await createClient();
 
   const { data, error } = await supabase

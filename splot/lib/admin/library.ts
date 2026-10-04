@@ -1,6 +1,7 @@
 import "server-only";
 
 import { z } from "zod";
+import { pageHref, pageRange, toPage, type SearchParams } from "@/lib/pagination";
 import { createClient } from "@/lib/supabase/server";
 
 /** The library editor (/admin/library): list filters, one row to edit, the form schema. */
@@ -13,8 +14,6 @@ export type LibraryAdminFilters = {
 };
 
 const VISIBILITIES = ["published", "draft"] as const satisfies readonly VisibilityFilter[];
-
-type SearchParams = { [key: string]: string | string[] | undefined };
 
 function first(value: string | string[] | undefined) {
   return Array.isArray(value) ? value[0] : value;
@@ -32,12 +31,12 @@ export function hasLibraryAdminFilters(filters: LibraryAdminFilters) {
   return Boolean(filters.q || filters.visibility);
 }
 
-/** Drafts included: the admin RLS policy reads every row. Recently edited first. */
-export async function listLibraryAdmin(filters: LibraryAdminFilters) {
+/** One page, drafts included: the admin RLS policy reads every row. Recently edited first. */
+export async function listLibraryAdmin(filters: LibraryAdminFilters, page: number, params: SearchParams) {
   const supabase = await createClient();
   let query = supabase
     .from("innovations")
-    .select("id, slug, title, categories, stage, published, updated_at");
+    .select("id, slug, title, categories, stage, published, updated_at", { count: "exact" });
   if (filters.q) {
     // `,` `(` `)` are PostgREST `or` syntax, `%` `_` are LIKE wildcards.
     const term = filters.q.replace(/[,()%_\\]/g, " ").trim();
@@ -45,12 +44,17 @@ export async function listLibraryAdmin(filters: LibraryAdminFilters) {
   }
   if (filters.visibility) query = query.eq("published", filters.visibility === "published");
 
-  const { data, error } = await query.order("updated_at", { ascending: false });
-  if (error) throw new Error(`admin library list failed: ${error.message}`);
-  return data;
+  const result = await query
+    .order("updated_at", { ascending: false })
+    .order("id")
+    .range(...pageRange(page));
+  return toPage(result, page, {
+    label: "admin library list",
+    href: (n) => pageHref("/admin/library", params, n),
+  });
 }
 
-export type LibraryAdminRow = Awaited<ReturnType<typeof listLibraryAdmin>>[number];
+export type LibraryAdminRow = Awaited<ReturnType<typeof listLibraryAdmin>>["items"][number];
 
 const EDIT_COLUMNS =
   "id, slug, title, lead, solution, problem, audience, adopters, evidence, easy_read_description, target_groups, categories, stage, source_url, video_url, folder_pdf_url, materials_url, pilot_slots, published, updated_at";

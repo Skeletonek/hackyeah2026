@@ -1,12 +1,20 @@
 import Link from "next/link";
 import { Reply } from "lucide-react";
 import { formatDateTime } from "@/lib/dates";
-import type { StaffThreadRow } from "@/lib/threads/queries";
+import { staffThreadsHref, type StaffThreadRow } from "@/lib/threads/queries";
 import { cn } from "@/lib/utils";
 import { KindChip, StatusChip } from "../../submissions/_components/chips";
 
 /** The ROPS thread inbox. Every row is a link to `?submission=<id>`, so it works without JavaScript. */
-export function ThreadList({ rows, selectedId }: { rows: StaffThreadRow[]; selectedId: string | null }) {
+export function ThreadList({
+  rows,
+  page,
+  selectedId,
+}: {
+  rows: StaffThreadRow[];
+  page: number;
+  selectedId: string | null;
+}) {
   return (
     <ul className="flex flex-col gap-2">
       {rows.map((row) => {
@@ -14,7 +22,7 @@ export function ThreadList({ rows, selectedId }: { rows: StaffThreadRow[]; selec
         return (
           <li key={row.submissionId}>
             <Link
-              href={`/admin/messages?submission=${row.submissionId}`}
+              href={staffThreadsHref(page, row.submissionId)}
               aria-current={isSelected ? "true" : undefined}
               className={cn(
                 "flex flex-col gap-2 rounded-lg border-2 bg-card p-4",

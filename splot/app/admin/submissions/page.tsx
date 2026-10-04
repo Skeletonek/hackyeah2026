@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { EmptyState } from "@/components/empty-state";
+import { Pagination } from "@/components/pagination";
 import {
   hasFilters,
   getSubmission,
@@ -7,6 +8,7 @@ import {
   listSubmissions,
   parseFilters,
 } from "@/lib/admin/queries";
+import { parsePage } from "@/lib/pagination";
 import { SUBMISSION_KIND_LABELS, SUBMISSION_STATUS_LABELS } from "@/lib/labels";
 import { SubmissionFiltersForm } from "./_components/filters";
 import { InboxList } from "./_components/inbox-list";
@@ -21,10 +23,11 @@ export default async function AdminInboxPage({
 }: PageProps<"/admin/submissions">) {
   const params = await searchParams;
   const filters = parseFilters(params);
+  const page = parsePage(params);
   const selected = Array.isArray(params.selected) ? params.selected[0] : params.selected;
 
-  const [rows, selectedRow] = await Promise.all([
-    listSubmissions(filters),
+  const [inbox, selectedRow] = await Promise.all([
+    listSubmissions(filters, page),
     selected ? getSubmission(selected) : Promise.resolve(null),
   ]);
 
@@ -40,17 +43,24 @@ export default async function AdminInboxPage({
         <section aria-labelledby="inbox-heading" className="flex flex-col gap-3">
           <h2 id="inbox-heading" className="text-h3">
             {hasFilters(filters) ? "Wyniki" : "Ostatnie zgłoszenia"}
-            <span className="font-normal text-muted-foreground"> ({rows.length})</span>
+            <span className="font-normal text-muted-foreground"> ({inbox.total})</span>
           </h2>
 
-          {rows.length === 0 ? (
+          {inbox.total === 0 ? (
             <EmptyState title="Brak zgłoszeń">
               {hasFilters(filters)
                 ? "Żadne zgłoszenie nie pasuje do tych filtrów. Wyczyść je, aby zobaczyć wszystkie."
                 : "Zgłoszenia pojawią się tutaj, gdy mieszkaniec, gmina albo organizacja opisze problem."}
             </EmptyState>
           ) : (
-            <InboxList rows={rows} filters={filters} selectedId={selected ?? null} />
+            <>
+              <InboxList rows={inbox.items} filters={filters} page={page} selectedId={selected ?? null} />
+              <Pagination
+                page={inbox}
+                href={(n) => inboxHref(filters, { page: n })}
+                label="Strony zgłoszeń"
+              />
+            </>
           )}
         </section>
 
@@ -64,7 +74,7 @@ export default async function AdminInboxPage({
                 }
               : null
           }
-          closeHref={inboxHref(filters)}
+          closeHref={inboxHref(filters, { page })}
         >
           {selectedRow ? (
             <SubmissionPreview row={selectedRow} />

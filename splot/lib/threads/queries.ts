@@ -1,11 +1,11 @@
 import "server-only";
 import { z } from "zod";
 import type { SubmissionKind, SubmissionStatus } from "@/lib/labels";
+import { pageHref, pageRange, toPage, type Page } from "@/lib/pagination";
 import { createClient } from "@/lib/supabase/server";
 import {
   toStaffThreadMessage,
   toThreadMessage,
-  type MessageRow,
   type StaffThreadMessage,
   type ThreadMessage,
 } from "@/lib/threads/messages";
@@ -200,70 +200,46 @@ export async function listOwnSubmissions(): Promise<OwnSubmission[]> {
   }));
 }
 
+export const participantThreadsHref = (page: number) => pageHref("/account/messages", {}, page);
+
 /**
- * All threads the current user participates in, with the last message and the
- * related submission case number. Sorted by the last message time, newest first.
+ * One page of the threads the current user participates in, with the last
+ * message and the related submission case number; the latest activity first.
  */
-export async function listParticipantThreads(userId: string): Promise<InboxThread[]> {
+export async function listParticipantThreads(userId: string, page: number): Promise<Page<InboxThread>> {
   const supabase = await createClient();
 
-  const { data: participants, error: participantsError } = await supabase
-    .from("thread_participants")
-    .select("thread_id")
-    .eq("user_id", userId);
-  if (participantsError) {
-    throw new Error(`listParticipantThreads participants failed: ${participantsError.message}`);
-  }
-
-  const threadIds = participants?.map((row) => row.thread_id) ?? [];
-  if (threadIds.length === 0) return [];
-
-  const { data: threads, error: threadsError } = await supabase
+  const result = await supabase
     .from("threads")
-    .select("id, subject, submission_id, submissions:submission_id (case_number)")
-    .in("id", threadIds)
-    .order("created_at", { ascending: false });
-  if (threadsError) {
-    throw new Error(`listParticipantThreads threads failed: ${threadsError.message}`);
-  }
+    .select(
+      "id, subject, submission_id, submissions:submission_id (case_number), thread_participants!inner (user_id), messages (body, created_at, author_id)",
+      { count: "exact" },
+    )
+    // Admins read every thread under RLS; this inbox is only the user's own.
+    .eq("thread_participants.user_id", userId)
+    .eq("messages.from_assistant", false)
+    .order("created_at", { referencedTable: "messages", ascending: false })
+    .limit(1, { referencedTable: "messages" })
+    .order("last_message_at", { ascending: false })
+    .order("id")
+    .range(...pageRange(page));
+  const threads = toPage(result, page, { label: "listParticipantThreads", href: participantThreadsHref });
 
-  const { data: messages, error: messagesError } = await supabase
-    .from("messages")
-    .select("id, thread_id, body, created_at, author_id")
-    .in("thread_id", threadIds)
-    .eq("from_assistant", false)
-    .order("created_at", { ascending: true });
-  if (messagesError) {
-    throw new Error(`listParticipantThreads messages failed: ${messagesError.message}`);
-  }
-
-  const messagesByThread = new Map<string, MessageRow[]>();
-  for (const message of messages ?? []) {
-    const list = messagesByThread.get(message.thread_id) ?? [];
-    list.push(message);
-    messagesByThread.set(message.thread_id, list);
-  }
-
-  return (threads ?? [])
-    .map((thread) => {
-      const threadMessages = messagesByThread.get(thread.id) ?? [];
-      const last = threadMessages[threadMessages.length - 1] ?? null;
-      const submission = thread.submissions as unknown as { case_number: string } | null;
+  return {
+    ...threads,
+    items: threads.items.map((thread) => {
+      const last = thread.messages[0] ?? null;
       return {
         id: thread.id,
         subject: thread.subject,
         submissionId: thread.submission_id,
-        caseNumber: submission?.case_number ?? null,
+        caseNumber: thread.submissions?.case_number ?? null,
         lastMessage: last
           ? { body: last.body, createdAt: last.created_at, isOwn: last.author_id === userId }
           : null,
       };
-    })
-    .sort((a, b) => {
-      const aTime = a.lastMessage?.createdAt ?? "";
-      const bTime = b.lastMessage?.createdAt ?? "";
-      return bTime.localeCompare(aTime);
-    });
+    }),
+  };
 }
 
 /**
@@ -357,41 +333,58 @@ export type StaffThreadRow = {
   awaitingReply: boolean;
 };
 
-const STAFF_THREADS_LIMIT = 200;
+/** The ROPS inbox URL: one page, optionally with an opened thread. */
+export function staffThreadsHref(page: number, submissionId?: string) {
+  return pageHref("/admin/messages", { submission: submissionId }, page);
+}
 
 /**
- * Every submission thread, newest activity first. Admins read all of them
- * through the admin RLS policies; call only behind `requireRole(["admin"])`.
+ * One page of submission threads, the latest activity first, and how many
+ * threads in total wait for a reply. Admins read all of them through the admin
+ * RLS policies; call only behind `requireRole(["admin"])`.
  */
-export async function listStaffThreads(): Promise<StaffThreadRow[]> {
+export async function listStaffThreads(page: number, submissionId?: string) {
   const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("threads")
-    .select(
-      "subject, created_at, submissions!inner (id, case_number, kind, status, author_id), messages (body, author_id, created_at)",
-    )
-    // AI hints are never part of the conversation.
-    .eq("messages.from_assistant", false)
-    .order("created_at", { referencedTable: "messages", ascending: false })
-    .limit(1, { referencedTable: "messages" })
-    .order("created_at", { ascending: false })
-    .limit(STAFF_THREADS_LIMIT);
-  if (error) throw new Error(`listStaffThreads failed: ${error.message}`);
+  const [result, awaiting] = await Promise.all([
+    supabase
+      .from("threads")
+      .select(
+        "subject, last_message_at, awaiting_reply, submissions!inner (id, case_number, kind, status), messages (body)",
+        { count: "exact" },
+      )
+      // AI hints are never part of the conversation.
+      .eq("messages.from_assistant", false)
+      .order("created_at", { referencedTable: "messages", ascending: false })
+      .limit(1, { referencedTable: "messages" })
+      .order("last_message_at", { ascending: false })
+      .order("id")
+      .range(...pageRange(page)),
+    supabase
+      .from("threads")
+      .select("id, submissions!inner (id)", { count: "exact", head: true })
+      .eq("awaiting_reply", true),
+  ]);
+  if (awaiting.error) throw new Error(`listStaffThreads awaiting failed: ${awaiting.error.message}`);
+  const threads = toPage(result, page, {
+    label: "listStaffThreads",
+    href: (n) => staffThreadsHref(n, submissionId),
+  });
 
-  return (data ?? [])
-    .map((thread) => {
-      const last = thread.messages[0];
-      return {
+  return {
+    ...threads,
+    awaiting: awaiting.count ?? 0,
+    items: threads.items.map(
+      (thread): StaffThreadRow => ({
         submissionId: thread.submissions.id,
         caseNumber: thread.submissions.case_number,
         kind: thread.submissions.kind,
         status: thread.submissions.status,
-        preview: last?.body ?? thread.subject,
-        lastActivityAt: last?.created_at ?? thread.created_at,
-        awaitingReply: Boolean(last) && last.author_id === thread.submissions.author_id,
-      };
-    })
-    .sort((a, b) => b.lastActivityAt.localeCompare(a.lastActivityAt));
+        preview: thread.messages[0]?.body ?? thread.subject,
+        lastActivityAt: thread.last_message_at,
+        awaitingReply: thread.awaiting_reply,
+      }),
+    ),
+  };
 }
 
 export type StaffThread = {

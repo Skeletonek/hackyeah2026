@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { EmptyState } from "@/components/empty-state";
+import { Pagination } from "@/components/pagination";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import { Select } from "@/components/ui/select";
@@ -9,9 +10,12 @@ import {
   listPilots,
   listReviews,
   parsePilotFilters,
+  pilotsHref,
+  type PilotFilters,
   type ReviewState,
 } from "@/lib/admin/pilots";
-import { PILOT_STATUS_LABELS, type PilotStatus } from "@/lib/labels";
+import { PILOT_STATUS_LABELS } from "@/lib/labels";
+import { parsePage } from "@/lib/pagination";
 import { Constants } from "@/lib/supabase/database.types";
 import { PilotTabs } from "./_components/pilot-tabs";
 import { PilotsTable } from "./_components/pilots-table";
@@ -31,7 +35,9 @@ const filterFormClassName =
   "grid items-end gap-4 rounded-lg border-2 border-border bg-card p-5 sm:grid-cols-[minmax(0,1fr)_auto]";
 
 export default async function AdminPilotsPage({ searchParams }: PageProps<"/admin/pilots">) {
-  const filters = parsePilotFilters(await searchParams);
+  const params = await searchParams;
+  const filters = parsePilotFilters(params);
+  const page = parsePage(params);
   const counts = await countPilotWork();
 
   return (
@@ -41,16 +47,17 @@ export default async function AdminPilotsPage({ searchParams }: PageProps<"/admi
       <PilotTabs tab={filters.tab} counts={{ applications: counts.applied, reviews: counts.pending }} />
 
       {filters.tab === "applications" ? (
-        <Applications status={filters.status} />
+        <Applications filters={filters} page={page} />
       ) : (
-        <Reviews state={filters.review} />
+        <Reviews filters={filters} page={page} />
       )}
     </main>
   );
 }
 
-async function Applications({ status }: { status: PilotStatus | undefined }) {
-  const rows = await listPilots(status);
+async function Applications({ filters, page }: { filters: PilotFilters; page: number }) {
+  const { status } = filters;
+  const rows = await listPilots(filters, page);
 
   return (
     <>
@@ -79,24 +86,28 @@ async function Applications({ status }: { status: PilotStatus | undefined }) {
       <section aria-labelledby="pilots-heading" className="flex flex-col gap-3">
         <h2 id="pilots-heading" className="text-h3">
           {status ? `Zgłoszenia: ${PILOT_STATUS_LABELS[status]}` : "Wszystkie zgłoszenia do testów"}
-          <span className="font-normal text-muted-foreground"> ({rows.length})</span>
+          <span className="font-normal text-muted-foreground"> ({rows.total})</span>
         </h2>
-        {rows.length === 0 ? (
+        {rows.total === 0 ? (
           <EmptyState title="Brak zgłoszeń do testów">
             {status
               ? "Żadne zgłoszenie nie ma tego statusu. Wyczyść filtr, aby zobaczyć wszystkie."
               : "Zgłoszenia pojawią się tutaj, gdy organizacja kliknie „Chcę testować” na stronie innowacji."}
           </EmptyState>
         ) : (
-          <PilotsTable rows={rows} />
+          <>
+            <PilotsTable rows={rows.items} />
+            <Pagination page={rows} href={(n) => pilotsHref(filters, n)} label="Strony zgłoszeń do testów" />
+          </>
         )}
       </section>
     </>
   );
 }
 
-async function Reviews({ state }: { state: ReviewState }) {
-  const rows = await listReviews(state);
+async function Reviews({ filters, page }: { filters: PilotFilters; page: number }) {
+  const state = filters.review;
+  const rows = await listReviews(filters, page);
 
   return (
     <>
@@ -117,21 +128,24 @@ async function Reviews({ state }: { state: ReviewState }) {
       <section aria-labelledby="reviews-heading" className="flex flex-col gap-3">
         <h2 id="reviews-heading" className="text-h3">
           Opinie: {REVIEW_STATE_LABELS[state].toLowerCase()}
-          <span className="font-normal text-muted-foreground"> ({rows.length})</span>
+          <span className="font-normal text-muted-foreground"> ({rows.total})</span>
         </h2>
-        {state === "pending" && rows.length > 0 && (
+        {state === "pending" && rows.total > 0 && (
           <p className="max-w-[68ch] text-muted-foreground">
             Zatwierdzona opinia od razu pojawi się na stronie innowacji. Ukryta zostanie tylko tutaj.
           </p>
         )}
-        {rows.length === 0 ? (
+        {rows.total === 0 ? (
           <EmptyState title="Brak opinii">
             {state === "pending"
               ? "Wszystkie opinie są sprawdzone. Nowe pojawią się tutaj, gdy testujący je wyślą."
               : "Na tej liście nie ma jeszcze żadnej opinii."}
           </EmptyState>
         ) : (
-          <ReviewList rows={rows} state={state} />
+          <>
+            <ReviewList rows={rows.items} state={state} />
+            <Pagination page={rows} href={(n) => pilotsHref(filters, n)} label="Strony opinii" />
+          </>
         )}
       </section>
     </>

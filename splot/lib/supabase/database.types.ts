@@ -745,20 +745,26 @@ export type Database = {
       }
       threads: {
         Row: {
+          awaiting_reply: boolean
           created_at: string
           id: string
+          last_message_at: string
           subject: string
           submission_id: string | null
         }
         Insert: {
+          awaiting_reply?: boolean
           created_at?: string
           id?: string
+          last_message_at?: string
           subject: string
           submission_id?: string | null
         }
         Update: {
+          awaiting_reply?: boolean
           created_at?: string
           id?: string
+          last_message_at?: string
           subject?: string
           submission_id?: string | null
         }
@@ -796,7 +802,10 @@ export type Database = {
       match_innovations: {
         Args: {
           filter_categories?: Database["public"]["Enums"]["challenge_category"][]
+          filter_stage?: Database["public"]["Enums"]["innovation_stage"]
+          filter_target_group?: Database["public"]["Enums"]["target_group"]
           match_count?: number
+          match_offset?: number
           query_embedding: string
           query_text: string
         }
