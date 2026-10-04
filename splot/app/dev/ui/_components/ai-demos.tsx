@@ -197,6 +197,7 @@ export function ChatDemo() {
         onRetry={() => setStatus("ready")}
         addToolOutput={addToolOutput}
         toolLabels={{ searchInnovations: "Przeglądam 100 innowacji…" }}
+        toolDoneLabels={{ searchInnovations: "Przejrzano 100 innowacji" }}
         renderToolPart={{ showMatches: (part) => <MatchesDemo part={part} /> }}
         placeholder="Np. brakuje opieki wytchnieniowej dla rodzin."
       />
