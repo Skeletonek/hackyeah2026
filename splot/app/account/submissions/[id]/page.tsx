@@ -9,7 +9,7 @@ import { requireUser } from "@/lib/auth";
 import { formatDateWithYear } from "@/lib/dates";
 import { ideaStepHref } from "@/lib/ideas/card";
 import { SUBMISSION_KIND_LABELS } from "@/lib/labels";
-import { getOwnSubmissionThread } from "@/lib/threads/queries";
+import { getOwnSubmissionThread, getThreadForParticipant } from "@/lib/threads/queries";
 import { SubmissionThread } from "./_components/submission-thread";
 
 const TITLE = "Zgłoszenie";
@@ -17,10 +17,20 @@ const TITLE = "Zgłoszenie";
 export const metadata: Metadata = { title: TITLE };
 
 /** KOM1 + KOM2: where the author's submission is, and the conversation with ROPS under it. */
-export default async function Page({ params }: PageProps<"/account/submissions/[id]">) {
+export default async function Page({
+  params,
+  searchParams,
+}: PageProps<"/account/submissions/[id]">) {
   const { id } = await params;
+  const { thread: threadQueryParam } = await searchParams;
   const user = await requireUser(`/account/submissions/${id}`);
-  const thread = await getOwnSubmissionThread(id, user.id);
+
+  const requestedThreadId =
+    typeof threadQueryParam === "string" && threadQueryParam ? threadQueryParam : null;
+
+  const thread = requestedThreadId
+    ? await getThreadForParticipant(requestedThreadId, user.id)
+    : await getOwnSubmissionThread(id, user.id);
   if (!thread) notFound();
 
   const { submission, threadId, messages } = thread;
