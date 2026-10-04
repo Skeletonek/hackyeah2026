@@ -7,11 +7,12 @@ import { STAGE_ICONS } from "@/components/innovation-card";
 import { ReadAloudButton } from "@/components/read-aloud-button";
 import { getA11yPrefs } from "@/lib/a11y-prefs";
 import { CHALLENGE_CATEGORY_LABELS, INNOVATION_STAGE_LABELS } from "@/lib/labels";
-import { getPilotPlaces, getPublishedInnovation, type Innovation } from "@/lib/library/innovation";
+import { getPilotPlaces, getPilotStats, getPublishedInnovation, type Innovation } from "@/lib/library/innovation";
 import { EasyReadToggle } from "./_components/easy-read-toggle";
 import { InnovationSources } from "./_components/innovation-sources";
 import { InnovationVideo } from "./_components/innovation-video";
 import { PilotPlaces } from "./_components/pilot-places";
+import { TesterAside } from "./_components/tester-aside";
 
 /** Fixed headings of the full description, in reading order. */
 const SECTIONS = [
@@ -41,7 +42,10 @@ export default async function Page({ params, searchParams }: PageProps<"/library
   const innovation = await getPublishedInnovation(slug);
   if (!innovation) notFound();
 
-  const places = await getPilotPlaces(innovation.id);
+  const [places, stats] = await Promise.all([
+    getPilotPlaces(innovation.id),
+    getPilotStats(innovation.id),
+  ]);
 
   // Easy-read is the default in simple mode („Prościej”); `?easy=` overrides it either way.
   const easyRead = innovation.easy_read_description;
@@ -156,6 +160,12 @@ export default async function Page({ params, searchParams }: PageProps<"/library
         </article>
 
         {/* Slot for the Tester aside (L3, SPL-38): `_components/tester-aside.tsx`. */}
+        <TesterAside
+          innovationId={innovation.id}
+          innovationSlug={innovation.slug}
+          pilotSlots={innovation.pilot_slots}
+          stats={stats}
+        />
       </div>
     </main>
   );

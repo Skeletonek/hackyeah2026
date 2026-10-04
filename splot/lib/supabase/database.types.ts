@@ -786,6 +786,16 @@ export type Database = {
           status: Database["public"]["Enums"]["pilot_status"]
         }[]
       }
+      public_pilot_reviews: {
+        Args: { p_innovation_id: string }
+        Returns: {
+          id: string
+          rating: number
+          feedback: string | null
+          improvement: string | null
+          attribution: string
+        }[]
+      }
       set_user_role: {
         Args: {
           p_role: Database["public"]["Enums"]["user_role"]
