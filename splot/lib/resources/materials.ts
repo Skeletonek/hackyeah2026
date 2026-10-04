@@ -10,7 +10,7 @@ import { Constants } from "@/lib/supabase/database.types";
 
 export const MATERIAL_KINDS = ["report", "guide", "canvas", "video"] as const;
 
-const areaKey = z.enum([
+export const areaKey = z.enum([
   "family_foster_care",
   "homelessness",
   "disability",
@@ -21,6 +21,8 @@ const areaKey = z.enum([
   "seniors",
 ]);
 
+export const challengeCategoryEnum = z.enum(Constants.public.Enums.challenge_category);
+
 const material = z.object({
   kind: z.enum(MATERIAL_KINDS),
   title: z.string().min(1),
@@ -30,7 +32,7 @@ const material = z.object({
   description: z.string().min(1),
   /** Mapa Wyzwań Społecznych area keys (data/challenge-map.json). */
   areas: z.array(areaKey),
-  categories: z.array(z.enum(Constants.public.Enums.challenge_category)),
+  categories: z.array(challengeCategoryEnum),
   /** Videos only: the innovation the film is about. */
   innovation_slug: z.string().optional(),
   /** Set when the material is not in Polish. */
