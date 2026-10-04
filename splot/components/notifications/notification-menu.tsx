@@ -8,7 +8,7 @@ import { Popover } from "radix-ui";
 import { Button } from "@/components/ui/button";
 import { formatDate, formatTime } from "@/lib/dates";
 import { markNotificationsRead } from "@/lib/notifications/actions";
-import { createClient } from "@/lib/supabase/client";
+import { subscribeAsUser } from "@/lib/supabase/realtime";
 import { cn } from "@/lib/utils";
 
 export type NotificationItem = {
@@ -47,25 +47,21 @@ export function NotificationMenu({
   const [pending, startTransition] = useTransition();
 
   // A new row refreshes the header, so the counter and the list update.
-  useEffect(() => {
-    const supabase = createClient();
-    const channel = supabase
-      .channel(`notifications:${userId}`)
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "notifications", filter: `user_id=eq.${userId}` },
-        (payload) => {
-          const title = (payload.new as { title?: string }).title;
-          if (title) setAnnouncement(`Nowe powiadomienie: ${title}`);
-          router.refresh();
-        },
-      )
-      .subscribe();
-
-    return () => {
-      void supabase.removeChannel(channel);
-    };
-  }, [router, userId]);
+  useEffect(
+    () =>
+      subscribeAsUser((supabase) =>
+        supabase.channel(`notifications:${userId}`).on(
+          "postgres_changes",
+          { event: "INSERT", schema: "public", table: "notifications", filter: `user_id=eq.${userId}` },
+          (payload) => {
+            const title = (payload.new as { title?: string }).title;
+            if (title) setAnnouncement(`Nowe powiadomienie: ${title}`);
+            router.refresh();
+          },
+        ),
+      ),
+    [router, userId],
+  );
 
   function openItem(item: NotificationItem) {
     setOpen(false);
