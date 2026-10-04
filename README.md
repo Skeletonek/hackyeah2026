@@ -1,5 +1,77 @@
 Splot to platforma innowacji społecznych ROPS w Krakowie (HubMI.pl). Łączy mieszkańców, którzy mają problem, z rozwiązaniami, organizacjami i gminami, które już je znają. Projektujemy ją przede wszystkim dla seniorów i osób o niskich kompetencjach cyfrowych. Jeśli ekran jest jasny dla nich, będzie jasny dla urzędnika, eksperta i NGO.
 
+**Demo:** https://splot.skeletonek.com
+
+## Ekrany
+
+Zrzuty z działającego demo (desktop 1440 px).
+
+### Strona główna i dostępność
+
+Trzy wejścia: „Mam problem”, „Mam pomysł”, „Szukam rozwiązania dla gminy”. Tryb **Prościej** zostawia tylko najważniejsze elementy, tryb **Kontrast** to motyw o kontraście co najmniej 7:1.
+
+| Strona główna | Tryb Prościej | Tryb Kontrast |
+| --- | --- | --- |
+| ![Strona główna](docs/screenshots/01-home.png) | ![Tryb Prościej](docs/screenshots/02-home-simple-mode.png) | ![Tryb Kontrast](docs/screenshots/03-home-contrast-mode.png) |
+
+### Matchmaking społeczny
+
+Mieszkaniec opisuje problem własnymi słowami albo głosem. Asystent AI szuka pasujących innowacji i wyjaśnia, dlaczego każda z nich pasuje, z cytatem ze źródła.
+
+| Opis problemu | Dopasowane rozwiązania |
+| --- | --- |
+| ![Opis problemu](docs/screenshots/04-match-describe-problem.png) | ![Dopasowane rozwiązania](docs/screenshots/05-match-results.png) |
+
+### Zasobnik wiedzy
+
+Biblioteka innowacji z filtrami, karta innowacji z oceną testerów, Mapa wyzwań społecznych według powiatów i materiały ROPS.
+
+| Biblioteka innowacji | Karta innowacji |
+| --- | --- |
+| ![Biblioteka innowacji](docs/screenshots/06-library.png) | ![Karta innowacji](docs/screenshots/07-innovation-card.png) |
+
+| Mapa wyzwań | Materiały |
+| --- | --- |
+| ![Mapa wyzwań](docs/screenshots/08-challenge-map.png) | ![Materiały](docs/screenshots/09-resources.png) |
+
+### Kreator pomysłów
+
+Fiszka pomysłu w 4 krokach. W czasie naboru generator wniosku grantowego sprawdza kryteria i podpowiada treść.
+
+| Kreator pomysłu | Wniosek grantowy |
+| --- | --- |
+| ![Kreator pomysłu](docs/screenshots/10-idea-wizard.png) | ![Wniosek grantowy](docs/screenshots/11-grant-application.png) |
+
+### Pośrednik innowacji i oferta dla gmin
+
+Asystent dopasowuje innowację do typu gminy, liczby mieszkańców i budżetu oraz przygotowuje plan usługi.
+
+| Pośrednik innowacji | Szukam rozwiązania dla gminy |
+| --- | --- |
+| ![Pośrednik innowacji](docs/screenshots/12-innovation-broker.png) | ![Szukam rozwiązania dla gminy](docs/screenshots/13-for-municipalities.png) |
+
+### Komunikacja
+
+Każde zgłoszenie ma numer i stronę statusu z osią etapów i rozmową z ROPS, bez zakładania konta.
+
+![Status zgłoszenia](docs/screenshots/14-submission-status.png)
+
+### Panel ROPS
+
+Skrzynka zgłoszeń z podsumowaniem AI i priorytetem, wątki z mieszkańcami, trendy widoczne tylko dla administratora, pilotaże (Tester innowacji) i prośby o połączenie partnerów.
+
+| Zgłoszenia | Wiadomości |
+| --- | --- |
+| ![Zgłoszenia](docs/screenshots/15-admin-submissions.png) | ![Wiadomości](docs/screenshots/16-admin-messages.png) |
+
+| Trendy | Pilotaże |
+| --- | --- |
+| ![Trendy](docs/screenshots/17-admin-trends.png) | ![Pilotaże](docs/screenshots/18-admin-pilots.png) |
+
+| Prośby o połączenie |
+| --- |
+| ![Prośby o połączenie](docs/screenshots/19-admin-connections.png) |
+
 ## Idea marki
 
 Splot to dwie nici skręcone razem: **problem i rozwiązanie, ludzie i instytucje**. Węzły na końcach nici to punkty, które łączymy. Nić morska (`primary`, `logo-a`) to spokój i zaufanie instytucji publicznej. Nić szafranowa (`saffron`, `logo-b`) to ciepło sąsiedzkiej pomocy i złoto z barw Małopolski. Ornament w stanach pustych i na slajdach sekcji nawiązuje do **parzenicy**, sznurkowego haftu z Podhala: dwie nici zwinięte w serce.
