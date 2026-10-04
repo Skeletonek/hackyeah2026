@@ -1,0 +1,4 @@
+-- Placeholder matching a migration already applied on the remote database.
+-- This file exists only to align local migration history with the remote
+-- `supabase_migrations.schema_migrations` table before pushing later migrations.
+-- The actual schema changes from the remote version are already present there.
