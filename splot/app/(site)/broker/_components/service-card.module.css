@@ -1,0 +1,36 @@
+/**
+ * Print stylesheet for the broker service card (MID2). Screen styles live in
+ * Tailwind; this file only decides what a printed A4 page holds: the card,
+ * nothing else.
+ */
+
+@page {
+  size: A4 portrait;
+  margin: 16mm;
+}
+
+@media print {
+  /* The card, not the site chrome or the form that produced it. */
+  :global(header),
+  :global(footer),
+  :global(a[href="#main-content"]) {
+    display: none !important;
+  }
+
+  .printArea {
+    display: block !important;
+  }
+
+  .noPrint {
+    display: none !important;
+  }
+
+  /* Reactions and buttons are for the screen; the paper keeps the words. */
+  .printArea button {
+    display: none !important;
+  }
+
+  .card {
+    box-shadow: none !important;
+  }
+}

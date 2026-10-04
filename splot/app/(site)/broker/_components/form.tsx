@@ -13,6 +13,7 @@ import {
   serviceCardSchema,
   type ServiceCard,
 } from "@/lib/broker/schema";
+import { ServiceCardView } from "./service-card";
 
 export type BrokerInnovationOption = { slug: string; title: string };
 
@@ -45,6 +46,8 @@ export function BrokerForm({
 
   const card = object as Partial<ServiceCard> | undefined;
   const done = !isLoading && !error && !streamFailed && Boolean(card?.title);
+  const innovationTitle =
+    innovations.find((item) => item.slug === slug)?.title ?? slug;
 
   function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
@@ -70,7 +73,7 @@ export function BrokerForm({
 
   return (
     <div className="flex flex-col gap-8">
-      <form onSubmit={handleSubmit} className="flex flex-col gap-5" noValidate>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-5 print:hidden" noValidate>
         <Field
           label="Innowacja"
           hint="Wybierz rozwiązanie, które chcesz przenieść do gminy."
@@ -170,75 +173,12 @@ export function BrokerForm({
         ) : null}
 
         {card?.title ? (
-          <article className="flex flex-col gap-4 rounded-lg border-2 border-border bg-card p-5">
-            <p className="text-sm font-bold text-muted-foreground">
-              Podpowiedź AI
-              <span className="font-normal"> — sprawdź plan przed działaniem.</span>
-            </p>
-            <h2 className="text-h3">{card.title}</h2>
-            {card.description ? <p className="max-w-[68ch]">{card.description}</p> : null}
-
-            {card.steps?.length ? (
-              <div>
-                <h3 className="text-h4">Kroki wdrożenia</h3>
-                <ol className="mt-2 flex list-decimal flex-col gap-2 pl-6">
-                  {card.steps.map((step, index) => (
-                    <li key={`${step?.title}-${index}`}>
-                      <strong>{step?.title}</strong>
-                      {step?.when ? ` — ${step.when}` : null}
-                      {step?.detail ? <p>{step.detail}</p> : null}
-                    </li>
-                  ))}
-                </ol>
-              </div>
-            ) : null}
-
-            {card.resources?.length ? (
-              <div>
-                <h3 className="text-h4">Potrzebne zasoby</h3>
-                <ul className="mt-2 flex list-disc flex-col gap-1 pl-6">
-                  {card.resources.map((resource, index) => (
-                    <li key={`${resource}-${index}`}>{resource}</li>
-                  ))}
-                </ul>
-              </div>
-            ) : null}
-
-            {card.costEstimate?.range ? (
-              <div>
-                <h3 className="text-h4">Szacunkowy koszt</h3>
-                <p className="mt-2">
-                  {card.costEstimate.range}
-                  {card.costEstimate.note ? ` — ${card.costEstimate.note}` : null}
-                </p>
-              </div>
-            ) : null}
-
-            {card.risks?.length ? (
-              <div>
-                <h3 className="text-h4">Ryzyka</h3>
-                <ul className="mt-2 flex list-disc flex-col gap-1 pl-6">
-                  {card.risks.map((item, index) => (
-                    <li key={`${item?.risk}-${index}`}>
-                      {item?.risk}
-                      {item?.mitigation ? ` Sposób: ${item.mitigation}` : null}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ) : null}
-
-            {card.indicators?.length ? (
-              <div>
-                <h3 className="text-h4">Wskaźniki sukcesu</h3>
-                <ul className="mt-2 flex list-disc flex-col gap-1 pl-6">
-                  {card.indicators.map((indicator, index) => (
-                    <li key={`${indicator}-${index}`}>{indicator}</li>
-                  ))}
-                </ul>
-              </div>
-            ) : null}
-          </article>
+          <ServiceCardView
+            card={card}
+            slug={slug}
+            innovationTitle={innovationTitle}
+            complete={done}
+          />
         ) : null}
       </section>
     </div>
