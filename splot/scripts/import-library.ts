@@ -17,6 +17,7 @@ import path from "node:path";
 import { embedMany } from "ai";
 import { EMBEDDING_MODEL, TEXT_MODEL } from "@/lib/ai/models";
 import type { ChallengeCategory, TargetGroup } from "@/lib/innovations/classify";
+import { innovationEmbeddingText } from "@/lib/innovations/embedding-text";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { Enums, TablesInsert } from "@/lib/supabase/database.types";
 
@@ -108,10 +109,6 @@ async function embedAll(texts: string[]): Promise<string[]> {
     vectors.push(...embeddings.map((embedding) => JSON.stringify(embedding)));
   }
   return vectors;
-}
-
-function innovationEmbeddingText(item: Pick<LibraryItem, "title" | "lead" | "solution" | "problem" | "audience">) {
-  return [item.title, item.lead, item.solution, item.problem, item.audience].filter(Boolean).join("\n\n");
 }
 
 function validate(library: LibraryItem[], demo: Demo) {
