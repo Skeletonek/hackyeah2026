@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { sendCallAlerts } from "@/lib/admin/call-alerts";
 import { requireRole } from "@/lib/auth";
 import { callFormValues, callInput } from "@/lib/admin/call-fields";
 import { createClient } from "@/lib/supabase/server";
@@ -44,6 +45,7 @@ export async function saveCall(formData: FormData): Promise<CallFormState> {
   revalidatePath("/admin/calls", "layout");
   // The home page shows the „Trwa nabór” bar.
   revalidatePath("/");
+  sendCallAlerts({ id: data.id, ...values });
 
   if (!id) redirect(`/admin/calls/${data.id}?saved=new`);
   return {
