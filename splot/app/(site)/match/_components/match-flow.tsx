@@ -132,6 +132,7 @@ export function MatchFlow({
           showMatches: showMatchesLabel,
         }}
         renderToolPart={{ showMatches: renderShowMatches }}
+        finalTextOnly
         inputLabel="Chcesz coś dodać do opisu?"
         inputHint="Możesz dopisać szczegóły albo opisać problem inaczej."
         feedbackTargetType="matchmaking_message"
