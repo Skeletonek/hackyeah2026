@@ -35,12 +35,12 @@ export function ServiceCardView({
         className={styles.card}
       >
         <article aria-label="Plan usługi" className="flex flex-col gap-4">
-          <h2 className="text-h3">{card.title}</h2>
+          <h2 className="text-h3 simple:text-simple-h3">{card.title}</h2>
           {card.description ? <p className="max-w-[68ch]">{card.description}</p> : null}
 
           {card.steps?.length ? (
             <section aria-label="Kroki wdrożenia">
-              <h3 className="text-h4">Kroki wdrożenia</h3>
+              <h3 className="text-h4 simple:text-simple-h4">Kroki wdrożenia</h3>
               <ol className="mt-2 flex list-decimal flex-col gap-2 pl-6">
                 {card.steps.map((step, index) => (
                   <li key={`${step?.title}-${index}`}>
@@ -55,7 +55,7 @@ export function ServiceCardView({
 
           {card.resources?.length ? (
             <section aria-label="Potrzebne zasoby">
-              <h3 className="text-h4">Potrzebne zasoby</h3>
+              <h3 className="text-h4 simple:text-simple-h4">Potrzebne zasoby</h3>
               <ul className="mt-2 flex list-disc flex-col gap-1 pl-6">
                 {card.resources.map((resource, index) => (
                   <li key={`${resource}-${index}`}>{resource}</li>
@@ -66,7 +66,7 @@ export function ServiceCardView({
 
           {card.costEstimate?.range ? (
             <section aria-label="Szacunkowy koszt">
-              <h3 className="text-h4">Szacunkowy koszt</h3>
+              <h3 className="text-h4 simple:text-simple-h4">Szacunkowy koszt</h3>
               <p className="mt-2">
                 {card.costEstimate.range}
                 {card.costEstimate.note ? ` — ${card.costEstimate.note}` : null}
@@ -76,7 +76,7 @@ export function ServiceCardView({
 
           {card.risks?.length ? (
             <section aria-label="Ryzyka">
-              <h3 className="text-h4">Ryzyka</h3>
+              <h3 className="text-h4 simple:text-simple-h4">Ryzyka</h3>
               <ul className="mt-2 flex list-disc flex-col gap-1 pl-6">
                 {card.risks.map((item, index) => (
                   <li key={`${item?.risk}-${index}`}>
@@ -90,7 +90,7 @@ export function ServiceCardView({
 
           {card.indicators?.length ? (
             <section aria-label="Wskaźniki sukcesu">
-              <h3 className="text-h4">Wskaźniki sukcesu</h3>
+              <h3 className="text-h4 simple:text-simple-h4">Wskaźniki sukcesu</h3>
               <ul className="mt-2 flex list-disc flex-col gap-1 pl-6">
                 {card.indicators.map((indicator, index) => (
                   <li key={`${indicator}-${index}`}>{indicator}</li>
@@ -103,17 +103,17 @@ export function ServiceCardView({
 
       {complete && (
         <div className={`flex flex-wrap gap-3 ${styles.noPrint}`}>
-          <Button type="button" onClick={() => window.print()}>
+          <Button type="button" onClick={() => window.print()} className="simple:w-full">
             <Printer aria-hidden strokeWidth={2} />
             Pobierz PDF / wydrukuj
           </Button>
-          <Button type="button" variant="outline" asChild>
+          <Button type="button" variant="outline" asChild className="max-w-full whitespace-normal simple:w-full">
             <Link href={`/library/${encodeURIComponent(slug)}#gdzie-dziala`}>
               <MapPin aria-hidden strokeWidth={2} />
               Zobacz gminy, które już to wdrożyły
             </Link>
           </Button>
-          <Button type="button" variant="outline" asChild>
+          <Button type="button" variant="outline" asChild className="simple:hidden">
             <Link href={`/match?q=${encodeURIComponent(innovationTitle)}`}>
               <Search aria-hidden strokeWidth={2} />
               Szukaj podobnych rozwiązań

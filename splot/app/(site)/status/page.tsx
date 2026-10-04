@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { CappedList } from "@/components/capped-list";
 import { EmptyState } from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
 import { formatDateWithYear } from "@/lib/dates";
@@ -31,7 +32,7 @@ export default async function Page() {
         </div>
 
         {submissions.length > 0 ? (
-          <ul className="flex flex-col gap-4">
+          <CappedList className="flex flex-col gap-4">
             {submissions.map((submission) => (
               <li
                 key={submission.id}
@@ -66,7 +67,7 @@ export default async function Page() {
                 </Button>
               </li>
             ))}
-          </ul>
+          </CappedList>
         ) : (
           <EmptyState
             title="Nie ma tu jeszcze zgłoszeń"

@@ -89,7 +89,7 @@ export function CountyPanel({ county, counts }: { county?: County; counts: Submi
                           </span>
                           <a
                             href={indicator.source_url}
-                            className="inline-flex min-h-11 items-center gap-1 self-start text-sm text-primary underline underline-offset-[0.2em] hover:decoration-[3px] simple:text-simple-sm"
+                            className="inline-flex min-h-11 items-center gap-1 self-start text-sm text-primary underline underline-offset-[0.2em] hover:decoration-[3px] simple:hidden"
                           >
                             Źródło: {shortSource(indicator.source)}
                             <ExternalLink aria-hidden className="size-4 shrink-0" strokeWidth={2} />
@@ -102,7 +102,7 @@ export function CountyPanel({ county, counts }: { county?: County; counts: Submi
                 {index > 0 && (
                   <Link
                     href={libraryHref(category)}
-                    className="inline-flex min-h-11 items-center self-start text-primary underline underline-offset-[0.2em] hover:decoration-[3px]"
+                    className="inline-flex min-h-11 items-center self-start text-primary underline underline-offset-[0.2em] hover:decoration-[3px] simple:min-h-16"
                   >
                     Rozwiązania: {CHALLENGE_CATEGORY_LABELS[category].toLowerCase()}
                   </Link>

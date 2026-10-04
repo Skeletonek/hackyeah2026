@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { FileText, LayoutGrid, Lightbulb } from "lucide-react";
+import { CappedList } from "@/components/capped-list";
 import { EmptyState } from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
 import { requireUser } from "@/lib/auth";
@@ -39,7 +40,7 @@ export default async function Page() {
 
         {ideas.length > 0 ? (
           <>
-            <ul className="flex flex-col gap-4">
+            <CappedList className="flex flex-col gap-4">
               {ideas.map((idea) => (
                 <li key={idea.id} className="flex flex-col gap-4 rounded-lg border-2 border-border bg-card p-5">
                   <div className="flex min-w-0 flex-col gap-1">
@@ -106,9 +107,9 @@ export default async function Page() {
                   </div>
                 </li>
               ))}
-            </ul>
+            </CappedList>
             <div>
-              <Button asChild>
+              <Button asChild className="simple:w-full">
                 <Link href="/ideas/new">Opisz nowy pomysł</Link>
               </Button>
             </div>

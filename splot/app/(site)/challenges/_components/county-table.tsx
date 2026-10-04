@@ -8,6 +8,7 @@ import {
   scoreLevel,
   type SubmissionCounts,
 } from "@/lib/library/challenges";
+import { cn } from "@/lib/utils";
 import { capitalize, challengesHref } from "./shared";
 
 const CAPTION_ID = "county-table-caption";
@@ -39,14 +40,15 @@ export function CountyTable({
             <th scope="col" className="px-4 py-3">
               Powiat
             </th>
-            <th scope="col" className="min-w-56 px-4 py-3">
+            <th scope="col" className="min-w-56 px-4 py-3 simple:min-w-0">
               Najważniejsze wyzwania
             </th>
             {CHALLENGE_CATEGORIES.map((item) => (
               <th
                 key={item}
                 scope="col"
-                className={item === category ? "bg-secondary px-4 py-3" : "px-4 py-3"}
+                // Simple mode keeps the summary columns; the per-challenge levels are in the county panel.
+                className={cn("px-4 py-3 simple:hidden", item === category && "bg-secondary")}
               >
                 <CategoryBadge category={item} className="whitespace-nowrap" />
               </th>
@@ -69,7 +71,7 @@ export function CountyTable({
                     href={`${challengesHref({ view: "list", challenge: category, county: county.code })}#powiat`}
                     scroll={false}
                     aria-current={isSelected ? "true" : undefined}
-                    className="inline-flex min-h-11 items-center font-bold whitespace-nowrap text-primary underline underline-offset-[0.2em] hover:decoration-[3px]"
+                    className="inline-flex min-h-11 items-center font-bold whitespace-nowrap text-primary simple:min-h-16 simple:whitespace-normal underline underline-offset-[0.2em] hover:decoration-[3px]"
                   >
                     {capitalize(county.name)}
                   </Link>
@@ -80,7 +82,7 @@ export function CountyTable({
                   return (
                     <td
                       key={item}
-                      className={item === category ? "bg-secondary/60 px-4 py-2 whitespace-nowrap" : "px-4 py-2 whitespace-nowrap"}
+                      className={cn("px-4 py-2 whitespace-nowrap simple:hidden", item === category && "bg-secondary/60")}
                     >
                       {score === undefined ? (
                         <span className="text-muted-foreground">brak danych</span>

@@ -154,10 +154,10 @@ export function BrokerForm({
 
         <div className="flex flex-wrap gap-3">
           {/* Both stay mounted so keyboard focus is not dropped when loading starts. */}
-          <Button type="submit" disabled={isLoading}>
+          <Button type="submit" disabled={isLoading} className="simple:w-full">
             Ułóż plan usługi
           </Button>
-          <Button type="button" variant="secondary" onClick={() => stop()} disabled={!isLoading}>
+          <Button type="button" variant="secondary" onClick={() => stop()} disabled={!isLoading} className="simple:w-full">
             Zatrzymaj
           </Button>
         </div>
@@ -171,7 +171,7 @@ export function BrokerForm({
         </p>
 
         {error || streamFailed ? (
-          <p role="alert" className="text-sm font-bold text-destructive">
+          <p role="alert" className="text-sm font-bold text-destructive simple:text-simple-sm">
             Usługa jest chwilowo niedostępna. Spróbuj ponownie.
           </p>
         ) : null}

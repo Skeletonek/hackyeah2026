@@ -14,7 +14,7 @@ export default async function AccountLayout({ children }: LayoutProps<"/account"
         <div className="mx-auto flex max-w-[1200px] flex-wrap items-center justify-between gap-x-4 px-4 sm:px-8">
           <AccountNav />
           <div className="flex flex-wrap items-center gap-x-2">
-            <p className="py-3 text-sm text-muted-foreground">
+            <p className="py-3 text-sm text-muted-foreground simple:text-simple-sm">
               {user.profile?.display_name ?? user.email}
             </p>
             <SignOutButton />

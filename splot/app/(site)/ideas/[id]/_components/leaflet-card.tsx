@@ -40,14 +40,14 @@ export function LeafletCard({
       framed={false}
     >
       <div className="flex flex-col gap-3 rounded-lg border-2 border-saffron bg-card p-5 text-card-foreground">
-        <p className="text-sm font-bold text-muted-foreground">Tak może wyglądać ulotka</p>
-        <p className="font-display text-h3 font-bold text-balance">{input.title}</p>
+        <p className="text-sm font-bold text-muted-foreground simple:text-simple-sm">Tak może wyglądać ulotka</p>
+        <p className="font-display text-h3 font-bold text-balance simple:text-simple-h3">{input.title}</p>
         <p className="max-w-[68ch]">{input.tagline}</p>
         {facts.length > 0 && (
           <dl className="flex flex-col gap-2">
             {facts.map(({ icon: Icon, label, value }) => (
               <div key={label} className="flex items-center gap-2">
-                <dt className="inline-flex items-center gap-1.5 text-sm font-bold text-muted-foreground">
+                <dt className="inline-flex items-center gap-1.5 text-sm font-bold text-muted-foreground simple:text-simple-sm">
                   <Icon aria-hidden className="size-5 shrink-0" strokeWidth={2} />
                   {label}:
                 </dt>
@@ -79,7 +79,7 @@ export function LeafletCard({
           </Button>
         </div>
         {decision === "kept" && (
-          <p className="text-sm font-bold text-success">Zostawione. Ulotka czeka w podsumowaniu.</p>
+          <p className="text-sm font-bold text-success simple:text-simple-sm">Zostawione. Ulotka czeka w podsumowaniu.</p>
         )}
       </div>
     </AiHint>

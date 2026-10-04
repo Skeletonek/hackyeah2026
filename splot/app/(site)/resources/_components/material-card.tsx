@@ -50,15 +50,15 @@ export function MaterialCard({ material }: { material: Material }) {
         </p>
       </div>
 
-      <p className="text-muted-foreground simple:text-simple-base">{material.description}</p>
+      <p className="text-muted-foreground wrap-break-word simple:text-simple-base">{material.description}</p>
 
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2 simple:hidden">
         {material.areas.map((area) => {
           const label = getChallengeArea(area)?.title ?? area;
           return (
             <span
               key={area}
-              className="inline-flex items-center rounded-full bg-muted px-3 py-1 text-xs font-bold text-muted-foreground simple:px-4 simple:py-1.5 simple:text-simple-sm"
+              className="inline-flex items-center rounded-full bg-muted px-3 py-1 text-xs font-bold text-muted-foreground"
             >
               {label}
             </span>

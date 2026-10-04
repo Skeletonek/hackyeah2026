@@ -280,7 +280,8 @@
   html.a-plusplus { font-size: 125%; }
   body { @apply bg-background text-foreground font-sans text-base; }
   html[data-mode="simple"] body { @apply text-simple-base; }
-  h1, h2, h3, h4 { @apply font-display; text-wrap: balance; }
+  /* break-word: a long word in a large heading wraps instead of widening the page at 320 px. */
+  h1, h2, h3, h4 { @apply font-display; text-wrap: balance; overflow-wrap: break-word; }
   :focus-visible {
     outline: 2px solid transparent;
     box-shadow: 0 0 0 2px var(--background), 0 0 0 5px var(--ring), 0 0 0 9px var(--focus-halo);

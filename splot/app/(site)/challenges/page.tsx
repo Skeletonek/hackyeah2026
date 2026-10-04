@@ -110,7 +110,7 @@ function SourceLink({ href, children }: { href: string; children: React.ReactNod
     <li>
       <a
         href={href}
-        className="inline-flex min-h-11 items-center gap-1 text-primary underline underline-offset-[0.2em] hover:decoration-[3px]"
+        className="inline-flex min-h-11 items-center gap-1 text-primary underline underline-offset-[0.2em] hover:decoration-[3px] simple:min-h-16"
       >
         {children}
         <ExternalLink aria-hidden className="size-5 shrink-0" strokeWidth={2} />

@@ -55,7 +55,7 @@ export function ViewTabs({
 }) {
   return (
     <nav aria-label="Widok mapy wyzwań">
-      <ul className="flex gap-x-1 border-b-2 border-border">
+      <ul className="flex flex-wrap gap-x-1 border-b-2 border-border">
         {VIEWS.map((item) => {
           const active = item.view === view;
           const Icon = item.icon;
