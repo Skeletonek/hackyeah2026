@@ -56,9 +56,26 @@ function normalize(text: string) {
     .trim();
 }
 
+/** A break before a capital letter, so abbreviations like „m.in.” stay inside the sentence. */
+const SENTENCE_BREAK = /(?<=[.!?])\s+(?=[„"A-ZĄĆĘŁŃÓŚŹŻ])/;
+
+/** The source sentence sharing the most words with a quote that was not found verbatim. */
+function closestSentence(quote: string, texts: string[]) {
+  const words = new Set(normalize(quote).split(" "));
+  let best = { sentence: "", shared: 0 };
+  for (const sentence of texts.flatMap((text) => text.split(SENTENCE_BREAK))) {
+    const shared = normalize(sentence)
+      .split(" ")
+      .filter((word) => words.has(word)).length;
+    if (shared > best.shared) best = { sentence: sentence.trim(), shared };
+  }
+  return best.sentence;
+}
+
 /**
  * Keeps the model honest: every slug is a real innovation and every quote is
- * in its source text (`lead` covers innovations without a full description). Returns the problems to hand back to the model, in Polish.
+ * in its source text (`lead` covers innovations without a full description).
+ * Returns the problems to hand back to the model, in Polish.
  */
 export function checkMatches(input: ShowMatchesInput, sources: MatchSource[]): string[] {
   const problems: string[] = [];
@@ -85,10 +102,14 @@ export function checkMatches(input: ShowMatchesInput, sources: MatchSource[]): s
     }
 
     const quote = normalize(item.quote);
-    const quoted = [source.solution, source.problem, source.lead].some((text) => text && normalize(text).includes(quote));
-    if (!quoted) {
+    const texts = [source.solution, source.problem, source.lead].filter((text) => text !== null);
+    if (!texts.some((text) => normalize(text).includes(quote))) {
+      // Handing back the real sentence gets the retry right the first time.
+      const closest = closestSentence(item.quote, texts);
       problems.push(
-        `Cytat dla „${item.slug}” nie występuje w polu solution, problem ani lead. Skopiuj fragment dosłownie z getInnovation.`,
+        `Cytat dla „${item.slug}” nie występuje w polu solution, problem ani lead.${
+          closest ? ` Najbliższe zdanie w źródle: «${closest}». Skopiuj z niego fragment bez zmian.` : ""
+        }`,
       );
     }
   }
