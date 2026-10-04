@@ -4,6 +4,15 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { requireRole } from "@/lib/auth";
+import {
+  fillInnovation,
+  hasEnoughText,
+  MAX_PDF_BYTES,
+  sourceFromPdf,
+  sourceFromUrl,
+  SourceError,
+  type InnovationFill,
+} from "@/lib/admin/innovation-fill";
 import { innovationFormValues, innovationInput } from "@/lib/admin/library-fields";
 import { embed } from "@/lib/ai/embed";
 import { classifyChallenges, type ChallengeCategory } from "@/lib/innovations/classify";
@@ -174,5 +183,76 @@ export async function suggestCategories(
   } catch (error) {
     console.error("suggestCategories failed", error);
     return { ok: false, error: "Nie udało się dobrać wyzwań. Spróbuj ponownie albo zaznacz je ręcznie." };
+  }
+}
+
+export type InnovationFillState =
+  | { ok: true; fill: InnovationFill; source: string }
+  | { ok: false; error: string; fieldErrors?: { url?: string[]; file?: string[] } }
+  | null;
+
+const fillSource = z.object({
+  url: z
+    .string()
+    .trim()
+    .transform((value) => value || null)
+    .pipe(
+      z
+        .url({ protocol: /^https?$/, error: "Wpisz pełny adres, który zaczyna się od https://." })
+        .max(2000, "Adres jest za długi.")
+        .nullable(),
+    ),
+  file: z
+    .instanceof(File)
+    .nullable()
+    .transform((file) => (file && file.size > 0 ? file : null))
+    .refine((file) => !file || file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf"), {
+      error: "Wybierz plik PDF.",
+    })
+    .refine((file) => !file || file.size <= MAX_PDF_BYTES, { error: "Plik jest za duży. Wybierz PDF do 8 MB." }),
+});
+
+/**
+ * „Wypełnij pola z AI”: reads a link or an uploaded PDF and proposes the
+ * editor fields. Saves nothing; the admin checks the form and clicks „Zapisz”.
+ */
+export async function fillFromSource(
+  _previous: InnovationFillState,
+  formData: FormData,
+): Promise<InnovationFillState> {
+  await requireRole(["admin"], "/admin/library/new");
+
+  const parsed = fillSource.safeParse({ url: formData.get("url") ?? "", file: formData.get("file") });
+  if (!parsed.success) {
+    return { ok: false, error: "Popraw zaznaczone pola.", fieldErrors: z.flattenError(parsed.error).fieldErrors };
+  }
+  const { url, file } = parsed.data;
+  if (!url && !file) {
+    return {
+      ok: false,
+      error: "Wklej link albo dodaj plik PDF.",
+      fieldErrors: { url: ["Wklej link albo dodaj plik PDF."] },
+    };
+  }
+
+  try {
+    // A file wins over a link: it is what the admin picked last on purpose.
+    // A PDF without a text layer (a scan, a page printed as images) goes to the model as is.
+    const source = file ? await sourceFromPdf(file) : await sourceFromUrl(url!);
+    if (!hasEnoughText(source)) {
+      return {
+        ok: false,
+        error: "Na tej stronie jest za mało tekstu. Wklej link do strony z opisem innowacji albo dodaj plik PDF.",
+      };
+    }
+    const fill = await fillInnovation(source);
+    if (!fill.title) {
+      return { ok: false, error: "AI nie znalazło w materiale opisu innowacji. Sprawdź źródło albo wpisz opis ręcznie." };
+    }
+    return { ok: true, fill, source: file ? file.name : url! };
+  } catch (error) {
+    if (error instanceof SourceError) return { ok: false, error: error.message };
+    console.error("fillFromSource failed", url ?? file?.name, error);
+    return { ok: false, error: "Nie udało się wypełnić pól. Spróbuj ponownie albo wpisz opis ręcznie." };
   }
 }
