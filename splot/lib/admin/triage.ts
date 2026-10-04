@@ -3,10 +3,10 @@ import "server-only";
 import { generateObject } from "ai";
 import { z } from "zod";
 import { embed } from "@/lib/ai/embed";
+import { TEXT_MODEL } from "@/lib/ai/models";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { Constants } from "@/lib/supabase/database.types";
 
-const MODEL = "anthropic/claude-sonnet-5.5";
 /** How alike two descriptions must be before we call them the same case. */
 const DUPLICATE_THRESHOLD = 0.85;
 /** Only recent cases count as duplicates; older ones are history, not a clash. */
@@ -138,7 +138,7 @@ export async function triageSubmission(id: string): Promise<void> {
     }));
 
     const { object } = await generateObject({
-      model: MODEL,
+      model: TEXT_MODEL,
       schema: triageResultSchema,
       system: systemPrompt(),
       prompt: userPrompt({ ...submission, candidates }),
@@ -156,7 +156,7 @@ export async function triageSubmission(id: string): Promise<void> {
           candidates.some((candidate) => candidate.slug === slug),
         ),
         ai_needs_expert: result.needsExpert,
-        ai_model: MODEL,
+        ai_model: TEXT_MODEL,
         embedding: JSON.stringify(embedding),
         possible_duplicate_id: possibleDuplicateId,
         ...(submission.category === null ? { category: result.category } : {}),
