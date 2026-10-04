@@ -1,0 +1,131 @@
+/**
+ * Layout of the Social Innovation Canvas (KRE5): one column on a phone, the
+ * five-column sheet on a wide screen, and the same sheet on one printed A4
+ * landscape page.
+ */
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.5rem;
+}
+
+@media screen and (min-width: 48rem) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media screen and (min-width: 80rem) {
+  .grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-auto-rows: minmax(12.5rem, auto);
+  }
+
+  .cell {
+    grid-column: var(--column);
+    grid-row: var(--row);
+  }
+}
+
+/* Larger text (A+, A++) keeps two columns until the screen is wide enough for five. */
+@media screen and (min-width: 80rem) and (max-width: 99.99rem) {
+  :global(html.a-plus) .grid,
+  :global(html.a-plusplus) .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-rows: auto;
+  }
+
+  :global(html.a-plus) .cell,
+  :global(html.a-plusplus) .cell {
+    grid-column: auto;
+    grid-row: auto;
+  }
+}
+
+@media screen {
+  /* Simple mode: the larger text needs the full width, one cell after another. */
+  :global([data-mode="simple"]) .grid {
+    grid-template-columns: minmax(0, 1fr);
+    grid-auto-rows: auto;
+  }
+
+  :global([data-mode="simple"]) .cell {
+    grid-column: auto;
+    grid-row: auto;
+  }
+}
+
+/* A named page, so other printable pages keep their own paper format. */
+@page canvas {
+  size: A4 landscape;
+  margin: 10mm;
+}
+
+@media print {
+  /* The sheet, not the site chrome around it. */
+  :global(body):has(.page) :global(header),
+  :global(body):has(.page) :global(footer),
+  :global(body):has(.page) :global(a[href="#main-content"]),
+  .noPrint,
+  .page button {
+    display: none !important;
+  }
+
+  /* Small type fits ten cells on one page; text-size and simple mode are for the screen. */
+  :global(html):has(.page) {
+    font-size: 10px !important;
+  }
+
+  :global(html):has(.page),
+  :global(body):has(.page) {
+    background: #fff !important;
+  }
+
+  /* Paper is always light, also when the screen is in the Kontrast theme. */
+  .page {
+    page: canvas;
+    --background: #fff;
+    --foreground: #13201e;
+    --card: #fff;
+    --card-foreground: #13201e;
+    --muted-foreground: #475955;
+    --primary: #0b5e57;
+    --border: #677b77;
+    --accent: #fdedc8;
+    --accent-foreground: #5a3a00;
+    --warning: #8a4f00;
+    --warning-soft: #fff0d1;
+    max-width: none !important;
+    padding: 0 !important;
+    gap: 4mm !important;
+    color: var(--foreground);
+  }
+
+  .page * {
+    font-size: inherit;
+    line-height: 1.4;
+  }
+
+  .page h1 {
+    font-size: 2rem;
+  }
+
+  .page h2 {
+    font-size: 1.3rem;
+  }
+
+  .grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-auto-rows: minmax(40mm, auto);
+    gap: 2mm;
+  }
+
+  .cell {
+    grid-column: var(--column);
+    grid-row: var(--row);
+    padding: 3mm !important;
+    break-inside: avoid;
+    box-shadow: none !important;
+  }
+}

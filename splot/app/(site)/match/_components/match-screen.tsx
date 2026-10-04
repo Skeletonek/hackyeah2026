@@ -32,15 +32,17 @@ export async function MatchScreen({
   searchParams,
 }: {
   role: MatchmakingContext["role"];
-  searchParams: Promise<{ c?: SearchParam; m?: SearchParam }>;
+  searchParams: Promise<{ c?: SearchParam; m?: SearchParam; q?: SearchParam }>;
 }) {
-  const { c, m } = await searchParams;
+  const { c, m, q } = await searchParams;
   const copy = MATCH_COPY[role];
 
   // `?c=` appears after the first message; until then every visit gets a fresh id.
   const id = z.uuid().safeParse(c);
   // `?m=` keeps the municipality given on the entry screen across a reload.
   const municipality = matchmakingContext.shape.municipality.safeParse(m);
+  // `?q=` pre-fills the problem field, e.g. from the broker's search for similar solutions.
+  const initialQuery = typeof q === "string" && q.trim() ? q.slice(0, 2000) : undefined;
   const [initialMessages, innovationCount, user] = await Promise.all([
     id.success ? loadConversationMessages("matchmaking", id.data) : [],
     countInnovations(),
@@ -59,6 +61,7 @@ export async function MatchScreen({
           initialMessages={initialMessages}
           role={role}
           initialMunicipality={municipality.success ? municipality.data : undefined}
+          initialQuery={initialQuery}
           innovationCount={innovationCount}
           hasAccount={user !== null && !user.isAnonymous}
         />

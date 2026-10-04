@@ -11,7 +11,7 @@ const STATUS = {
 /** „Gdzie już działa”: places from `public_pilot_places`, status as icon + word. */
 export function PilotPlaces({ places, innovationSlug }: { places: PilotPlace[]; innovationSlug: string }) {
   return (
-    <section aria-labelledby="places-heading" className="flex flex-col gap-4">
+    <section aria-labelledby="places-heading" id="gdzie-dziala" className="flex scroll-mt-24 flex-col gap-4">
       <h2 id="places-heading" className="text-h2 simple:text-simple-h2">
         Gdzie już działa
       </h2>

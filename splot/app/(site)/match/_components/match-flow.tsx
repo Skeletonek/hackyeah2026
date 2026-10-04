@@ -24,6 +24,7 @@ export function MatchFlow({
   initialMessages,
   role,
   initialMunicipality,
+  initialQuery,
   innovationCount,
   hasAccount,
 }: {
@@ -32,6 +33,8 @@ export function MatchFlow({
   role: MatchmakingContext["role"];
   /** From `?m=`: the municipality given on the entry screen before a reload. */
   initialMunicipality?: string;
+  /** From `?q=`: a description pre-filled into the entry field. */
+  initialQuery?: string;
   /** Published innovations, for „Przeglądam 100 innowacji…”. */
   innovationCount: number;
   /** Signed in with a real account, so `/account` is open to this person. */
@@ -126,7 +129,7 @@ export function MatchFlow({
     );
   };
 
-  if (!started) return <MatchEntry copy={MATCH_COPY[role]} askMunicipality={role === "municipality"} onSubmit={start} />;
+  if (!started) return <MatchEntry copy={MATCH_COPY[role]} askMunicipality={role === "municipality"} initialQuery={initialQuery} onSubmit={start} />;
   if (saved) return <Confirmation saved={saved} />;
 
   return (

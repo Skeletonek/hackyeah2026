@@ -1,27 +1,54 @@
 import { createClient } from "@/lib/supabase/server";
+import type { InnovationStage } from "@/lib/labels";
+import { ActiveCallBanner } from "./_components/active-call-banner";
+import { FeaturedInnovations } from "./_components/featured-innovations";
+import { HeroActions } from "./_components/hero-actions";
+import { SearchForm } from "./_components/search-form";
+
+const STAGE_ORDER: Record<InnovationStage, number> = {
+  deployed: 0,
+  pilot: 1,
+  idea: 2,
+};
 
 export default async function HomePage() {
   const supabase = await createClient();
-  const { data: innovations } = await supabase
-    .from("innovations")
-    .select("id, slug, title, lead")
-    .eq("published", true)
-    .limit(3);
+  const now = new Date().toISOString();
+
+  const [activeCallResult, innovationsResult] = await Promise.all([
+    supabase
+      .from("grant_calls")
+      .select("id, title, closes_at")
+      .lte("opens_at", now)
+      .gte("closes_at", now)
+      .maybeSingle(),
+    supabase
+      .from("innovations")
+      .select("id, slug, title, lead, categories, stage")
+      .eq("published", true)
+      .limit(12),
+  ]);
+
+  const activeCall = activeCallResult.data;
+
+  const featuredInnovations = (innovationsResult.data ?? [])
+    .sort((a, b) => STAGE_ORDER[a.stage] - STAGE_ORDER[b.stage])
+    .slice(0, 3);
 
   return (
-    <main id="main-content" className="mx-auto flex w-full max-w-[1200px] flex-col gap-10 px-4 py-12 sm:px-8">
-      <h1 className="text-display">Razem rozwiążemy to szybciej</h1>
-      <section aria-labelledby="featured-heading" className="flex flex-col gap-4">
-        <h2 id="featured-heading" className="text-h2">Polecane innowacje</h2>
-        <ul className="grid gap-4 sm:grid-cols-3">
-          {innovations?.map((innovation) => (
-            <li key={innovation.id} className="rounded-lg border bg-card p-5 shadow-sm">
-              <h3 className="text-h4">{innovation.title}</h3>
-              <p className="mt-2 text-sm">{innovation.lead}</p>
-            </li>
-          ))}
-        </ul>
-      </section>
+    <main
+      id="main-content"
+      className="mx-auto flex w-full max-w-[1200px] flex-col gap-10 px-4 py-12 sm:px-8"
+    >
+      <HeroActions />
+      <SearchForm />
+
+      <div className="flex flex-col gap-10 simple:hidden">
+        {activeCall && (
+          <ActiveCallBanner id={activeCall.id} title={activeCall.title} closesAt={activeCall.closes_at} />
+        )}
+        <FeaturedInnovations innovations={featuredInnovations} />
+      </div>
     </main>
   );
 }
