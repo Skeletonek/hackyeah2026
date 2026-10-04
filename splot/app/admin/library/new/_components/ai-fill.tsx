@@ -87,7 +87,7 @@ function AiFill({ onFill }: { onFill: (fill: InnovationFill) => void }) {
         <Field
           label="Albo plik PDF z komputera"
           optional
-          hint="Do 8 MB. Plik czytamy tylko raz i nie zapisujemy go. Jeśli dodasz plik, link pominiemy."
+          hint="Do 8 MB, także skan albo strona wydrukowana do PDF. Plik czytamy tylko raz i nie zapisujemy go. Jeśli dodasz plik, link pominiemy."
           error={errors?.file?.[0]}
         >
           <Input

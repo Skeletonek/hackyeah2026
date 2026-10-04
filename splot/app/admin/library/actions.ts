@@ -6,10 +6,11 @@ import { z } from "zod";
 import { requireRole } from "@/lib/auth";
 import {
   fillInnovation,
+  hasEnoughText,
   MAX_PDF_BYTES,
+  sourceFromPdf,
+  sourceFromUrl,
   SourceError,
-  textFromPdf,
-  textFromUrl,
   type InnovationFill,
 } from "@/lib/admin/innovation-fill";
 import { innovationFormValues, innovationInput } from "@/lib/admin/library-fields";
@@ -236,16 +237,15 @@ export async function fillFromSource(
 
   try {
     // A file wins over a link: it is what the admin picked last on purpose.
-    const text = file ? await textFromPdf(file) : await textFromUrl(url!);
-    if (text.replace(/\s+/g, "").length < 200) {
+    // A PDF without a text layer (a scan, a page printed as images) goes to the model as is.
+    const source = file ? await sourceFromPdf(file) : await sourceFromUrl(url!);
+    if (!hasEnoughText(source)) {
       return {
         ok: false,
-        error: file
-          ? "W pliku jest za mało tekstu. Jeśli to skan, wpisz opis ręcznie."
-          : "Na tej stronie jest za mało tekstu. Wklej link do strony z opisem innowacji albo dodaj plik PDF.",
+        error: "Na tej stronie jest za mało tekstu. Wklej link do strony z opisem innowacji albo dodaj plik PDF.",
       };
     }
-    const fill = await fillInnovation(text);
+    const fill = await fillInnovation(source);
     if (!fill.title) {
       return { ok: false, error: "AI nie znalazło w materiale opisu innowacji. Sprawdź źródło albo wpisz opis ręcznie." };
     }

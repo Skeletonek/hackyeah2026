@@ -14,6 +14,8 @@ import { Constants, type Enums } from "@/lib/supabase/database.types";
 export const MAX_PDF_BYTES = 8 * 1024 * 1024;
 const MAX_HTML_BYTES = 3 * 1024 * 1024;
 const MAX_SOURCE_CHARS = 40_000;
+/** Below this many non-space characters a text source says too little to fill the form. */
+const MIN_SOURCE_CHARS = 200;
 const FETCH_TIMEOUT_MS = 15_000;
 const MAX_REDIRECTS = 3;
 
@@ -32,6 +34,17 @@ export type InnovationFill = {
 };
 
 export type InnovationFillField = keyof InnovationFill;
+
+/**
+ * What the model reads: extracted text, or the PDF itself when it has no text
+ * layer (a scan, or a page printed as images by „Microsoft Print to PDF”).
+ */
+export type FillSource = { text: string } | { pdf: Uint8Array; filename: string };
+
+/** Whether the source says enough to fill the form. A PDF without text is read by the model from its images. */
+export function hasEnoughText(source: FillSource) {
+  return !("text" in source) || source.text.replace(/\s+/g, "").length >= MIN_SOURCE_CHARS;
+}
 
 /** A failure the admin can act on; its message is shown as is. */
 export class SourceError extends Error {}
@@ -67,12 +80,27 @@ const schema = z.object({
   stage: z.enum(Constants.public.Enums.innovation_stage),
 });
 
-/** One model call: source text → the editor fields, with personal contact data removed. */
-export async function fillInnovation(source: string): Promise<InnovationFill> {
+/** One model call: the source → the editor fields, with personal contact data removed. */
+export async function fillInnovation(source: FillSource): Promise<InnovationFill> {
   const { output } = await generateText({
     model: TEXT_MODEL,
     system: SYSTEM,
-    prompt: `Materiał źródłowy:\n\n${stripContacts(source).slice(0, MAX_SOURCE_CHARS)}`,
+    ...("text" in source
+      ? { prompt: `Materiał źródłowy:\n\n${stripContacts(source.text).slice(0, MAX_SOURCE_CHARS)}` }
+      : {
+          messages: [
+            {
+              role: "user" as const,
+              content: [
+                {
+                  type: "text" as const,
+                  text: "Materiał źródłowy jest w załączonym pliku PDF. To może być skan albo strona wydrukowana jako obraz: odczytaj tekst ze stron.",
+                },
+                { type: "file" as const, data: source.pdf, mediaType: "application/pdf", filename: source.filename },
+              ],
+            },
+          ],
+        }),
     output: Output.object({ schema }),
   });
 
@@ -113,14 +141,14 @@ export function stripContacts(value: string) {
     .replace(/[ \t]{2,}/g, " ");
 }
 
-/** Text of an uploaded PDF. The file is read in memory and never stored. */
-export async function textFromPdf(file: File): Promise<string> {
+/** An uploaded PDF as a fill source. The file is read in memory and never stored. */
+export async function sourceFromPdf(file: File): Promise<FillSource> {
   if (file.size > MAX_PDF_BYTES) throw new SourceError("Plik jest za duży. Wybierz PDF do 8 MB.");
-  return pdfText(new Uint8Array(await file.arrayBuffer()));
+  return pdfSource(new Uint8Array(await file.arrayBuffer()), file.name);
 }
 
-/** Text of a web page or a linked PDF, fetched server-side. */
-export async function textFromUrl(url: string): Promise<string> {
+/** A web page or a linked PDF as a fill source, fetched server-side. */
+export async function sourceFromUrl(url: string): Promise<FillSource> {
   const response = await fetchPublic(new URL(url));
   const type = response.headers.get("content-type") ?? "";
   const isPdf = type.includes("application/pdf");
@@ -129,16 +157,18 @@ export async function textFromUrl(url: string): Promise<string> {
   }
 
   const bytes = await readCapped(response, isPdf ? MAX_PDF_BYTES : MAX_HTML_BYTES);
-  if (isPdf) return pdfText(bytes);
+  if (isPdf) return pdfSource(bytes, new URL(url).pathname.split("/").pop() || "material.pdf");
   const body = new TextDecoder(charset(type)).decode(bytes);
-  return type.includes("text/html") ? htmlText(body) : body;
+  return { text: type.includes("text/html") ? htmlText(body) : body };
 }
 
-async function pdfText(bytes: Uint8Array): Promise<string> {
+/** The PDF's text layer, or the PDF itself when it has (almost) none. */
+async function pdfSource(bytes: Uint8Array, filename: string): Promise<FillSource> {
   try {
-    const pdf = await getDocumentProxy(bytes);
+    // pdf.js may detach the buffer it parses, so it gets a copy.
+    const pdf = await getDocumentProxy(bytes.slice());
     const { text } = await extractText(pdf, { mergePages: true });
-    return text;
+    return hasEnoughText({ text }) ? { text } : { pdf: bytes, filename };
   } catch {
     throw new SourceError("Nie udało się odczytać pliku PDF. Sprawdź, czy to nie jest skan albo plik z hasłem.");
   }
