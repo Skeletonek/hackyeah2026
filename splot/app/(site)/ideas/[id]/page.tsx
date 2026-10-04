@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { callParam, ideaValues, stepParam } from "@/lib/ideas/card";
-import { getIdea, getOpenGrantCall } from "@/lib/ideas/queries";
+import { getCurrentUser } from "@/lib/auth";
+import { getIdea, getIdeaSubmission, getOpenGrantCall } from "@/lib/ideas/queries";
+import { submissionHref } from "@/lib/submissions/on-created";
+import { createClient } from "@/lib/supabase/server";
 import { IdeaSummary } from "../_components/idea-summary";
 import { IdeaWizard } from "../_components/idea-wizard";
 import { IdeaWizardShell } from "../_components/idea-wizard-shell";
@@ -44,10 +47,21 @@ export default async function Page({ params, searchParams }: PageProps<"/ideas/[
   const call = callParam(query.call);
 
   if (step === 4) {
-    const openCall = await getOpenGrantCall(call);
+    const [openCall, sent, user] = await Promise.all([
+      getOpenGrantCall(call),
+      getIdeaSubmission(await createClient(), idea.id),
+      getCurrentUser(),
+    ]);
     return (
       <IdeaWizardShell title={TITLE} step={step} id={idea.id} call={call}>
-        <IdeaSummary idea={idea} call={openCall} />
+        <IdeaSummary
+          idea={idea}
+          call={openCall}
+          submission={
+            sent && { caseNumber: sent.case_number, href: submissionHref(sent, user?.isAnonymous ?? true) }
+          }
+          sendFailed={query.send === "failed"}
+        />
       </IdeaWizardShell>
     );
   }

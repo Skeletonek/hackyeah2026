@@ -1,6 +1,7 @@
 import {
   IDEA_ASSET_LABELS,
   IDEA_STAGE_LABELS,
+  TARGET_GROUP_LABELS,
   type IdeaAsset,
   type IdeaStage,
   type TargetGroup,
@@ -110,4 +111,31 @@ export function ideaCanvasHref(id: string) {
 
 export function ideaApplicationHref(id: string, call?: string) {
   return withCall(`/ideas/${id}/application`, call);
+}
+
+/** `submissions.body` check: 3–5000 characters. */
+const MAX_BODY_LENGTH = 5000;
+
+/**
+ * `submissions.body` of an idea sent to ROPS: the card as plain text at the
+ * moment of sending. Later edits of the card do not change it.
+ */
+export function ideaSnapshot(idea: Idea) {
+  const assets = (idea.assets as IdeaAsset[]).map((asset) => IDEA_ASSET_LABELS[asset]).join(", ");
+  const rows: [string, string | null | undefined][] = [
+    ["Na czym polega", idea.solution],
+    ["Jaki problem rozwiązuje", idea.problem],
+    ["Kto skorzysta", idea.target_groups.map((group) => TARGET_GROUP_LABELS[group]).join(", ")],
+    ["Odbiorcy", idea.audience],
+    ["Gdzie", idea.location],
+    ["Ile osób skorzysta w pierwszym roku", idea.reach],
+    ["Etap", idea.stage && IDEA_STAGE_LABELS[idea.stage]],
+    ["Co już jest", assets],
+  ];
+
+  const body = [
+    `Pomysł: ${idea.title}`,
+    ...rows.filter(([, value]) => value?.trim()).map(([label, value]) => `${label}:\n${value!.trim()}`),
+  ].join("\n\n");
+  return body.length > MAX_BODY_LENGTH ? `${body.slice(0, MAX_BODY_LENGTH - 1)}…` : body;
 }
