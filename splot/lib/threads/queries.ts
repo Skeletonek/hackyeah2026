@@ -2,6 +2,7 @@ import "server-only";
 import { z } from "zod";
 import type { SubmissionKind, SubmissionStatus } from "@/lib/labels";
 import { createClient } from "@/lib/supabase/server";
+import { toThreadMessage, type ThreadMessage } from "@/lib/threads/messages";
 
 export type TrackedSubmission = {
   caseNumber: string;
@@ -82,6 +83,71 @@ export async function trackSubmission(caseNumber: string, token: string): Promis
       isStaff: message.is_staff,
     })),
     ownSubmissionId: isAuthor ? (own.data?.id ?? null) : null,
+  };
+}
+
+export type OwnSubmissionThread = {
+  submission: {
+    id: string;
+    caseNumber: string;
+    kind: SubmissionKind;
+    status: SubmissionStatus;
+    body: string;
+    ideaId: string | null;
+    createdAt: string;
+  };
+  /** Null only for a submission older than the trigger that creates threads. */
+  threadId: string | null;
+  messages: ThreadMessage[];
+};
+
+/**
+ * The author's view of one submission: the case, its thread and the messages,
+ * oldest first. Returns null for anyone else's submission, also for admins,
+ * whom RLS would otherwise let through.
+ */
+export async function getOwnSubmissionThread(
+  submissionId: string,
+  userId: string,
+): Promise<OwnSubmissionThread | null> {
+  if (!z.uuid().safeParse(submissionId).success) return null;
+
+  const supabase = await createClient();
+  const { data: submission, error } = await supabase
+    .from("submissions")
+    .select("id, case_number, kind, status, body, idea_id, created_at, threads (id)")
+    .eq("id", submissionId)
+    .eq("author_id", userId)
+    .maybeSingle();
+  if (error) throw new Error(`getOwnSubmissionThread failed: ${error.message}`);
+  if (!submission) return null;
+
+  const threadId = submission.threads[0]?.id ?? null;
+  let messages: ThreadMessage[] = [];
+  if (threadId) {
+    const { data, error: messagesError } = await supabase
+      .from("messages")
+      .select("id, body, created_at, author_id")
+      .eq("thread_id", threadId)
+      // AI hints in a thread are for the people answering, not for the author.
+      .eq("from_assistant", false)
+      .order("created_at", { ascending: true });
+    if (messagesError) throw new Error(`thread messages failed: ${messagesError.message}`);
+    messages = (data ?? []).map((row) => toThreadMessage(row, userId));
+  }
+
+  return {
+    submission: {
+      id: submission.id,
+      caseNumber: submission.case_number,
+      kind: submission.kind,
+      status: submission.status,
+      body: submission.body,
+      ideaId: submission.idea_id,
+      createdAt: submission.created_at,
+    },
+    threadId,
+    messages,
   };
 }
 

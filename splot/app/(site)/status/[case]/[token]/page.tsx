@@ -5,15 +5,11 @@ import { EmptyState } from "@/components/empty-state";
 import { StatusTimeline } from "@/components/status-timeline";
 import { Button } from "@/components/ui/button";
 import { getCurrentUser } from "@/lib/auth";
-import { formatDateWithYear, formatTime } from "@/lib/dates";
+import { formatDateTime, formatDateWithYear } from "@/lib/dates";
 import { SUBMISSION_KIND_LABELS } from "@/lib/labels";
 import { trackSubmission } from "@/lib/threads/queries";
 
 const TITLE = "Status zgłoszenia";
-
-function formatDateTime(iso: string) {
-  return `${formatDateWithYear(iso)}, ${formatTime(iso)}`;
-}
 
 export const metadata: Metadata = {
   title: TITLE,
