@@ -146,6 +146,11 @@ export function MatchFlow({
           getInnovation: "Czytam opisy rozwiązań, które mogą pasować…",
           showMatches: showMatchesLabel,
         }}
+        toolDoneLabels={{
+          searchInnovations: `Przejrzano ${innovationCount} innowacji z Biblioteki ROPS`,
+          getInnovation: (count) =>
+            count === 1 ? "Przeczytano opis 1 rozwiązania" : `Przeczytano opisy ${count} rozwiązań`,
+        }}
         renderToolPart={{ showMatches: renderShowMatches }}
         finalTextOnly
         inputLabel="Chcesz coś dodać do opisu?"
