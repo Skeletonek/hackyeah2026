@@ -26,7 +26,8 @@ const TONES = {
 };
 
 /** Same size as the Prościej / Kontrast switches next to it. */
-const CONTROL_CLASSES = "min-h-11 rounded-md border-2 px-3 py-2 text-sm font-bold";
+const CONTROL_CLASSES =
+  "min-h-11 rounded-md border-2 px-3 py-2 text-sm font-bold simple:min-h-11 simple:text-sm";
 
 /**
  * Text size select for the a11y toolbar: „Tekst: A+” on the trigger, the
