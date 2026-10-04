@@ -12,6 +12,7 @@ import {
   type IdeaFormStep,
 } from "@/lib/ideas/card";
 import { getIdeaSubmission } from "@/lib/ideas/queries";
+import { linkIdeaConversation } from "@/lib/ideas/conversation";
 import { parseIdeaStep, readIdeaStep } from "@/lib/ideas/schema";
 import { onSubmissionCreated, submissionHref } from "@/lib/submissions/on-created";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -86,6 +87,19 @@ export async function saveIdeaStep(_previous: IdeaStepState, formData: FormData)
   if (intent === "next") redirect(ideaStepHref(ideaId, (formStep + 1) as 2 | 3 | 4, call));
   if (intent === "back" && formStep > 1) redirect(ideaStepHref(ideaId, (formStep - 1) as 1 | 2, call));
   return { status: "saved", values, savedAt: Date.now() };
+}
+
+/**
+ * Links the idea assistant's conversation to the card on its first message,
+ * so a resumed draft restores the same chat. Owners only, via RLS.
+ */
+export async function setIdeaConversation(ideaId: string, conversationId: string): Promise<void> {
+  if (!isUuid(ideaId) || !isUuid(conversationId)) throw new Error("invalid id");
+
+  const supabase = await ensureSession();
+  const { data } = await supabase.auth.getClaims();
+  if (!data?.claims) throw new Error("session unavailable");
+  await linkIdeaConversation(supabase, data.claims.sub, ideaId, conversationId);
 }
 
 /**
