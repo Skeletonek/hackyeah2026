@@ -89,6 +89,18 @@ export async function saveIdeaStep(_previous: IdeaStepState, formData: FormData)
 }
 
 /**
+ * Links the idea assistant's conversation to the card on its first message,
+ * so a resumed draft restores the same chat. Owners only, via RLS.
+ */
+export async function setIdeaConversation(ideaId: string, conversationId: string): Promise<void> {
+  if (!isUuid(ideaId) || !isUuid(conversationId)) throw new Error("invalid id");
+
+  const supabase = await ensureSession();
+  const { error } = await supabase.from("ideas").update({ conversation_id: conversationId }).eq("id", ideaId);
+  if (error) throw new Error(`setIdeaConversation failed: ${error.message}`);
+}
+
+/**
  * „Wyślij do ROPS po radę”: turns the idea card into a submission of kind
  * idea and opens it. A card has one advice submission, so a second send opens
  * the first. The body is a snapshot; the card stays editable.

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { loadConversationMessages } from "@/lib/ai/conversations";
 import { callParam, ideaValues, stepParam } from "@/lib/ideas/card";
 import { getCurrentUser } from "@/lib/auth";
 import { getIdea, getIdeaSubmission, getOpenGrantCall } from "@/lib/ideas/queries";
@@ -8,6 +9,7 @@ import { IdeaNotFound } from "../_components/idea-not-found";
 import { IdeaSummary } from "../_components/idea-summary";
 import { IdeaWizard } from "../_components/idea-wizard";
 import { IdeaWizardShell } from "../_components/idea-wizard-shell";
+import { AssistantPanel } from "./_components/assistant-panel";
 
 const TITLE = "Fiszka pomysłu";
 
@@ -26,6 +28,18 @@ export default async function Page({ params, searchParams }: PageProps<"/ideas/[
   const step = stepParam(query.step);
   const call = callParam(query.call);
 
+  const assistant = (
+    <AssistantPanel
+      ideaId={idea.id}
+      step={step}
+      snapshot={ideaValues(idea)}
+      conversationId={idea.conversation_id}
+      initialMessages={
+        idea.conversation_id ? await loadConversationMessages("idea-assistant", idea.conversation_id) : []
+      }
+    />
+  );
+
   if (step === 4) {
     const [openCall, sent, user] = await Promise.all([
       getOpenGrantCall(call),
@@ -33,7 +47,7 @@ export default async function Page({ params, searchParams }: PageProps<"/ideas/[
       getCurrentUser(),
     ]);
     return (
-      <IdeaWizardShell title={TITLE} step={step} id={idea.id} call={call}>
+      <IdeaWizardShell title={TITLE} step={step} id={idea.id} call={call} assistant={assistant}>
         <IdeaSummary
           idea={idea}
           call={openCall}
@@ -47,7 +61,7 @@ export default async function Page({ params, searchParams }: PageProps<"/ideas/[
   }
 
   return (
-    <IdeaWizardShell title={TITLE} step={step} id={idea.id} call={call}>
+    <IdeaWizardShell title={TITLE} step={step} id={idea.id} call={call} assistant={assistant}>
       {/* The key gives every step its own form state. */}
       <IdeaWizard
         key={step}

@@ -66,7 +66,7 @@ export function IdeaWizard({
   const busy = (button: Intent) => isPending && intent === button;
 
   return (
-    <form ref={formRef} action={formAction} noValidate className="flex flex-col gap-6">
+    <form ref={formRef} id="idea-card-form" action={formAction} noValidate className="flex flex-col gap-6">
       {id && <input type="hidden" name="id" value={id} />}
       {call && <input type="hidden" name="call" value={call} />}
       <input type="hidden" name="step" value={step} />
