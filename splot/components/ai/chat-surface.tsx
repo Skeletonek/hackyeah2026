@@ -58,6 +58,7 @@ function ChatSurface({
   addToolOutput,
   renderToolPart = {},
   toolLabels = {},
+  finalTextOnly = false,
   inputLabel = "Twoja wiadomość",
   inputHint,
   placeholder,
@@ -78,6 +79,11 @@ function ChatSurface({
   renderToolPart?: Partial<Record<string, RenderToolPart>>
   /** What `AiThinking` says while a tool without a renderer runs, e.g. `{ searchInnovations: "Przeglądam 100 innowacji…" }`. */
   toolLabels?: Partial<Record<string, string>>
+  /**
+   * Shows only the text after a reply's last tool call. For Skills whose answer
+   * is a tool UI: whatever the model writes between its tool calls stays hidden.
+   */
+  finalTextOnly?: boolean
   inputLabel?: string
   inputHint?: string
   placeholder?: string
@@ -155,6 +161,7 @@ function ChatSurface({
       addToolOutput={addToolOutput}
       renderToolPart={renderToolPart}
       toolLabels={toolLabels}
+      finalTextOnly={finalTextOnly}
       feedbackTargetType={feedbackTargetType}
     />
   )
@@ -225,6 +232,7 @@ function MessageView({
   addToolOutput,
   renderToolPart,
   toolLabels,
+  finalTextOnly,
   feedbackTargetType,
 }: {
   message: UIMessage
@@ -234,6 +242,7 @@ function MessageView({
   addToolOutput?: AddToolOutput
   renderToolPart: Partial<Record<string, RenderToolPart>>
   toolLabels: Partial<Record<string, string>>
+  finalTextOnly: boolean
   feedbackTargetType: string
 }) {
   if (message.role === "user") {
@@ -263,6 +272,12 @@ function MessageView({
       )
     : -1
 
+  const lastToolIndex = finalTextOnly ? message.parts.findLastIndex(isToolUIPart) : -1
+  // A tool with its own renderer reports its own progress during the turn.
+  const hasRenderedTool = message.parts.some(
+    (part, index) => index >= from && isToolUIPart(part) && renderToolPart[getToolName(part)]
+  )
+
   return (
     <div data-message-id={message.id} className="flex flex-col gap-4 empty:hidden">
       {message.parts.map((part, index) => {
@@ -271,6 +286,14 @@ function MessageView({
 
         if (part.type === "text") {
           if (!part.text.trim()) return null
+          if (finalTextOnly) {
+            if (index < lastToolIndex) return null
+            // A tool call may still follow, so text waits for the end of the turn.
+            if (streaming) {
+              const quiet = index === lastIndex && progressIndex === -1 && !hasRenderedTool
+              return quiet ? <AiThinking key={key} /> : null
+            }
+          }
           const typing = part.state === "streaming" || (streaming && index === lastIndex)
           return (
             <ChatBubble key={key} from="ai">
